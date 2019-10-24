@@ -1,0 +1,194 @@
+<?php // phpcs:ignore
+/**
+ * Plugin Name:     Payer B2B for WooCommerce
+ * Plugin URI:      http://krokedil.com/
+ * Description:     Provides a Payer B2B gateway for WooCommerce.
+ * Version:         0.0.0
+ * Author:          Krokedil
+ * Author URI:      http://krokedil.com/
+ * Developer:       Krokedil
+ * Developer URI:   http://krokedil.com/
+ * Text Domain:     payer-b2b-for-woocommerce
+ * Domain Path:     /languages
+ *
+ * WC requires at least: 3.0
+ * WC tested up to: 3.7.0
+ *
+ * Copyright:       © 2016-2019 Krokedil.
+ * License:         GNU General Public License v3.0
+ * License URI:     http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * @package Payer_B2B
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+// Define plugin constants.
+define( 'PAYER_B2B_VERSION', '0.0.0' );
+define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
+define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
+define( 'PAYER_B2B_TEST_ENV', 'https://stage-b2b.payer.se' );
+
+if ( ! class_exists( 'Payer_B2B' ) ) {
+
+	/**
+	 * Main class for the plugin.
+	 */
+	class Payer_B2B {
+		/**
+		 * The reference the *Singleton* instance of this class.
+		 *
+		 * @var $instance
+		 */
+		protected static $instance;
+
+		/**
+		 * Class constructor.
+		 */
+		public function __construct() {
+			// Initiate the plugin.
+			add_action( 'plugins_loaded', array( $this, 'init' ) );
+		}
+
+		/**
+		 * Returns the *Singleton* instance of this class.
+		 *
+		 * @return self::$instance The *Singleton* instance.
+		 */
+		public static function get_instance() {
+			if ( null === self::$instance ) {
+				self::$instance = new self();
+			}
+			return self::$instance;
+		}
+
+		/**
+		 * Private clone method to prevent cloning of the instance of the
+		 * *Singleton* instance.
+		 *
+		 * @return void
+		 */
+		private function __clone() {
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
+		}
+		/**
+		 * Private unserialize method to prevent unserializing of the *Singleton*
+		 * instance.
+		 *
+		 * @return void
+		 */
+		private function __wakeup() {
+			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
+		}
+
+		/**
+		 * Initiates the plugin.
+		 *
+		 * @return void
+		 */
+		public function init() {
+			load_plugin_textdomain( 'payer-b2b-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+
+			$this->include_files();
+
+			// Load scripts.
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+
+			do_action( 'payer_initiated' );
+		}
+
+		/**
+		 * Includes the files for the plugin.
+		 *
+		 * @return void
+		 */
+		public function include_files() {
+			// Gateways.
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-invoice-gateway.php';
+			// Requests.
+			include_once PAYER_B2B_PATH . '/classes/requests/class-pb2b-request.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-oauth.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-order.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/delete/class-pb2b-request-delete-order.php';
+			// Request helpers.
+			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
+			// Classes.
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-logger.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-order-management.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-subscriptions.php';
+			// Includes.
+			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
+		}
+
+		/**
+		 * Adds plugin action links
+		 *
+		 * @param array $links Plugin action link before filtering.
+		 * @return array Filtered links.
+		 */
+		public function plugin_action_links( $links ) {
+			$setting_link = $this->get_setting_link();
+			$plugin_links = array(
+				'<a href="' . $setting_link . '">' . __( 'Settings', 'payer-b2b-for-woocommerce' ) . '</a>',
+				'<a href="http://krokedil.se/">' . __( 'Support', 'payer-b2b-for-woocommerce' ) . '</a>',
+			);
+			return array_merge( $plugin_links, $links );
+		}
+
+		/**
+		 * Get setting link.
+		 *
+		 * @return string Setting link
+		 */
+		public function get_setting_link() {
+			$section_slug = 'payer_b2b_invoice';
+			return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
+		}
+
+		/**
+		 * Loads the needed scripts for Payer_B2B.
+		 */
+		public function load_scripts() {
+			if ( is_checkout() ) {
+				wp_register_script(
+					'payer_wc',
+					PAYER_B2B_URL . '/assets/js/payer_checkout.js',
+					array( 'jquery' ),
+					PAYER_B2B_VERSION,
+					true
+				);
+				$params = array(
+					'b2c_text' => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
+					'b2b_text' => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+				);
+				wp_localize_script(
+					'payer_wc',
+					'payer_wc_params',
+					$params
+				);
+				wp_enqueue_script( 'payer_wc' );
+			}
+		}
+	}
+	Payer_B2B::get_instance();
+
+	/**
+	 * Main instance Payer_B2B_For_WooCommerce.
+	 *
+	 * Returns the main instance of Payer_B2B_For_WooCommerce.
+	 *
+	 * @return Payer_B2B
+	 */
+	function payer_WC() { // phpcs:ignore
+		return Payer_B2B::get_instance();
+	}
+}
