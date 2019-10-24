@@ -57,6 +57,15 @@ $settings = array(
 		'label'   => __( 'Enable Payer order capture on WooCommerce order completion and Payer order cancellation on WooCommerce order cancellation', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	),
+	'enable_all_fields'      => array(
+		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enables the extra checkout fields added by Payer.', 'payer-b2b-for-woocommerce' ),
+		'default'     => 'yes',
+		'description' => __( 'If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used.', 'payer-b2b-for-woocommerce' ),
+		'desc_tip'    => true,
+
+	),
 	'seperate_signatory'     => array(
 		'title'   => __( 'Enable seperate signatory', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
