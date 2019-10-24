@@ -28,10 +28,11 @@ class PB2B_Subscriptions {
 	 * @return void
 	 */
 	public function handle_invoice_recurring( $renewal_total, $renewal_order ) {
-		$subscriptions = wcs_get_subscriptions_for_renewal_order( $renewal_order->get_id() );
-		$pno           = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $renewal_order->get_id() ), '_payer_pno', true );
+		$order_id      = $renewal_order->get_id();
+		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
+		$pno           = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), '_payer_pno', true );
 		$b2b           = $renewal_order->get_billing_company() ? true : false;
-		$signatory     = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $renewal_order->get_id() ), '_payer_signatory', true );
+		$signatory     = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), '_payer_signatory', true );
 		$error         = false;
 		// Run create order and invoice.
 		$args     = array(
@@ -39,7 +40,7 @@ class PB2B_Subscriptions {
 			'pno_value'       => $pno,
 			'signatory_value' => ! empty( $signatory ) ? $signatory : '',
 		);
-		$request  = new PB2B_Request_Create_Order( $renewal_order->get_id(), $args );
+		$request  = new PB2B_Request_Create_Order( $order_id, $args );
 		$response = $request->request();
 		if ( is_wp_error( $response ) ) {
 			$error = $response;
@@ -51,6 +52,8 @@ class PB2B_Subscriptions {
 				$renewal_order->add_order_note( __( 'Renewal order failed with Payer.' ) . ' ' . $error );
 				$subscription->payment_failed();
 			} else {
+				update_post_meta( $order_id, '_payer_order_id', $response['orderId'] );
+				update_post_meta( $order_id, '_payer_reference_id', $response['referenceId'] );
 				$renewal_order->add_order_note( __( 'Renewal order created with Payer.' ) . ' ' . $response['orderId'] );
 				$subscription->payment_complete( $response['orderId'] );
 			}

@@ -76,10 +76,11 @@ class PB2B_Order_Management {
 				// Invoice already created with Payer, bail.
 				return;
 			}
+
 			$request  = new PB2B_Request_Approve_Invoice( $order_id );
 			$response = $request->request();
 			if ( is_wp_error( $response ) ) {
-				$error = reset( $response['errors'] )[0];
+				$error = reset( $response->errors )[0];
 				$order->set_status( 'on-hold', __( 'Invoice approval failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
 				$order->save();
 				return;
@@ -89,7 +90,7 @@ class PB2B_Order_Management {
 			$request  = new PB2B_Request_Create_Invoice( $order_id );
 			$response = $request->request();
 			if ( is_wp_error( $response ) ) {
-				$error = reset( $response['errors'] )[0];
+				$error = reset( $response->errors )[0];
 				$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
 				$order->save();
 				return;
@@ -123,7 +124,7 @@ class PB2B_Order_Management {
 			$response = $request->request();
 
 			if ( is_wp_error( $response ) ) {
-				$error = reset( $response['errors'] )[0];
+				$error = reset( $response->errors )[0];
 				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
 				$order->save();
 				return;
