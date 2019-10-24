@@ -158,7 +158,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 * Loads the needed scripts for Payer_B2B.
 		 */
 		public function load_scripts() {
-			if ( is_checkout() ) {
+			if ( is_checkout() && ! is_order_received_page() ) {
 				wp_register_script(
 					'payer_wc',
 					PAYER_B2B_URL . '/assets/js/payer_checkout.js',
