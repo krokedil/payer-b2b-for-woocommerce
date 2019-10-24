@@ -84,7 +84,11 @@ class PB2B_Request {
 		if ( $this->auth ) {
 			return 'Basic ' . base64_encode( $this->agent_id . ':' . $this->password );
 		} else {
-			return 'Bearer ' . get_post_meta( $this->order_id, '_payer_access_token', true );
+			$token = payer_b2b_maybe_create_token( $this->order_id );
+			if ( is_wp_error( $token ) ) {
+				wp_die( esc_html( $token ) );
+			}
+			return 'Bearer ' . $token;
 		}
 	}
 }

@@ -34,22 +34,15 @@ class PB2B_Subscriptions {
 		$signatory     = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $renewal_order->get_id() ), '_payer_signatory', true );
 		$error         = false;
 		// Run create order and invoice.
-		$request  = new PB2B_Request_Oauth( $renewal_order->get_id() );
+		$args     = array(
+			'b2b'             => $b2b,
+			'pno_value'       => $pno,
+			'signatory_value' => ! empty( $signatory ) ? $signatory : '',
+		);
+		$request  = new PB2B_Request_Create_Order( $renewal_order->get_id(), $args );
 		$response = $request->request();
 		if ( is_wp_error( $response ) ) {
 			$error = $response;
-		} else {
-			update_post_meta( $renewal_order->get_id(), '_payer_access_token', $response['access_token'] );
-			$args     = array(
-				'b2b'             => $b2b,
-				'pno_value'       => $pno,
-				'signatory_value' => ! empty( $signatory ) ? $signatory : '',
-			);
-			$request  = new PB2B_Request_Create_Order( $renewal_order->get_id(), $args );
-			$response = $request->request();
-			if ( is_wp_error( $response ) ) {
-				$error = $response;
-			}
 		}
 
 		foreach ( $subscriptions as $subscription ) {

@@ -147,19 +147,11 @@ class PB2B_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
-		// Get an oauth token.
-		$request  = new PB2B_Request_Oauth( $order_id );
-		$response = $request->request();
-		if ( is_wp_error( $response ) || ! isset( $response['access_token'] ) ) {
-			return false;
-		}
-
-
-		// If we get here its ok. Create an order.
 		// @codingStandardsIgnoreStart
-		update_post_meta( $order_id, '_payer_access_token', $response['access_token'] );
 		update_post_meta( $order_id, '_payer_pno', $_POST['payer_b2b_pno'] );
-		update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory'] );
+		if ( isset( $_POST['payer_b2b_signatory'] ) ) {
+			update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory'] );
+		}
 		$args = array(
 			'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ),
 			'pno_value'       => $_POST['payer_b2b_pno'],
