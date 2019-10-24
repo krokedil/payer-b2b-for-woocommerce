@@ -1,8 +1,14 @@
 const init = function() {
+	// Set contants and variables.
 	const pnoFieldLabel = document.getElementById('payer_b2b_pno_label');
 	const signatoryWrapper = document.getElementById('signatory_wrapper');
 	const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
+	const signatoryField = document.getElementById('payer_b2b_signatory_text_field');
+	const toggleSignatoryField = document.getElementById('payer_b2b_signatory');
+	const targetNode = document.getElementById('order_review');
 	let signatoryStatus = 'hidden';
+
+	// Add event listener for maybeSetB2B.
 	if ( maybeSetB2B ) {
 		maybeSetB2B.addEventListener('change', (maybeSetB2B) => {
 			if ( maybeSetB2B.target.checked === true ) {
@@ -25,8 +31,7 @@ const init = function() {
 		});
 	}
 
-	const signatoryField = document.getElementById('payer_b2b_signatory_text_field');
-	const toggleSignatoryField = document.getElementById('payer_b2b_signatory');
+	// Add event listener for toggleSignatoryField.
 	if ( toggleSignatoryField ) {
 		toggleSignatoryField.addEventListener('change', (toggleSignatoryField) => {
 			if ( toggleSignatoryField.target.checked === true ) {
@@ -40,8 +45,12 @@ const init = function() {
 	}
 }
 
-const targetNode = document.getElementById('order_review');
-
+/**
+ * Callback for MutationObserver.
+ * 
+ * @param {*} mutationsList 
+ * @param {*} observer 
+ */
 const callback = function(mutationsList, observer) {
     for ( var mutation of mutationsList ) {
         if ( mutation.type == 'childList' ) {
@@ -50,9 +59,6 @@ const callback = function(mutationsList, observer) {
         }
     }
 };
-
 const observer = new MutationObserver(callback);
-
 const config = { childList: true };
-
 observer.observe( targetNode, config );
