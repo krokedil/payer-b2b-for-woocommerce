@@ -27,16 +27,14 @@ $settings = array(
 		'description' => __( 'This controls the description which the user sees during checkout.', 'payer-b2b-for-woocommerce' ),
 	),
 	'agent_id'               => array(
-		'title'       => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
-		'type'        => 'text',
-		'description' => __( '', 'payer-b2b-for-woocommerce' ), // phpcs:ignore
-		'default'     => '',
+		'title'   => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'text',
+		'default' => '',
 	),
 	'api_key'                => array(
-		'title'       => __( 'API Key', 'payer-b2b-for-woocommerce' ),
-		'type'        => 'text',
-		'description' => __( '', 'payer-b2b-for-woocommerce' ), // phpcs:ignore
-		'default'     => '',
+		'title'   => __( 'API Key', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'text',
+		'default' => '',
 	),
 	'allowed_customer_types' => array(
 		'title'       => __( 'Allowed Customer Types', 'payer-b2b-for-woocommerce' ),
