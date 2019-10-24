@@ -1,14 +1,12 @@
-const init = function() {
-	// Set contants and variables.
-	const pnoFieldLabel = document.getElementById('payer_b2b_pno_label');
-	const signatoryWrapper = document.getElementById('signatory_wrapper');
-	const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
-	const signatoryField = document.getElementById('payer_b2b_signatory_text_field');
-	const toggleSignatoryField = document.getElementById('payer_b2b_signatory');
-	const targetNode = document.getElementById('order_review');
-	let signatoryStatus = 'hidden';
+// Set contants and variables.
+const targetNode = document.getElementById('order_review');
 
+const init = function() {
+	let signatoryStatus = 'hidden';
 	// Add event listener for maybeSetB2B.
+	const signatoryWrapper = document.getElementById('signatory_wrapper');
+	const pnoFieldLabel = document.getElementById('payer_b2b_pno_label');
+	const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
 	if ( maybeSetB2B ) {
 		maybeSetB2B.addEventListener('change', (maybeSetB2B) => {
 			if ( maybeSetB2B.target.checked === true ) {
@@ -32,6 +30,8 @@ const init = function() {
 	}
 
 	// Add event listener for toggleSignatoryField.
+	const toggleSignatoryField = document.getElementById('payer_b2b_signatory');
+	const signatoryField = document.getElementById('payer_b2b_signatory_text_field');
 	if ( toggleSignatoryField ) {
 		toggleSignatoryField.addEventListener('change', (toggleSignatoryField) => {
 			if ( toggleSignatoryField.target.checked === true ) {
