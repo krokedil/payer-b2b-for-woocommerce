@@ -185,7 +185,7 @@ class PB2B_Order_Lines {
 	 * @return array
 	 */
 	public static function get_shipping( $order ) {
-		if ( $order->get_shipping_total() > 0 ) {
+		if ( $order->get_shipping_total() <= 0 ) {
 			return array(
 				'itemType'          => 'FREEFORM',
 				'position'          => self::$i,
@@ -203,15 +203,15 @@ class PB2B_Order_Lines {
 			return array(
 				'itemType'          => 'FREEFORM',
 				'position'          => self::$i,
-				'articleNumber'     => $order->get_items( 'shipping' )->get_id(),
+				'articleNumber'     => $order->get_shipping_method(),
 				'description'       => $order->get_shipping_method(),
 				'quantity'          => 1,
 				'unit'              => 'pcs',
-				'unitPrice'         => $order->get_shipping_total(),
-				'unitVatAmount'     => $order->get_shipping_tax(),
+				'unitPrice'         => intval( round( $order->get_shipping_total() * 100 ) ),
+				'unitVatAmount'     => intval( round( $order->get_shipping_tax() * 100 ) ),
 				'vatPercentage'     => ( '0' !== $order->get_shipping_tax() ) ? self::get_product_tax_rate( $order, current( $order->get_items( 'shipping' ) ) ) : 0,
-				'subtotalPrice'     => $order->get_shipping_total(),
-				'subtotalVatAmount' => $order->get_shipping_tax(),
+				'subtotalPrice'     => intval( round( $order->get_shipping_total() * 100 ) ),
+				'subtotalVatAmount' => intval( round( $order->get_shipping_tax() * 100 ) ),
 			);
 		}
 	}
