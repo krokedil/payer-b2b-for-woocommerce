@@ -30,7 +30,7 @@ class PB2B_Subscriptions {
 	public function handle_invoice_recurring( $renewal_total, $renewal_order ) {
 		$order_id      = $renewal_order->get_id();
 		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
-		$pno           = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), '_payer_pno', true );
+		$pno           = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), PAYER_PNO_DATA_NAME, true );
 		$b2b           = $renewal_order->get_billing_company() ? true : false;
 		$signatory     = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), '_payer_signatory', true );
 		$error         = false;

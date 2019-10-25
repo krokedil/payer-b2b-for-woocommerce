@@ -31,6 +31,9 @@ define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
 define( 'PAYER_B2B_TEST_ENV', 'https://stage-b2b.payer.se' );
+define( 'PAYER_PNO_FIELD_NAME', apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
+define( 'PAYER_PNO_DATA_NAME', '_' . apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
+
 
 if ( ! class_exists( 'Payer_B2B' ) ) {
 

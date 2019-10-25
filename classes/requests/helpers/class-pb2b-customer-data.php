@@ -34,6 +34,7 @@ class PB2B_Customer_Data {
 	/**
 	 * Returns the customer shipping data.
 	 *
+	 * @param int $order_id WooCommerce order id.
 	 * @return array
 	 */
 	public static function get_customer_shipping_data( $order_id ) {

@@ -64,10 +64,10 @@ $settings = array(
 		'desc_tip'    => true,
 
 	),
-	'seperate_signatory'     => array(
-		'title'   => __( 'Enable seperate signatory', 'payer-b2b-for-woocommerce' ),
+	'separate_signatory'     => array(
+		'title'   => __( 'Enable separate signatory', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
-		'label'   => __( 'Enable the customer to enter a seperate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
+		'label'   => __( 'Enable the customer to enter a separate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	),
 	'testmode'               => array(
