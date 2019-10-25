@@ -1,0 +1,201 @@
+# Copyright (C) 2019 payer-b2b-for-woocommerce
+# This file is distributed under the same license as the payer-b2b-for-woocommerce package.
+msgid ""
+msgstr ""
+"Project-Id-Version: payer-b2b-for-woocommerce\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Krokedil <info@krokedil.se>\n"
+"Last-Translator: Krokedil <info@krokedil.se>\n"
+"Report-Msgid-Bugs-To: http://krokedil.se\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../classes/class-pb2b-order-management.php:46
+msgid "An invoice has already been created for this order, can not cancel at this point use refund instead."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:56
+msgid "Failed to cancel the order with Payer. Please try again."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:61
+msgid "Order canceled with Payer"
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:84
+msgid "Invoice approval failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:94
+msgid "Invoice creation failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:100
+msgid "Invoice created with Payer. Invoice number:"
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:118
+msgid "Failed to update the order with Payer. An invoice has already been approved for this order"
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:128
+msgid "Failed to update the order with Payer. Please try again."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:133
+msgid "Order updated with Payer"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:22
+msgid "Payer B2B Invoice"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:97, ../payer-b2b-for-woocommerce.php:174
+msgid "Organisation Number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:97, ../payer-b2b-for-woocommerce.php:173
+msgid "Personal Number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:102
+msgid "Bussiness"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:104
+msgid "checked"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:122
+msgid "Separate signatory"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:134
+msgid "Signatory name"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:180
+msgid "Payment made with Payer"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-invoice-gateway.php:183
+msgid "Free subscription order. No order created with Payer"
+msgstr ""
+
+#: ../classes/requests/helpers/class-pb2b-order-lines.php:193
+msgid "Free Shipping"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:10
+msgid "Enable/Disable"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:16
+msgid "Title"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:18
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:23
+msgid "Description"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:25
+msgid "Pay with Payson via invoice, card, direct bank payments, part payment and sms."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:27
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:30
+msgid "Agent ID"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:35
+msgid "API Key"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:40
+msgid "Allowed Customer Types"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:43
+msgid "B2C only"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:44
+msgid "B2B only"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:45
+msgid "B2C & B2B (defaults to B2C)"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:46
+msgid "B2B & B2C (defaults to B2B)"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:48
+msgid "Select what customer type that you want to sell to"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:53
+msgid "Enable Order Management"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:55
+msgid "Enable Payer order capture on WooCommerce order completion and Payer order cancellation on WooCommerce order cancellation"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:59
+msgid "Enable extra checkout fields"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:61
+msgid "Enables the extra checkout fields added by Payer."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:63
+msgid "If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:68
+msgid "Enable separate signatory"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:70
+msgid "Enable the customer to enter a separate signatory for B2B purchases."
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:74
+msgid "Testmode"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:76
+msgid "Enable Payer testmode"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:80
+msgid "Debug"
+msgstr ""
+
+#: ../includes/pb2b-form-fields.php:82
+msgid "Enable debug logging for the plugin"
+msgstr ""
+
+#: ../payer-b2b-for-woocommerce.php:144
+msgid "Settings"
+msgstr ""
+
+#: ../payer-b2b-for-woocommerce.php:145
+msgid "Support"
+msgstr ""
