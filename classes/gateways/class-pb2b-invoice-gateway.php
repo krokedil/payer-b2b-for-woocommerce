@@ -155,9 +155,10 @@ class PB2B_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$create_payer_order = false;
 		}
 		// Check if we want to create an order.
+		// @codingStandardsIgnoreStart
+		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
 		if ( $create_payer_order ) {
-			// @codingStandardsIgnoreStart
-			update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
+	
 			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
 				update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory'] );
 			}
