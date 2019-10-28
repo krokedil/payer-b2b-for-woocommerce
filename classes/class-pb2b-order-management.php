@@ -41,7 +41,7 @@ class PB2B_Order_Management {
 		$order           = wc_get_order( $order_id );
 		$payer_reference = get_post_meta( $order_id, '_payer_reference_id', true );
 		// If this order wasn't created using Payer payment method, bail.
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && $payer_reference ) {
+		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && $payer_reference && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				$order->set_status( 'on-hold', __( 'An invoice has already been created for this order, can not cancel at this point use refund instead.', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
@@ -71,7 +71,7 @@ class PB2B_Order_Management {
 	public function activate_reservation( $order_id ) {
 		$order = wc_get_order( $order_id );
 		// If this order wasn't created using Payer payment method, bail.
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled ) {
+		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
 				return;
@@ -118,7 +118,7 @@ class PB2B_Order_Management {
 			return;
 		}
 		$order = wc_get_order( $order_id );
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled ) {
+		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_approved' ) ) {
 				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. An invoice has already been approved for this order', 'payer-b2b-for-woocommerce' ) );
 				$order->save();

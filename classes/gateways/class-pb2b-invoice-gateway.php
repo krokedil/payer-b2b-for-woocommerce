@@ -99,7 +99,7 @@ class PB2B_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we need to have the switch checkbox for the PNO field.
 			if ( $b2b_switch ) {
 			?>
-				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Bussiness', 'payer-b2b-for-woocommerce' ); ?>?</label>
+				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
 				<span style="padding:5px;" class="woocommerce-input-wrapper">
 					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
 				</span>
@@ -151,13 +151,14 @@ class PB2B_Invoice_Gateway extends PB2B_Factory_Gateway {
 	public function process_payment( $order_id ) {
 		$order              = wc_get_order( $order_id );
 		$create_payer_order = true;
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 <= $order->get_total() ) {
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
 		// Check if we want to create an order.
+		// @codingStandardsIgnoreStart
+		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
 		if ( $create_payer_order ) {
-			// @codingStandardsIgnoreStart
-			update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
+	
 			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
 				update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory'] );
 			}
