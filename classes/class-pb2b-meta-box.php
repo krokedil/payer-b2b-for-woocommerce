@@ -61,6 +61,7 @@ class PB2B_Meta_Box {
 		<?php if ( $invoice_signatory ) { ?>
 		<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>
 		<?php } ?>
+		<br>
 		<button type="button" id="pb2b-show-invoice" class="button button-primary"><?php esc_html_e( 'Show Invoice', 'payer-b2b-for-woocommerce' ); ?></button>
 		<?php
 	}
