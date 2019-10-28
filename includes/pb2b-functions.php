@@ -25,3 +25,16 @@ function payer_b2b_maybe_create_token( $order_id ) {
 	}
 	return $token;
 }
+
+add_action( 'woocommerce_admin_order_data_after_billing_address', 'pb2b_add_pno_field_to_order', 10, 1 );
+/**
+ * Adds the PNO/Org nr field to the order view in WooCommerce Admin
+ *
+ * @param WC_Order $order The WooCommerce order.
+ * @return void
+ */
+function pb2b_add_pno_field_to_order( $order ) {
+	if ( get_post_meta( $order->get_id(), PAYER_PNO_DATA_NAME, true ) ) {
+		echo '<p><strong>' . esc_html( 'PNO/Org number:', 'payer-b2b-for-woocommerce' ) . '</strong> <br/>' . esc_html( get_post_meta( $order->get_id(), PAYER_PNO_DATA_NAME, true ) ) . '</p>';
+	}
+}
