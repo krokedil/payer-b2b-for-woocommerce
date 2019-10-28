@@ -96,9 +96,14 @@ class PB2B_Order_Management {
 				return;
 			}
 			$invoice_number = $response['invoice']['invoiceNumber'];
+			$invoice_url    = $response['invoice']['publicInvoiceUrl'];
+			$invoice_ocr    = $response['invoice']['referenceNumber'];
 			update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
-			$order_note_text = __( 'Invoice created with Payer. Invoice number:', 'payer-b2b-for-woocommerce' ) . ' ' . $invoice_number;
-			$order->add_order_note( $order_note_text );
+			update_post_meta( $order_id, '_payer_public_url', $invoice_url );
+			update_post_meta( $order_id, '_payer_ocr', $invoice_ocr );
+			$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ' . __( 'OCR Number:', 'payer-b2b-for-woocommerce' ) . ' <a href="%s" target="_blank">%s</a>';
+			$formated_text = sprintf( $text, $invoice_number, $invoice_url, $invoice_ocr );
+			$order->add_order_note( $formated_text );
 		}
 	}
 
