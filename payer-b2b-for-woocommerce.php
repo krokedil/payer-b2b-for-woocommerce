@@ -100,6 +100,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 
 			// Load scripts.
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts' ) );
 
 			do_action( 'payer_initiated' );
 		}
@@ -128,6 +129,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-logger.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-order-management.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-subscriptions.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
 		}
@@ -180,6 +182,16 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 				);
 				wp_enqueue_script( 'payer_wc' );
 			}
+		}
+
+		/**
+		 * Loads admin scripts.
+		 */
+		public function load_admin_scripts() {
+			wp_register_style( 'payer-b2b-admin', PAYER_B2B_URL . '/assets/css/payer_admin_style.css', false, PAYER_B2B_VERSION );
+			wp_enqueue_style( 'payer-b2b-admin' );
+			wp_register_script( 'payer-b2b-admin', PAYER_B2B_URL . '/assets/js/payer_admin.js', true, PAYER_B2B_VERSION );
+			wp_enqueue_script( 'payer-b2b-admin' );
 		}
 	}
 	Payer_B2B::get_instance();

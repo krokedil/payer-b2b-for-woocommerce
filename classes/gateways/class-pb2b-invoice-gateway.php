@@ -160,7 +160,7 @@ class PB2B_Invoice_Gateway extends PB2B_Factory_Gateway {
 		if ( $create_payer_order ) {
 	
 			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
-				update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory'] );
+				update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory_text'] );
 			}
 			$args = array(
 				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ),

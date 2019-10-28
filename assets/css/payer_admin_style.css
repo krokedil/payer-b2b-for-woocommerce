@@ -1,0 +1,31 @@
+.pb2b-modal-wrapper {
+	z-index: 999;
+	position:fixed;
+	overflow:none;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color: rgba( 0, 0, 0, 0.5 );
+}
+
+.pb2b-modal-content {
+	margin:15% auto;
+	width:25%;
+}
+
+.pb2b-hide-iframe {
+	display:none;
+}
+
+.pb2b-show-iframe {
+	display:block;
+}
+
+.pb2b-close-modal {
+	color:red;
+	cursor: pointer;
+	clear:both;
+	display:block;
+	width:10px;
+}
