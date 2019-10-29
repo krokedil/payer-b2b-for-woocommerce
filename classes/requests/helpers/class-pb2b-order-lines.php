@@ -207,10 +207,10 @@ class PB2B_Order_Lines {
 				'description'       => $order->get_shipping_method(),
 				'quantity'          => 1,
 				'unit'              => 'pcs',
-				'unitPrice'         => intval( round( $order->get_shipping_total() * 100 ) ),
+				'unitPrice'         => intval( round( ( $order->get_shipping_total() + $order->get_shipping_tax() ) * 100 ) ),
 				'unitVatAmount'     => intval( round( $order->get_shipping_tax() * 100 ) ),
 				'vatPercentage'     => ( '0' !== $order->get_shipping_tax() ) ? self::get_product_tax_rate( $order, current( $order->get_items( 'shipping' ) ) ) : 0,
-				'subtotalPrice'     => intval( round( $order->get_shipping_total() * 100 ) ),
+				'subtotalPrice'     => intval( round( ( $order->get_shipping_total() + $order->get_shipping_tax() ) * 100 ) ),
 				'subtotalVatAmount' => intval( round( $order->get_shipping_tax() * 100 ) ),
 			);
 		}
