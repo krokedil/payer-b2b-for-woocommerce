@@ -33,12 +33,14 @@ class PB2B_Order_Lines {
 			self::$i++;
 			$formated_order_items[] = self::get_order_item( $order, $order_item );
 		}
+
 		// Get order fees.
 		$order_fees = $order->get_fees();
 		foreach ( $order_fees as $fee ) {
 			self::$i++;
 			$formated_order_items[] = self::get_fee( $fee );
 		}
+
 		// Get order shipping.
 		if ( $order->get_shipping_method() ) {
 			self::$i++;

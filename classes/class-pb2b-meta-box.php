@@ -29,7 +29,7 @@ class PB2B_Meta_Box {
 		if ( 'shop_order' === $post_type ) {
 			$order_id = get_the_ID();
 			$order    = wc_get_order( $order_id );
-			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_invoice' ), true ) && get_post_meta( $order_id, '_payer_invoice_number' ) ) {
+			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_v1_invoice', 'payer_b2b_v2_invoice' ), true ) && get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				add_meta_box( 'kom_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_content' ), 'shop_order', 'side', 'core' );
 			}
 		}
@@ -57,7 +57,9 @@ class PB2B_Meta_Box {
 		</div>
 		<b><?php esc_html_e( 'PNO/Org number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_pno ); ?><br>
 		<b><?php esc_html_e( 'Invoice Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_number ); ?><br>
+		<?php if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) { ?>
 		<b><?php esc_html_e( 'OCR Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_ocr ); ?><br>
+		<?php } ?>
 		<?php if ( $invoice_signatory ) { ?>
 		<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>
 		<?php } ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Create invoice request class
+ * Create v2 invoice request class
  *
  * @package Payer_B2B/Classes/Put/Requests
  */
@@ -10,10 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Create invoice request class
+ * Create v2 invoice request class
  */
-class PB2B_Request_Create_Invoice extends PB2B_Request {
-
+class PB2B_Request_Create_V2_Invoice extends PB2B_Request {
 	/**
 	 * Makes the request.
 	 *
@@ -30,7 +29,7 @@ class PB2B_Request_Create_Invoice extends PB2B_Request {
 		$reference         = ! is_wp_error( $formated_response ) && isset( $formated_response['referenceId'] ) ? $formated_response['referenceId'] : null;
 
 		// Log the request.
-		$log = PB2B_Logger::format_log( $reference, 'POST', 'Payer create invoice', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
+		$log = PB2B_Logger::format_log( $reference, 'POST', 'Payer create v2 invoice', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
 		PB2B_Logger::log( $log );
 
 		return $formated_response;
@@ -46,11 +45,13 @@ class PB2B_Request_Create_Invoice extends PB2B_Request {
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
-			'body'    => wp_json_encode( array(
-				'dueDays'      => 30,
-				'deliveryType' => 'NONE',
-				'type'         => 'PREPAYMENT',
-			)),
+			'body'    => wp_json_encode(
+				array(
+					'dueDays'      => 30,
+					'deliveryType' => 'NONE',
+					'type'         => 'PREPAYMENT',
+				)
+			),
 		);
 	}
 }

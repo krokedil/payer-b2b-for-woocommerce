@@ -17,7 +17,8 @@ class PB2B_Subscriptions {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
+		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_v1_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
+		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_v2_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
 	}
 
 	/**

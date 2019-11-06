@@ -71,7 +71,7 @@ class PB2B_Order_Management {
 	public function activate_reservation( $order_id ) {
 		$order = wc_get_order( $order_id );
 		// If this order wasn't created using Payer payment method, bail.
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
+		if ( in_array( $order->get_payment_method(), array( 'payer_b2b_v1_invoice', 'payer_b2b_v2_invoice' ), true ) && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
 				return;
@@ -87,23 +87,43 @@ class PB2B_Order_Management {
 			}
 			update_post_meta( $order_id, '_payer_invoice_approved', 'yes' );
 
-			$request  = new PB2B_Request_Create_Invoice( $order_id );
-			$response = $request->request();
-			if ( is_wp_error( $response ) ) {
-				$error = reset( $response->errors )[0];
-				$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
-				$order->save();
-				return;
+			// V1 Invoice.
+			if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() ) {
+				$request  = new PB2B_Request_Create_V1_Invoice( $order_id );
+				$response = $request->request();
+				if ( is_wp_error( $response ) ) {
+					$error = reset( $response->errors )[0];
+					$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+					$order->save();
+					return;
+				}
+				$invoice_number = $response['invoiceNumber'];
+				update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
+				$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ';
+				$formated_text = sprintf( $text, $invoice_number );
+				$order->add_order_note( $formated_text );
 			}
-			$invoice_number = $response['invoice']['invoiceNumber'];
-			$invoice_url    = $response['invoice']['publicInvoiceUrl'];
-			$invoice_ocr    = $response['invoice']['referenceNumber'];
-			update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
-			update_post_meta( $order_id, '_payer_public_url', $invoice_url );
-			update_post_meta( $order_id, '_payer_ocr', $invoice_ocr );
-			$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ' . __( 'OCR Number:', 'payer-b2b-for-woocommerce' ) . ' <a href="%s" target="_blank">%s</a>';
-			$formated_text = sprintf( $text, $invoice_number, $invoice_url, $invoice_ocr );
-			$order->add_order_note( $formated_text );
+
+			// V2 Invoice.
+			if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) {
+				$request  = new PB2B_Request_Create_V2_Invoice( $order_id );
+				$response = $request->request();
+				if ( is_wp_error( $response ) ) {
+					$error = reset( $response->errors )[0];
+					$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+					$order->save();
+					return;
+				}
+				$invoice_number = $response['invoice']['invoiceNumber'];
+				$invoice_url    = $response['invoice']['publicInvoiceUrl'];
+				$invoice_ocr    = $response['invoice']['referenceNumber'];
+				update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
+				update_post_meta( $order_id, '_payer_public_url', $invoice_url );
+				update_post_meta( $order_id, '_payer_ocr', $invoice_ocr );
+				$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ' . __( 'OCR Number:', 'payer-b2b-for-woocommerce' ) . ' <a href="%s" target="_blank">%s</a>';
+				$formated_text = sprintf( $text, $invoice_number, $invoice_url, $invoice_ocr );
+				$order->add_order_note( $formated_text );
+			}
 		}
 	}
 

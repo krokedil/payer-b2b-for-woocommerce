@@ -34,7 +34,6 @@ define( 'PAYER_B2B_TEST_ENV', 'https://stage-b2b.payer.se' );
 define( 'PAYER_PNO_FIELD_NAME', apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
 define( 'PAYER_PNO_DATA_NAME', '_' . apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
 
-
 if ( ! class_exists( 'Payer_B2B' ) ) {
 
 	/**
@@ -77,6 +76,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		private function __clone() {
 			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
 		}
+
 		/**
 		 * Private unserialize method to prevent unserializing of the *Singleton*
 		 * instance.
@@ -113,18 +113,22 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		public function include_files() {
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
-			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v1-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v2-invoice-gateway.php';
 			// Requests.
 			include_once PAYER_B2B_PATH . '/classes/requests/class-pb2b-request.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-oauth.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-order.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v1-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v2-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-v1-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/delete/class-pb2b-request-delete-order.php';
 			// Request helpers.
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-v1-credit-data.php';
 			// Classes.
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-logger.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-order-management.php';

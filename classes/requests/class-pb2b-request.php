@@ -43,7 +43,7 @@ class PB2B_Request {
 	 * @return void
 	 */
 	public function set_environment_variables() {
-		$this->payer_settings = get_option( 'woocommerce_payer_b2b_invoice_settings' );
+		$this->payer_settings = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
 		$this->agent_id       = $this->payer_settings['agent_id'];
 		$this->password       = $this->payer_settings['api_key'];
 		$this->testmode       = $this->payer_settings['testmode'];
