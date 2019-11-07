@@ -109,7 +109,7 @@ msgid "Description"
 msgstr ""
 
 #: ../includes/pb2b-form-fields.php:25
-msgid "Pay with Payson via invoice, card, direct bank payments, part payment and sms."
+msgid "Pay with Payer via invoice."
 msgstr ""
 
 #: ../includes/pb2b-form-fields.php:27

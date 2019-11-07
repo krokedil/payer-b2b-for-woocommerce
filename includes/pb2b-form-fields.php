@@ -22,7 +22,7 @@ $settings = array(
 	'description'            => array(
 		'title'       => __( 'Description', 'payer-b2b-for-woocommerce' ),
 		'type'        => 'textarea',
-		'default'     => __( 'Pay with Payson via invoice, card, direct bank payments, part payment and sms.', 'payer-b2b-for-woocommerce' ),
+		'default'     => __( 'Pay with Payer via invoice.', 'payer-b2b-for-woocommerce' ),
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'payer-b2b-for-woocommerce' ),
 	),

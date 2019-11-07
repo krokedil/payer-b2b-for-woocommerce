@@ -26,8 +26,8 @@ class PB2B_Logger {
 	 * @param string $data The data string.
 	 */
 	public static function log( $data ) {
-		$payson_settings = get_option( 'woocommerce_payer_b2b_invoice_settings' );
-		if ( 'yes' === $payson_settings['debug'] ) {
+		$payer_settings = get_option( 'woocommerce_payer_b2b_invoice_settings' );
+		if ( 'yes' === $payer_settings['debug'] ) {
 			$message = self::format_data( $data );
 			if ( empty( self::$log ) ) {
 				self::$log = new WC_Logger();
