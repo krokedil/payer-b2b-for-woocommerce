@@ -194,7 +194,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		public function load_admin_scripts() {
 			wp_register_style( 'payer-b2b-admin', PAYER_B2B_URL . '/assets/css/payer_admin_style.css', false, PAYER_B2B_VERSION );
 			wp_enqueue_style( 'payer-b2b-admin' );
-			wp_register_script( 'payer-b2b-admin', PAYER_B2B_URL . '/assets/js/payer_admin.js', true, PAYER_B2B_VERSION );
+			wp_register_script( 'payer-b2b-admin', PAYER_B2B_URL . '/assets/js/payer_admin.js', true, PAYER_B2B_VERSION, true );
 			wp_enqueue_script( 'payer-b2b-admin' );
 		}
 	}

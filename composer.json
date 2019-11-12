@@ -1,5 +1,14 @@
 {
     "require-dev": {
-        "stevegrunwell/wp-enforcer": "^0.5.0"
-    }
+        "stevegrunwell/wp-enforcer": "^0.5.0",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "scripts": {
+		"post-install-cmd": [
+			"wp-enforcer"
+		],
+		"post-update-cmd": [
+			"wp-enforcer"
+		]
+	}
 }
