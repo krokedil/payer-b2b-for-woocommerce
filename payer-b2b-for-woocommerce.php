@@ -9,7 +9,7 @@
  * Developer:       Krokedil
  * Developer URI:   http://krokedil.com/
  * Text Domain:     payer-b2b-for-woocommerce
- * Domain Path:     /languagess
+ * Domain Path:     /languages
  *
  * WC requires at least: 3.0
  * WC tested up to: 3.7.0
