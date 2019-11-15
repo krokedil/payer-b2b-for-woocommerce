@@ -27,7 +27,7 @@ class PB2B_Order_Management {
 		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_reservation' ) );
 		add_action( 'woocommerce_order_status_completed', array( $this, 'activate_reservation' ) );
 		add_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
-		$settings                       = get_option( 'woocommerce_payer_b2b_invoice_settings' );
+		$settings                       = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
 		$this->order_management_enabled = 'yes' === $settings['order_management'] ? true : false;
 	}
 
@@ -76,17 +76,17 @@ class PB2B_Order_Management {
 				// Invoice already created with Payer, bail.
 				return;
 			}
-
-			$request  = new PB2B_Request_Approve_Invoice( $order_id );
-			$response = $request->request();
-			if ( is_wp_error( $response ) ) {
-				$error = reset( $response->errors )[0];
-				$order->set_status( 'on-hold', __( 'Invoice approval failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
-				$order->save();
-				return;
+			if ( 'yes' !== get_post_meta( $order_id, '_payer_invoice_approved' ) ) {
+				$request  = new PB2B_Request_Approve_Invoice( $order_id );
+				$response = $request->request();
+				if ( is_wp_error( $response ) ) {
+					$error = reset( $response->errors )[0];
+					$order->set_status( 'on-hold', __( 'Invoice approval failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+					$order->save();
+					return;
+				}
+				update_post_meta( $order_id, '_payer_invoice_approved', 'yes' );
 			}
-			update_post_meta( $order_id, '_payer_invoice_approved', 'yes' );
-
 			// V1 Invoice.
 			if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() ) {
 				$request  = new PB2B_Request_Create_V1_Invoice( $order_id );
