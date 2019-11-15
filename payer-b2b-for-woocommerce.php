@@ -31,8 +31,6 @@ define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
 define( 'PAYER_B2B_TEST_ENV', 'https://stage-b2b.payer.se' );
-define( 'PAYER_PNO_FIELD_NAME', apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
-define( 'PAYER_PNO_DATA_NAME', '_' . apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
 
 if ( ! class_exists( 'Payer_B2B' ) ) {
 
@@ -53,6 +51,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		public function __construct() {
 			// Initiate the plugin.
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
+			add_action( 'after_setup_theme', array( $this, 'set_defines' ) );
 		}
 
 		/**
@@ -103,6 +102,16 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts' ) );
 
 			do_action( 'payer_initiated' );
+		}
+
+		public function set_defines() {
+			// Set definitions.
+			if ( ! defined( 'PAYER_PNO_FIELD_NAME' ) ) {
+				define( 'PAYER_PNO_FIELD_NAME', apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
+			}
+			if ( ! defined( 'PAYER_PNO_DATA_NAME' ) ) {
+				define( 'PAYER_PNO_DATA_NAME', '_' . apply_filters( 'payer_pno_field_name', 'payer_b2b_pno' ) );
+			}
 		}
 
 		/**
