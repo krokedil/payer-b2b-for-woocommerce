@@ -70,6 +70,25 @@ $settings = array(
 		'label'   => __( 'Enable the customer to enter a separate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	),
+	'default_invoice_type'   => array(
+		'title'       => __( 'Default invoice type', 'payer-b2b-for-woocommerce' ),
+		'type'        => 'select',
+		'options'     => array(
+			'EMAIL'    => 'Email',
+			'PRINT'    => 'Mail',
+			'PDF'      => 'PDF',
+			'EINVOICE' => 'E-Invoice',
+		),
+		'description' => __( 'Select what invoice type you want to use', 'payer-b2b-for-woocommerce' ),
+		'default'     => 'EMAIL',
+		'desc_tip'    => false,
+	),
+	'customer_invoice_type'  => array(
+		'title'   => __( 'Customer selects invoice type', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'checkbox',
+		'label'   => __( 'This allows the customer to select what invoice type they want.', 'payer-b2b-for-woocommerce' ),
+		'default' => 'no',
+	),
 	'testmode'               => array(
 		'title'   => __( 'Testmode', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',

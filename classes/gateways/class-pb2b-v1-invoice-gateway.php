@@ -30,13 +30,15 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->enabled            = $this->get_option( 'enabled' );
-		$this->title              = $this->get_option( 'title' );
-		$this->description        = $this->get_option( 'description' );
-		$this->debug              = $this->get_option( 'debug' );
-		$this->customer_type      = $this->get_option( 'allowed_customer_types' );
-		$this->separate_signatory = $this->get_option( 'separate_signatory' );
-		$this->enable_all_fields  = $this->get_option( 'enable_all_fields' );
+		$this->enabled               = $this->get_option( 'enabled' );
+		$this->title                 = $this->get_option( 'title' );
+		$this->description           = $this->get_option( 'description' );
+		$this->debug                 = $this->get_option( 'debug' );
+		$this->customer_type         = $this->get_option( 'allowed_customer_types' );
+		$this->separate_signatory    = $this->get_option( 'separate_signatory' );
+		$this->enable_all_fields     = $this->get_option( 'enable_all_fields' );
+		$this->default_invoice_type  = $this->get_option( 'default_invoice_type' );
+		$this->customer_invoice_type = $this->get_option( 'customer_invoice_type' );
 		// Supports.
 		$this->supports = array(
 			'products',
@@ -76,7 +78,7 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 *
 	 * @param string $order_id The WooCommerce order ID.
 	 * @param float  $amount The amount to be refunded.
-	 * @param string $reason The reasson given for the refund.
+	 * @param string $reason The reason given for the refund.
 	 * @return bool
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
@@ -100,10 +102,11 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 	public function payment_fields() {
 		if ( 'yes' === $this->enable_all_fields ) {
 			// Set the needed variables.
-			$b2b_enabled = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
-			$b2b_switch  = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
-			$b2b_default = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
-			$pno_text    = $b2b_default ? __( 'Organisation Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
+			$b2b_enabled             = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
+			$b2b_switch              = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
+			$b2b_default             = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
+			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? $this->customer_invoice_type === 'yes' : false;
+			$pno_text                = $b2b_default ? __( 'Organization Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
 
 			// Check if we need to have the switch checkbox for the PNO field.
 			if ( $b2b_switch ) {
@@ -123,6 +126,22 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 			</p>
 			<br>
 			<?php
+			if ( $customer_invoice_switch ) {
+			?>
+				<p class="form-row validate-required form-row-wide" id="payer_b2b_invoice_type_field">
+					<label id="payer_b2b_invoice_type_label" for="payer_b2b_invoice_type"><?php esc_html_e( 'Invoice type', 'payer-b2b-for-woocommerce' ); ?></label>
+					<span class="woocommerce-input-wrapper">
+						<select name="payer_b2b_invoice_type" id="payer_b2b_invoice_type">
+							<option value="EMAIL" <?php 'EMAIL' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Email</option>
+							<option value="PRINT" <?php 'PRINT' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Mail</option>
+							<option value="PDF" <?php 'PDF' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>PDF</option>
+							<option value="EINVOICE" <?php 'EINVOICE' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>E-Invoice</option>
+						</select>
+					</span>
+				</p>
+				<br>
+			<?php
+			}
 
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
@@ -168,6 +187,10 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 		if ( ! isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) || empty( $_POST[ PAYER_PNO_FIELD_NAME ] ) ) {
 			wc_add_notice( __( 'Please enter a valid Personal number or Organization number', 'payer-b2b-for-woocommerce' ) );
 			return;
+		}
+		// Add invoice type to the order if it exists.
+		if ( isset( $_POST[ 'payer_b2b_invoice_type' ] ) || ! empty( $_POST[ 'payer_b2b_invoice_type' ] ) ) {
+			update_post_meta( $order_id, 'pb2b_invoice_type', $_POST[ 'payer_b2b_invoice_type' ] );
 		}
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
 		if ( $create_payer_order ) {

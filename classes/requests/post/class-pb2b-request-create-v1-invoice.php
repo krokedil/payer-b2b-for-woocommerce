@@ -42,13 +42,18 @@ class PB2B_Request_Create_V1_Invoice extends PB2B_Request {
 	 * @return array
 	 */
 	public function get_request_args( $order_id ) {
+		$email_type = isset( $this->payer_settings['default_invoice_type'] ) ? $this->payer_settings['default_invoice_type'] : 'EMAIL';
+		if ( get_post_meta( $order_id, 'pb2b_invoice_type' ) ) {
+			$email_type = get_post_meta( $order_id, 'pb2b_invoice_type', true );
+		}
+
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
 			'body'    => wp_json_encode(
 				array(
 					'dueDays'      => 30,
-					'deliveryType' => 'EMAIL',
+					'deliveryType' => $email_type,
 				)
 			),
 		);
