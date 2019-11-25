@@ -165,6 +165,10 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 		}
 		// Check if we want to create an order.
 		// @codingStandardsIgnoreStart
+		if ( ! isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) || empty( $_POST[ PAYER_PNO_FIELD_NAME ] ) ) {
+			wc_add_notice( __( 'Please enter a valid Personal number or Organization number', 'payer-b2b-for-woocommerce' ) );
+			return;
+		}
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
 		if ( $create_payer_order ) {
 	
