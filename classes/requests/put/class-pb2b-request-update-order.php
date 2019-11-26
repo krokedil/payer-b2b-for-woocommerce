@@ -21,7 +21,7 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 	public function request() {
 		$payer_order_id = get_post_meta( $this->order_id, '_payer_order_id', true );
 		$request_url    = $this->base_url . '/api/v2/orders/' . $payer_order_id;
-		$request_args   = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ) );
+		$request_args   = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response       = wp_remote_request( $request_url, $request_args );
 		$code           = wp_remote_retrieve_response_code( $response );
 

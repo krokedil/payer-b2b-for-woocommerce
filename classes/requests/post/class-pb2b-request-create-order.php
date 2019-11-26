@@ -32,7 +32,7 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 	 */
 	public function request() {
 		$request_url  = $this->base_url . '/api/v2/orders/';
-		$request_args = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ) );
+		$request_args = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response     = wp_remote_request( $request_url, $request_args );
 		$code         = wp_remote_retrieve_response_code( $response );
 

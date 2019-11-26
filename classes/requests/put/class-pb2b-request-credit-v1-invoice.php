@@ -23,7 +23,7 @@ class PB2B_Request_Credit_V1_Invoice extends PB2B_Request {
 	public function request( $amount, $reason ) {
 		$payer_order_id = get_post_meta( $this->order_id, '_payer_order_id', true );
 		$request_url    = $this->base_url . '/api/v1/orders/' . $payer_order_id . '/credit';
-		$request_args   = apply_filters( 'payer_credit_v1_invoice_args', $this->get_request_args( $this->order_id, $amount, $reason ) );
+		$request_args   = apply_filters( 'payer_credit_v1_invoice_args', $this->get_request_args( $this->order_id, $amount, $reason ), $this->order_id );
 		$response       = wp_remote_request( $request_url, $request_args );
 		$code           = wp_remote_retrieve_response_code( $response );
 
