@@ -25,6 +25,7 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 
 		$this->args = $args;
 	}
+
 	/**
 	 * Makes the request.
 	 *
@@ -85,7 +86,6 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 				'address'      => PB2B_Customer_Data::get_customer_shipping_data( $order_id ),
 			),
 			'items'            => PB2B_Order_Lines::get_order_items( $order_id ),
-			'yourReference'    => $this->args['signatory_value'],
 		);
 	}
 }

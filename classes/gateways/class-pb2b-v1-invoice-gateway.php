@@ -213,6 +213,7 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			update_post_meta( $order_id, '_payer_order_id', $response['orderId'] );
 			update_post_meta( $order_id, '_payer_reference_id', $response['referenceId'] );
+			update_post_meta( $order_id, '_payer_customer_type', $response['b2B'] ? 'B2B' : 'B2C' );
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
