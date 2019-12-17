@@ -36,5 +36,5 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
-2019.xx.xx
-* First release on wordpress.org
+= 2019.12.17 		- Version 1.0.0 =
+* First release on Wordpress.org
