@@ -190,13 +190,13 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 		}
 		// Add invoice type to the order if it exists.
 		if ( isset( $_POST[ 'payer_b2b_invoice_type' ] ) || ! empty( $_POST[ 'payer_b2b_invoice_type' ] ) ) {
-			update_post_meta( $order_id, 'pb2b_invoice_type', $_POST[ 'payer_b2b_invoice_type' ] );
+			update_post_meta( $order_id, 'pb2b_invoice_type', sanitize_meta( 'pb2b_invoice_type', $_POST[ 'payer_b2b_invoice_type' ], 'wc_order' ) );
 		}
-		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ] );
+		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, sanitize_meta( PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ], 'wc_order' ) );
 		if ( $create_payer_order ) {
 	
 			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
-				update_post_meta( $order_id, '_payer_signatory', $_POST['payer_b2b_signatory_text'] );
+				update_post_meta( $order_id, '_payer_signatory', sanitize_meta( '_payer_signatory', $_POST['payer_b2b_signatory_text'], 'wc_order' ) );
 			}
 			$args = array(
 				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ),
@@ -211,9 +211,9 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 				return false;
 			}
 
-			update_post_meta( $order_id, '_payer_order_id', $response['orderId'] );
-			update_post_meta( $order_id, '_payer_reference_id', $response['referenceId'] );
-			update_post_meta( $order_id, '_payer_customer_type', $response['b2B'] ? 'B2B' : 'B2C' );
+			update_post_meta( $order_id, '_payer_order_id', sanitize_meta( '_payer_order_id', $response['orderId'], 'wc_order' ) );
+			update_post_meta( $order_id, '_payer_reference_id', sanitize_meta( '_payer_reference_id', $response['referenceId'], 'wc_order' ) );
+			update_post_meta( $order_id, '_payer_customer_type', sanitize_meta( '_payer_customer_type', $response['b2B'] ? 'B2B' : 'B2C', 'wc_order' ) );
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
