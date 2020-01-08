@@ -98,12 +98,12 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			// Check if we need to have the switch checkbox for the PNO field.
 			if ( $b2b_switch ) {
-			?>
+				?>
 				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
 				<span style="padding:5px;" class="woocommerce-input-wrapper">
 					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
 				</span>
-			<?php
+				<?php
 			}
 			?>
 			<p class="form-row validate-required form-row-wide" id="payer_b2b_pno_field">
@@ -117,26 +117,26 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
-			?>
+				?>
 				<div id="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
 					<label style="padding-bottom:5px;" for="payer_b2b_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
 					<span style="padding:10px;" class="woocommerce-input-wrapper">
 						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory"/>
 					</span>
 				</div>
-			<?php
+				<?php
 			}
 
 			// Check if we want to add the signatory field.
 			if ( $b2b_enabled && 'yes' === $this->separate_signatory ) {
-			?>
+				?>
 				<p class="form-row validate-required form-row-wide" id="payer_b2b_signatory_text_field" style="display:none">
 					<label for="payer_b2b_signatory_text"><?php esc_html_e( 'Signatory name', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
 						<input type="text" name="payer_b2b_signatory_text" id="payer_b2b_signatory_text"/>
 					</span>
 				</p>
-			<?php
+				<?php
 			}
 		}
 	}
@@ -156,16 +156,16 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
 		}
 		// Check if we want to create an order.
 		// @codingStandardsIgnoreStart
-		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, sanitize_meta( PAYER_PNO_DATA_NAME, $_POST[ PAYER_PNO_FIELD_NAME ], 'wc_order' ) );
+		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) );
 		if ( $create_payer_order ) {
 	
 			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
-				update_post_meta( $order_id, '_payer_signatory', sanitize_meta( '_payer_signatory', $_POST['payer_b2b_signatory_text'], 'wc_order' ) );
+				update_post_meta( $order_id, '_payer_signatory', sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) );
 			}
 			$args = array(
 				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ),
-				'pno_value'       => $_POST[ PAYER_PNO_FIELD_NAME ],
-				'signatory_value' => isset( $_POST['payer_b2b_signatory_text'] ) ? $_POST['payer_b2b_signatory_text'] : '',
+				'pno_value'       => sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ),
+				'signatory_value' => isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '',
 			);
 			// @codingStandardsIgnoreEnd
 			$request  = new PB2B_Request_Create_Order( $order_id, $args );
@@ -175,8 +175,8 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
 				return false;
 			}
 
-			update_post_meta( $order_id, '_payer_order_id', sanitize_meta( '_payer_order_id', $response['orderId'], 'wc_order' ) );
-			update_post_meta( $order_id, '_payer_reference_id', sanitize_meta( '_payer_reference_id', $response['referenceId'], 'wc_order' ) );
+			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
