@@ -168,7 +168,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 * @return string Setting link
 		 */
 		public function get_setting_link() {
-			$section_slug = 'payer_b2b_invoice';
+			$section_slug = 'payer_b2b_v1_invoice';
 			return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
 		}
 

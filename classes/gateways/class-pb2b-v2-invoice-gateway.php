@@ -151,23 +151,28 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
 	public function process_payment( $order_id ) {
 		$order              = wc_get_order( $order_id );
 		$create_payer_order = true;
+
+		// @codingStandardsIgnoreStart // We can ignore this because Woo has already done a nonce check here.
+		// Set and sanitize variables.
+		$pno       = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
+		$signatory = isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '';
+		// @codingStandardsIgnoreEnd
+
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
 		// Check if we want to create an order.
-		// @codingStandardsIgnoreStart
-		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) );
+		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
 		if ( $create_payer_order ) {
-	
-			if ( isset( $_POST['payer_b2b_signatory'] ) ) {
-				update_post_meta( $order_id, '_payer_signatory', sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) );
+
+			if ( ! empty( $signatory ) ) {
+				update_post_meta( $order_id, '_payer_signatory', $signatory );
 			}
-			$args = array(
-				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ),
-				'pno_value'       => sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ),
-				'signatory_value' => isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '',
+			$args     = array(
+				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ), // phpcs:ignore
+				'pno_value'       => $pno,
+				'signatory_value' => $signatory,
 			);
-			// @codingStandardsIgnoreEnd
 			$request  = new PB2B_Request_Create_Order( $order_id, $args );
 			$response = $request->request();
 
