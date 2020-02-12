@@ -38,6 +38,8 @@ class PB2B_Order_Management {
 	 * @return void
 	 */
 	public function cancel_reservation( $order_id ) {
+		// Remove the update action to prevent error.
+		remove_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
 		$order           = wc_get_order( $order_id );
 		$payer_reference = get_post_meta( $order_id, '_payer_reference_id', true );
 		// If this order wasn't created using Payer payment method, bail.
@@ -69,6 +71,8 @@ class PB2B_Order_Management {
 	 * @return void
 	 */
 	public function activate_reservation( $order_id ) {
+		// Remove the update action to prevent error.
+		remove_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
 		$order = wc_get_order( $order_id );
 		// If this order wasn't created using Payer payment method, bail.
 		if ( in_array( $order->get_payment_method(), array( 'payer_b2b_v1_invoice', 'payer_b2b_v2_invoice' ), true ) && $this->order_management_enabled && 0 < $order->get_total() ) {
