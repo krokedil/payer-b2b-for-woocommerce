@@ -36,5 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.02.12 		- Version 1.0.1 =
+* Enhancement		- Improved the error handling in the request class.
+* Enhancement		- Improved the activation and cancelation calls to Payer to unhook the update function as well.
+* Fix				- Changed so we do not make an attempt at updating an order without a Payer Order ID.
+
 = 2019.12.17 		- Version 1.0.0 =
 * First release on Wordpress.org
