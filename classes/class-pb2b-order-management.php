@@ -138,7 +138,18 @@ class PB2B_Order_Management {
 			return;
 		}
 		$order = wc_get_order( $order_id );
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
+
+		// If this is a subscription order, bail.
+		if ( 'shop_subscription' === $order->get_type() ) {
+			return;
+		}
+
+		// If we are missing a Payer order id, bail.
+		if ( empty( get_post_meta( $this->order_id, '_payer_order_id', true ) ) ) {
+			return;
+		}
+
+		if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_approved' ) ) {
 				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. An invoice has already been approved for this order', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
