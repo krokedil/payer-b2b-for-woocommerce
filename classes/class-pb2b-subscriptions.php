@@ -53,8 +53,8 @@ class PB2B_Subscriptions {
 				$renewal_order->add_order_note( __( 'Renewal order failed with Payer.' ) . ' ' . $error );
 				$subscription->payment_failed();
 			} else {
-				update_post_meta( $order_id, '_payer_order_id', $response['orderId'] );
-				update_post_meta( $order_id, '_payer_reference_id', $response['referenceId'] );
+				update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+				update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 				$renewal_order->add_order_note( __( 'Renewal order created with Payer.' ) . ' ' . $response['orderId'] );
 				$subscription->payment_complete( $response['orderId'] );
 			}

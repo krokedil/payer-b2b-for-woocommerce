@@ -21,7 +21,7 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 	public function request() {
 		$payer_order_id = get_post_meta( $this->order_id, '_payer_order_id', true );
 		$request_url    = $this->base_url . '/api/v2/orders/' . $payer_order_id;
-		$request_args   = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ), $this->order_id );
+		$request_args   = apply_filters( 'payer_update_order_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response       = wp_remote_request( $request_url, $request_args );
 		$code           = wp_remote_retrieve_response_code( $response );
 
@@ -56,9 +56,24 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 	 * @return array
 	 */
 	public function get_body( $order_id ) {
+		$customer = get_post_meta( $order_id, '_payer_customer_type', true ) || 'B2B' === $this->customer_type ? 'ORGANISATION' : 'PRIVATE';
+		$order    = wc_get_order( $order_id );
 		return array(
-			'description' => 'Woo Order',
-			'items'       => PB2B_Order_Lines::get_order_items( $order_id ),
+			'currencyCode'     => get_woocommerce_currency(),
+			'purchaseChannel'  => 'ECOMMERCE',
+			'referenceId'      => $order->get_order_number(),
+			'description'      => 'Woo Order',
+			'invoiceCustomer'  => array(
+				'customerType' => $customer,
+				'regNumber'    => get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true ),
+				'address'      => PB2B_Customer_Data::get_customer_billing_data( $order_id ),
+			),
+			'deliveryCustomer' => array(
+				'customerType' => $customer,
+				'regNumber'    => get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true ),
+				'address'      => PB2B_Customer_Data::get_customer_shipping_data( $order_id ),
+			),
+			'items'            => PB2B_Order_Lines::get_order_items( $order_id ),
 		);
 	}
 }

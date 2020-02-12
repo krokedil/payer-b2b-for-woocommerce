@@ -41,7 +41,7 @@ class PB2B_Order_Management {
 		$order           = wc_get_order( $order_id );
 		$payer_reference = get_post_meta( $order_id, '_payer_reference_id', true );
 		// If this order wasn't created using Payer payment method, bail.
-		if ( 'payer_b2b_invoice' === $order->get_payment_method() && $this->order_management_enabled && $payer_reference && 0 < $order->get_total() ) {
+		if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() && $this->order_management_enabled && $payer_reference && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				$order->set_status( 'on-hold', __( 'An invoice has already been created for this order, can not cancel at this point use refund instead.', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
@@ -85,7 +85,7 @@ class PB2B_Order_Management {
 					$order->save();
 					return;
 				}
-				update_post_meta( $order_id, '_payer_invoice_approved', 'yes' );
+				update_post_meta( $order_id, '_payer_invoice_approved', sanitize_key( 'yes' ) );
 			}
 			// V1 Invoice.
 			if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() ) {
@@ -98,7 +98,7 @@ class PB2B_Order_Management {
 					return;
 				}
 				$invoice_number = $response['invoiceNumber'];
-				update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
+				update_post_meta( $order_id, '_payer_invoice_number', sanitize_key( $invoice_number ) );
 				$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ';
 				$formated_text = sprintf( $text, $invoice_number );
 				$order->add_order_note( $formated_text );
@@ -117,9 +117,9 @@ class PB2B_Order_Management {
 				$invoice_number = $response['invoice']['invoiceNumber'];
 				$invoice_url    = $response['invoice']['publicInvoiceUrl'];
 				$invoice_ocr    = $response['invoice']['referenceNumber'];
-				update_post_meta( $order_id, '_payer_invoice_number', $invoice_number );
-				update_post_meta( $order_id, '_payer_public_url', $invoice_url );
-				update_post_meta( $order_id, '_payer_ocr', $invoice_ocr );
+				update_post_meta( $order_id, '_payer_invoice_number', sanitize_key( $invoice_number ) );
+				update_post_meta( $order_id, '_payer_public_url', esc_url_raw( $invoice_url ) );
+				update_post_meta( $order_id, '_payer_ocr', sanitize_key( $invoice_ocr ) );
 				$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ' . __( 'OCR Number:', 'payer-b2b-for-woocommerce' ) . ' <a href="%s" target="_blank">%s</a>';
 				$formated_text = sprintf( $text, $invoice_number, $invoice_url, $invoice_ocr );
 				$order->add_order_note( $formated_text );
