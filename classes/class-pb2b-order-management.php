@@ -134,9 +134,6 @@ class PB2B_Order_Management {
 	 * @return void
 	 */
 	public function update_order( $order_id ) {
-		if ( ! is_ajax() ) {
-			return;
-		}
 		$order = wc_get_order( $order_id );
 
 		// If this is a subscription order, bail.
@@ -145,7 +142,7 @@ class PB2B_Order_Management {
 		}
 
 		// If we are missing a Payer order id, bail.
-		if ( empty( get_post_meta( $this->order_id, '_payer_order_id', true ) ) ) {
+		if ( empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) {
 			return;
 		}
 
