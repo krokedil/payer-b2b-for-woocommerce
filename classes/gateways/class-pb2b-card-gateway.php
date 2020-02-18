@@ -54,6 +54,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+
+		// Filters.
+		add_filter( 'woocommerce_page_wc-settings', array( $this, 'show_keys_in_settings' ) );
 	}
 
 	/**
@@ -68,6 +71,19 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Shows setting keys on the settings page.
+	 *
+	 * @return void
+	 */
+	public function show_keys_in_settings() {
+		if ( isset( $_GET['section'] ) ) {
+			if ( $this->id === $_GET['section'] ) {
+				payer_b2b_show_credentials_form();
+			}
+		}
 	}
 
 	/**
@@ -195,6 +211,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			'redirect' => $this->get_return_url( $order ),
 		); */
 	}
+
 }
 
 /**

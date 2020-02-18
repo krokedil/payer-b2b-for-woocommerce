@@ -146,6 +146,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
+			include_once PAYER_B2B_PATH . '/includes/pb2b-credentials-form-fields.php';
 		}
 
 		/**
