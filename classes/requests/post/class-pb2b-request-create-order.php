@@ -2,7 +2,7 @@
 /**
  * Create order request class
  *
- * @package Payer_B2B/Classes/Put/Requests
+ * @package Payer_B2B/Classes/Post/Requests
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

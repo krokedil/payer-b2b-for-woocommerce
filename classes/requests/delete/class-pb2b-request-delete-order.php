@@ -2,7 +2,7 @@
 /**
  * Cancel order class
  *
- * @package Payer_B2B/Classes/Put/Requests
+ * @package Payer_B2B/Classes/Delete/Requests
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

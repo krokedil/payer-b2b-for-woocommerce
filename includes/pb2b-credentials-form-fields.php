@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function payer_b2b_show_credentials_form() {
 	$payer_invoice_v1_settings = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
-	error_log( var_export( $payer_invoice_v1_settings, true ) );
+
 	// Setting values.
 	$agent_id = $payer_invoice_v1_settings['agent_id'];
 	$api_key  = $payer_invoice_v1_settings['api_key'];
