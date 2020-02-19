@@ -27,7 +27,14 @@ $settings = array(
 
 // Payer B2B Card settings.
 if ( 'payer_b2b_card' === $this->id ) {
-	// Settings.
+	$settings['add_order_lines'] = array(
+		'title'       => __( 'Add order lines', 'payer-b2b-for-woocommerce' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enable Add order lines', 'payer-b2b-for-woocommerce' ),
+		'desc_tip'    => true,
+		'description' => __( 'Add order lines to the card payment.', 'payer-b2b-for-woocommerce' ),
+		'default'     => 'no',
+	);
 }
 
 // Payer B2B V2 Invoice settings.

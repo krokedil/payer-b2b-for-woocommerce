@@ -57,15 +57,17 @@ class PB2B_Request_Create_Direct_Card extends PB2B_Request {
 	 * @return array
 	 */
 	public function get_body( $order_id ) {
-		$order = wc_get_order( $order_id );
+		$order          = wc_get_order( $order_id );
+		$payer_order_id = get_post_meta( $order_id, '_payer_order_id', true );
+
 		return array(
 			'amount'                   => intval( round( $order->get_total() * 100 ) ),
 			'backToShopURL'            => wc_get_checkout_url(),
 			'currencyCode'             => get_woocommerce_currency(),
 			'externalPaymentReference' => $order->get_order_number(),
 			'languageCode'             => 'se', // TODO: Add support for multiple languages codes.
-			'orderId'                  => null, // Which order id to use here?
-			'redirectOnFailURL'        => '',
+			'orderId'                  => empty( $payer_order_id ) ? null : $payer_order_id,
+			'redirectOnFailURL'        => '', // TODO.
 			'redirectOnSuccessURL'     => $order->get_checkout_order_received_url(),
 		);
 	}
