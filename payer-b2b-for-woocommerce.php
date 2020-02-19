@@ -132,6 +132,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v1-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v2-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-direct-card.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-capture-card-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-v1-invoice.php';
