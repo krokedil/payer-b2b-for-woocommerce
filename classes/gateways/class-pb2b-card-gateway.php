@@ -166,50 +166,38 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		/*
-		 $order              = wc_get_order( $order_id );
+		$order              = wc_get_order( $order_id );
 		$create_payer_order = true;
-
-		// @codingStandardsIgnoreStart // We can ignore this because Woo has already done a nonce check here.
-		// Set and sanitize variables.
-		$pno       = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
-		$signatory = isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '';
-		// @codingStandardsIgnoreEnd
 
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
-		// Check if we want to create an order.
-		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
-		if ( $create_payer_order ) {
 
-			if ( ! empty( $signatory ) ) {
-				update_post_meta( $order_id, '_payer_signatory', $signatory );
-			}
-			$args     = array(
-				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ), // phpcs:ignore
-				'pno_value'       => $pno,
-				'signatory_value' => $signatory,
-			);
-			$request  = new PB2B_Request_Create_Order( $order_id, $args );
+		if ( $create_payer_order ) {
+			$request  = new PB2B_Request_Create_Direct_Card( $order_id );
 			$response = $request->request();
 
-			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
+			if ( is_wp_error( $response ) ) {
 				return false;
 			}
 
-			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
-			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
-			$order->payment_complete( $response['orderId'] );
+			update_post_meta( $order_id, '_payer_payment_id', sanitize_key( $response['paymentId'] ) );
+			update_post_meta( $order_id, '_payer_token', sanitize_key( $response['token'] ) );
+			$order->payment_complete( $response['paymentId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
+
+			return array(
+				'result'   => 'success',
+				'redirect' => $response['url'],
+			);
 		} else {
 			$order->payment_complete();
 			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+			return array(
+				'result'   => 'success',
+				'redirect' => $this->get_return_url( $order ),
+			);
 		}
-		return array(
-			'result'   => 'success',
-			'redirect' => $this->get_return_url( $order ),
-		); */
 	}
 
 }
