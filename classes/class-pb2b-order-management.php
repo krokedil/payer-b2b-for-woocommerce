@@ -73,10 +73,19 @@ class PB2B_Order_Management {
 	public function activate_reservation( $order_id ) {
 		// Remove the update action to prevent error.
 		remove_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
-		$order = wc_get_order( $order_id );
+		$order                = wc_get_order( $order_id );
+		$payer_payment_method = in_array(
+			$order->get_payment_method(),
+			array( // Payer payment methods.
+				'payer_b2b_v1_invoice',
+				'payer_b2b_v2_invoice',
+				'payer_b2b_card',
+			),
+			true
+		);
 		// If this order wasn't created using Payer payment method, bail.
-		if ( in_array( $order->get_payment_method(), array( 'payer_b2b_v1_invoice', 'payer_b2b_v2_invoice' ), true ) && $this->order_management_enabled && 0 < $order->get_total() ) {
-			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
+		if ( $payer_payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
+			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) { // TODO: add check for card.
 				// Invoice already created with Payer, bail.
 				return;
 			}
@@ -128,7 +137,33 @@ class PB2B_Order_Management {
 				$formated_text = sprintf( $text, $invoice_number, $invoice_url, $invoice_ocr );
 				$order->add_order_note( $formated_text );
 			}
+
+			// Card.
+			if ( 'payer_b2b_card' === $order->get_payment_method() ) {
+				$this->payer_b2b_card( $order, $order_id );
+			}
 		}
+	}
+
+	/**
+	 * Capture card payment.
+	 *
+	 * @param WC_Order $order WC order.
+	 * @param int      $order_id Order id.
+	 * @return void
+	 */
+	public function payer_b2b_card( $order, $order_id ) {
+		$request  = new PB2B_Request_Capture_Card_Payment( $order_id );
+		$response = $request->request();
+		error_log( 'capture card response ' . var_export( $response, true ) );
+
+		if ( is_wp_error( $response ) ) {
+			$error = reset( $response->errors )[0];
+			$order->set_status( 'on-hold', __( 'Card capture failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+			$order->save();
+			return;
+		}
+		// TODO: Save information to order. Add order note.
 	}
 
 	/**

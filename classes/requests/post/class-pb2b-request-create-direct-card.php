@@ -26,7 +26,7 @@ class PB2B_Request_Create_Direct_Card extends PB2B_Request {
 		$code = wp_remote_retrieve_response_code( $response );
 
 		$formated_response = $this->process_response( $response, $request_args, $request_url );
-		$reference         = ! is_wp_error( $formated_response ) && isset( $formated_response['referenceId'] ) ? $formated_response['referenceId'] : null;
+		$reference         = ! is_wp_error( $formated_response ) && isset( $formated_response['paymentId'] ) ? $formated_response['paymentId'] : null;
 
 		// Log the request.
 		$log = PB2B_Logger::format_log( $reference, 'POST', 'Payer create direct card', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
