@@ -52,6 +52,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
+		add_action( 'wp_head', array( $this, 'process_payer_payment' ) );
 
 		// Filters.
 		add_filter( 'woocommerce_page_wc-settings', array( $this, 'show_keys_in_settings' ) );
@@ -90,7 +91,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 * @param string $order_id The WooCommerce order ID.
 	 * @param float  $amount The amount to be refunded.
 	 * @param string $reasson The reasson given for the refund.
-	 * @return void
+	 * @return void|bool
 	 */
 	public function process_refund( $order_id, $amount = null, $reasson = '' ) {
 		$order = wc_get_order( $order_id );
@@ -149,7 +150,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 *
 	 * @param WC_Order $order WC order.
 	 * @param int      $order_id Order id.
-	 * @return array
+	 * @return array|bool
 	 */
 	public function payer_b2b_direct_card( $order, $order_id ) {
 		$request  = new PB2B_Request_Create_Direct_Card( $order_id );
@@ -161,13 +162,46 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 
 		update_post_meta( $order_id, '_payer_payment_id', sanitize_key( $response['paymentId'] ) );
 		update_post_meta( $order_id, '_payer_token', sanitize_key( $response['token'] ) );
-		$order->payment_complete( $response['paymentId'] );
-		$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
+		$order->add_order_note( __( 'Customer redirected to Payer payment page.', 'payer-b2b-for-woocommerce' ) );
 
 		return array(
 			'result'   => 'success',
 			'redirect' => $response['url'],
 		);
+	}
+
+	/**
+	 * Process payer card payment.
+	 *
+	 * @return void|bool
+	 */
+	public function process_payer_payment() {
+		if ( is_order_received_page() ) {
+			global $wp;
+			// Get the order ID
+			$order_id = absint( $wp->query_vars['order-received'] );
+			$order    = wc_get_order( $order_id );
+
+			if ( $this->id === $order->get_payment_method() && ! $order->has_status( array( 'on-hold', 'processing', 'completed' ) ) ) {
+				$request  = new PB2B_Request_Get_Payment( $order_id );
+				$response = $request->request();
+				if ( is_wp_error( $response ) ) {
+					return false; // TODO: Show error message.
+				}
+
+				if ( 'AUTHORIZED' === $response['payment']['status'] ) {
+					$payment_operations = $response['payment']['paymentOperations'][0];
+					update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
+					update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+
+					$payer_payment_id = get_post_meta( $order_id, '_payer_payment_id', true );
+					$order->payment_complete( $payer_payment_id );
+				} else {
+					return false; // TODO: Show error message.
+				}
+			}
+		}
+
 	}
 
 }
