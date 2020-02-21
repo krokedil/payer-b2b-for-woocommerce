@@ -126,8 +126,11 @@ class PB2B_Order_Management {
 
 		// Card.
 		if ( 'payer_b2b_card' === $payment_method && $this->order_management_enabled ) {
-			// TODO: Check if card payment already captured.
-			if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) { // Only need to do approve request if we have payer order id.
+			if ( get_post_meta( $order_id, '_payer_card_payment_captured' ) ) {
+				// Card payment already captured with Payer, bail.
+				return;
+			}
+			if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) { // Only need to do approve order request if we have payer order id.
 				$this->maybe_request_approve_order( $order, $order_id );
 			}
 			$this->payer_b2b_card( $order, $order_id );
@@ -216,15 +219,16 @@ class PB2B_Order_Management {
 	public function payer_b2b_card( $order, $order_id ) {
 		$request  = new PB2B_Request_Capture_Card_Payment( $order_id );
 		$response = $request->request();
-		error_log( 'capture card response ' . var_export( $response, true ) );
-
 		if ( is_wp_error( $response ) ) {
 			$error = reset( $response->errors )[0];
 			$order->set_status( 'on-hold', __( 'Card capture failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
 			$order->save();
 			return;
 		}
-		// TODO: Save information to order. Add order note.
+
+		update_post_meta( $order_id, '_payer_card_payment_captured', 'yes' );
+		$text = __( 'Card payment created with Payer.', 'payer-b2b-for-woocommerce' );
+		$order->add_order_note( $text );
 	}
 
 	/**
