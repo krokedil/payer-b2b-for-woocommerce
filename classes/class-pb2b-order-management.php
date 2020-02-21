@@ -110,7 +110,7 @@ class PB2B_Order_Management {
 				// Invoice already created with Payer, bail.
 				return;
 			}
-			$this->maybe_request_approve_invoice( $order, $order_id );
+			$this->maybe_request_approve_order( $order, $order_id );
 			$this->activate_payer_v1_invoice( $order, $order_id ); // V1.
 		}
 
@@ -120,36 +120,39 @@ class PB2B_Order_Management {
 				// Invoice already created with Payer, bail.
 				return;
 			}
-			$this->maybe_request_approve_invoice( $order, $order_id );
+			$this->maybe_request_approve_order( $order, $order_id );
 			$this->activate_payer_v2_invoice( $order, $order_id ); // V2.
 		}
 
 		// Card.
 		if ( 'payer_b2b_card' === $payment_method && $this->order_management_enabled ) {
 			// TODO: Check if card payment already captured.
+			if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) { // Only need to do approve request if we have payer order id.
+				$this->maybe_request_approve_order( $order, $order_id );
+			}
 			$this->payer_b2b_card( $order, $order_id );
 		}
 
 	}
 
 	/**
-	 * Maybe make request Payer approve invoice.
+	 * Maybe make request Payer approve order.
 	 *
 	 * @param WC_Order $order WC order.
 	 * @param int      $order_id Order id.
 	 * @return void
 	 */
-	public function maybe_request_approve_invoice( $order, $order_id ) {
-		if ( 'yes' !== get_post_meta( $order_id, '_payer_invoice_approved' ) ) {
-			$request  = new PB2B_Request_Approve_Invoice( $order_id );
+	public function maybe_request_approve_order( $order, $order_id ) {
+		if ( 'yes' !== get_post_meta( $order_id, '_payer_order_approved' ) ) {
+			$request  = new PB2B_Request_Approve_Order( $order_id );
 			$response = $request->request();
 			if ( is_wp_error( $response ) ) {
 				$error = reset( $response->errors )[0];
-				$order->set_status( 'on-hold', __( 'Invoice approval failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+				$order->set_status( 'on-hold', __( 'Order approval failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
 				$order->save();
 				return;
 			}
-			update_post_meta( $order_id, '_payer_invoice_approved', sanitize_key( 'yes' ) );
+			update_post_meta( $order_id, '_payer_order_approved', sanitize_key( 'yes' ) );
 		}
 	}
 
@@ -244,8 +247,8 @@ class PB2B_Order_Management {
 		}
 
 		if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
-			if ( get_post_meta( $order_id, '_payer_invoice_approved' ) ) {
-				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. An invoice has already been approved for this order', 'payer-b2b-for-woocommerce' ) );
+			if ( get_post_meta( $order_id, '_payer_order_approved' ) ) {
+				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. Order has already been approved.', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
 				return;
 			}
