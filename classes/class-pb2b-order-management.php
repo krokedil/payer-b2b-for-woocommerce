@@ -65,7 +65,11 @@ class PB2B_Order_Management {
 			$this->request_delete_order( $order, $order_id );
 
 		} elseif ( 'payer_b2b_card' === $order->get_payment_method() && $this->order_management_enabled && $payer_payment_id ) {
-			// TODO: Check if card payment already captured.
+			if ( get_post_meta( $order_id, '_payer_card_payment_captured' ) ) {
+				$order->set_status( 'on-hold', __( 'Card payment has already been captured for this order, can not cancel at this point use refund instead.', 'payer-b2b-for-woocommerce' ) );
+				$order->save();
+				return;
+			}
 			$this->request_delete_order( $order, $order_id );
 		}
 
