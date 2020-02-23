@@ -113,6 +113,36 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			$create_payer_order = false;
 		}
 
+		// Check if we want to create an subscription order.
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) {
+			if ( 'yes' === $this->add_order_lines ) {
+				$args     = array( // values is null for now.
+					'b2b'       => null,
+					'pno_value' => null,
+				);
+				$request  = new PB2B_Request_Create_Order( $order_id, $args );
+				$response = $request->request();
+
+				if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
+					return false;
+				}
+
+				update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+				update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
+
+				return $this->payer_b2b_stored_card( $order, $order_id );
+			} else {
+				return $this->payer_b2b_stored_card( $order, $order_id );
+			}
+		} else {
+			$order->payment_complete();
+			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+			return array(
+				'result'   => 'success',
+				'redirect' => $this->get_return_url( $order ),
+			);
+		}
+
 		// Check if we want to create an order.
 		if ( $create_payer_order ) {
 
@@ -143,6 +173,30 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 				'redirect' => $this->get_return_url( $order ),
 			);
 		}
+	}
+
+	/**
+	 * Makes the Create Stored Card request.
+	 *
+	 * @param WC_Order $order WC order.
+	 * @param int      $order_id Order id.
+	 * @return array|bool
+	 */
+	public function payer_b2b_stored_card( $order, $order_id ) {
+		$request  = new PB2B_Request_Create_Stored_Card( $order_id );
+		$response = $request->request();
+
+		if ( is_wp_error( $response ) || ! isset( $response['token'] ) ) {
+			return false;
+		}
+
+		update_post_meta( $order_id, '_payer_token', sanitize_key( $response['token'] ) );
+		$order->add_order_note( __( 'Customer redirected to Payer payment page.', 'payer-b2b-for-woocommerce' ) );
+
+		return array(
+			'result'   => 'success',
+			'redirect' => $response['url'],
+		);
 	}
 
 	/**
@@ -183,25 +237,61 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			$order    = wc_get_order( $order_id );
 
 			if ( $this->id === $order->get_payment_method() && ! $order->has_status( array( 'on-hold', 'processing', 'completed' ) ) ) {
-				$request  = new PB2B_Request_Get_Payment( $order_id );
-				$response = $request->request();
-				if ( is_wp_error( $response ) ) {
-					return false; // TODO: Show error message.
-				}
+				if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) ) {
+					$request  = new PB2B_Request_Get_Stored_Payment_Status( $order_id );
+					$response = $request->request();
+					if ( is_wp_error( $response ) ) {
+						return false; // TODO: Show error message.
+					}
 
-				if ( 'AUTHORIZED' === $response['payment']['status'] ) {
-					$payment_operations = $response['payment']['paymentOperations'][0];
-					update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
-					update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+					if ( 'READY' === $response['status'] ) {
+						$this->payer_authorize_payment( $order, $order_id );
+					} else {
+						return false; // TODO: Show error message.
+					}
+				} else { // Order not subscription.
+					$request  = new PB2B_Request_Get_Payment( $order_id );
+					$response = $request->request();
+					if ( is_wp_error( $response ) ) {
+						return false; // TODO: Show error message.
+					}
 
-					$payer_payment_id = get_post_meta( $order_id, '_payer_payment_id', true );
-					$order->payment_complete( $payer_payment_id );
-				} else {
-					return false; // TODO: Show error message.
+					if ( 'AUTHORIZED' === $response['payment']['status'] ) {
+						$payment_operations = $response['payment']['paymentOperations'][0];
+						update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
+						update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+
+						$payer_payment_id = get_post_meta( $order_id, '_payer_payment_id', true );
+						$order->payment_complete( $payer_payment_id );
+					} else {
+						return false; // TODO: Show error message.
+					}
 				}
 			}
 		}
+	}
 
+	/**
+	 * Make authorize payment request.
+	 *
+	 * @return void
+	 */
+	public function payer_authorize_payment( $order, $order_id ) {
+		$request  = new PB2B_Request_Authorize_Payment( $order_id );
+		$response = $request->request();
+		if ( is_wp_error( $response ) ) {
+			return false; // TODO: Show error message.
+		}
+		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
+			$payment_operations = $response['payment']['paymentOperations'][0];
+			update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
+			update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+
+			$payer_payment_id = empty( $response['paymentId'] ) ? '' : $response['paymentId'];
+			$order->payment_complete( $payer_payment_id );
+		} else {
+			return false; // TODO: Show error message.
+		}
 	}
 
 }
