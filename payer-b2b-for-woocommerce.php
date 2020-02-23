@@ -136,6 +136,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-v1-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-release-card-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/delete/class-pb2b-request-delete-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-payment.php';
 			// Request helpers.

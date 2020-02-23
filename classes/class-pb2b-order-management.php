@@ -70,7 +70,7 @@ class PB2B_Order_Management {
 				$order->save();
 				return;
 			}
-			$this->request_delete_order( $order, $order_id );
+			$this->request_release_card_payment( $order, $order_id );
 		}
 
 	}
@@ -85,6 +85,27 @@ class PB2B_Order_Management {
 	public function request_delete_order( $order, $order_id ) {
 		// Cancel the order.
 		$request  = new PB2B_Request_Delete_Order( $order_id );
+		$response = $request->request();
+		if ( is_wp_error( $response ) ) {
+			$error = reset( $response->errors )[0];
+			$order->set_status( 'on-hold', __( 'Failed to cancel the order with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+			$order->save();
+			return;
+		}
+
+		$order->add_order_note( __( 'Order canceled with Payer', 'payer-b2b-for-woocommerce' ) );
+	}
+
+	/**
+	 * Make request release card payment.
+	 *
+	 * @param WC_Order $order WC order.
+	 * @param int      $order_id Order id.
+	 * @return void
+	 */
+	public function request_release_card_payment( $order, $order_id ) {
+		// Cancel the order.
+		$request  = new PB2B_Request_Release_Card_Payment( $order_id );
 		$response = $request->request();
 		if ( is_wp_error( $response ) ) {
 			$error = reset( $response->errors )[0];
