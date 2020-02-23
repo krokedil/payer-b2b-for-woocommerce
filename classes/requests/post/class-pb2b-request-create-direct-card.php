@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Create Card request class
+ * Create Direct Card request class
  */
 class PB2B_Request_Create_Direct_Card extends PB2B_Request {
 	/**

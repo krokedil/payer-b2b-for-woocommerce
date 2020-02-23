@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * CGet payment request class
+ * Get payment request class
  */
 class PB2B_Request_Get_Payment extends PB2B_Request {
 	/**
