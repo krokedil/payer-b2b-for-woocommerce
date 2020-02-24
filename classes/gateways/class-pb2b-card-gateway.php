@@ -134,13 +134,6 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			} else {
 				return $this->payer_b2b_stored_card( $order, $order_id );
 			}
-		} else {
-			$order->payment_complete();
-			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
-			return array(
-				'result'   => 'success',
-				'redirect' => $this->get_return_url( $order ),
-			);
 		}
 
 		// Check if we want to create an order.
