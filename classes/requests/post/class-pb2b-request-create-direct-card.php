@@ -67,7 +67,7 @@ class PB2B_Request_Create_Direct_Card extends PB2B_Request {
 			'languageCode'             => 'se', // TODO: Add support for multiple languages codes.
 			'orderId'                  => empty( $payer_order_id ) ? null : $payer_order_id,
 			'redirectOnFailURL'        => $order->get_cancel_order_url_raw(),
-			'redirectOnSuccessURL'     => apply_filters( 'payer_redirect_success_url', $order->get_checkout_order_received_url() ),
+			'redirectOnSuccessURL'     => $order->get_checkout_order_received_url(),
 		);
 	}
 }

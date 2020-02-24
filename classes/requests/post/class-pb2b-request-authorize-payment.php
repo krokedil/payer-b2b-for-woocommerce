@@ -66,7 +66,7 @@ class PB2B_Request_Authorize_Payment extends PB2B_Request {
 			'externalPaymentReference' => $order->get_order_number(),
 			'orderId'                  => empty( $payer_order_id ) ? null : $payer_order_id,
 			'redirectOnFailURL'        => $order->get_cancel_order_url_raw(),
-			'redirectOnSuccessURL'     => apply_filters( 'payer_redirect_success_url', $order->get_checkout_order_received_url() ),
+			'redirectOnSuccessURL'     => $order->get_checkout_order_received_url(),
 			'token'                    => $payer_token,
 		);
 	}
