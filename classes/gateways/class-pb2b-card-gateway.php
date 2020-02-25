@@ -55,7 +55,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		add_action( 'wp_head', array( $this, 'process_payer_payment' ) );
 
 		// Filters.
-		add_filter( 'woocommerce_page_wc-settings', array( $this, 'show_keys_in_settings' ) );
+		add_filter( 'woocommerce_get_settings_checkout', array( $this, 'show_keys_in_settings' ), 10, 2 );
 	}
 
 	/**
@@ -77,11 +77,11 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 *
 	 * @return void
 	 */
-	public function show_keys_in_settings() {
-		if ( isset( $_GET['section'] ) ) {
-			if ( $this->id === $_GET['section'] ) {
-				payer_b2b_show_credentials_form();
-			}
+	public function show_keys_in_settings( $settings, $current_section ) {
+		if ( $this->id === $current_section ) { // Check the current section is what we want.
+			return payer_b2b_show_credentials_form();
+		} else { // If not, return the standard settings.
+			return $settings;
 		}
 	}
 
