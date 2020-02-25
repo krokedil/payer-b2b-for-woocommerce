@@ -20,13 +20,12 @@ function payer_b2b_show_credentials_form() {
 		'type' => 'title',
 	);
 	$settings_payer[] = array(
-		'name' => __( 'Agent ID: ' . $agent_id, 'payer-b2b-for-woocommerce' ),
+		'name' => sprintf( __( 'Agent ID: %s', 'payer-b2b-for-woocommerce' ), $agent_id ),
 		'type' => 'title',
 	);
 	$settings_payer[] = array(
-		'name'  => __( 'Soap ID: ' . $api_key, 'payer-b2b-for-woocommerce' ),
-		'type'  => 'title',
-		'class' => 'titledesc',
+		'name' => sprintf( __( 'Soap ID: %s', 'payer-b2b-for-woocommerce' ), $api_key ),
+		'type' => 'title',
 	);
 	$settings_payer[] = array(
 		'type' => 'sectionend',
