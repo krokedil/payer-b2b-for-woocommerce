@@ -276,6 +276,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return false; // TODO: Show error message.
 		}
 		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
+			do_action( 'payer_authorize_payment', $order_id, $response );
+
 			$payment_operations = $response['payment']['paymentOperations'][0];
 			update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
 			update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
