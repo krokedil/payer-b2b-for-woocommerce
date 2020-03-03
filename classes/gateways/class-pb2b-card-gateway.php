@@ -38,6 +38,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		// Supports.
 		$this->supports = array(
 			'products',
+			'refunds',
 			'subscriptions',
 			'subscription_cancellation',
 			'subscription_suspension',
@@ -93,9 +94,17 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 * @param string $reasson The reasson given for the refund.
 	 * @return void|bool
 	 */
-	public function process_refund( $order_id, $amount = null, $reasson = '' ) {
+	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
 		// Run logic here.
+		$request  = new PB2B_Request_Refund_Card_Payment( $order_id );
+		$response = $request->request( $amount, $reason );
+		if ( is_wp_error( $response ) ) {
+			$order->add_order_note( __( 'Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+			return false;
+		}
+		$order->add_order_note( wc_price( $amount ) . ' ' . __( 'refunded with Payer.', 'payer-b2b-for-woocommerce' ) );
+		return true;
 	}
 
 	/**
