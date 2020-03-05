@@ -115,20 +115,16 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		$order              = wc_get_order( $order_id );
-		$create_payer_order = true;
+		$order = wc_get_order( $order_id );
 
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
-			$create_payer_order = false;
-		}
-
-		// Check if we want to create an subscription order.
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) {
-			if ( 'yes' === $this->add_order_lines ) {
-				$args     = array( // values is null for now.
+		// Subscription payment.
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) ) {
+			if ( 'yes' === $this->add_order_lines && 0 < $order->get_total() ) {
+				$args = array( // values is null for now.
 					'b2b'       => null,
 					'pno_value' => null,
 				);
+				// Total amount must be greater than zero.
 				$request  = new PB2B_Request_Create_Order( $order_id, $args );
 				$response = $request->request();
 
@@ -143,11 +139,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			} else {
 				return $this->payer_b2b_stored_card( $order, $order_id );
 			}
-		}
-
-		// Check if we want to create an order.
-		if ( $create_payer_order ) {
-
+		} else { // Regular payment.
 			if ( 'yes' === $this->add_order_lines ) {
 				$args     = array( // values is null for now.
 					'b2b'       => null,
@@ -167,13 +159,6 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			} else {
 				return $this->payer_b2b_direct_card( $order, $order_id );
 			}
-		} else {
-			$order->payment_complete();
-			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
-			return array(
-				'result'   => 'success',
-				'redirect' => $this->get_return_url( $order ),
-			);
 		}
 	}
 
@@ -191,8 +176,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		if ( is_wp_error( $response ) || ! isset( $response['token'] ) ) {
 			return false;
 		}
+		do_action( 'payer_stored_card', $order_id, $response );
 
-		update_post_meta( $order_id, '_payer_token', sanitize_key( $response['token'] ) );
 		$order->add_order_note( __( 'Customer redirected to Payer payment page.', 'payer-b2b-for-woocommerce' ) );
 
 		return array(
@@ -239,7 +224,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			$order    = wc_get_order( $order_id );
 
 			if ( $this->id === $order->get_payment_method() && ! $order->has_status( array( 'on-hold', 'processing', 'completed' ) ) ) {
-				if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) ) {
+				if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) {
 					$request  = new PB2B_Request_Get_Stored_Payment_Status( $order_id );
 					$response = $request->request();
 					if ( is_wp_error( $response ) ) {
@@ -251,6 +236,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					} else {
 						return false; // TODO: Show error message.
 					}
+				} elseif ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) { // Free subscription.
+					$order->payment_complete();
+					$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
 				} else { // Order not subscription.
 					$request  = new PB2B_Request_Get_Payment( $order_id );
 					$response = $request->request();
@@ -285,8 +273,6 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return false; // TODO: Show error message.
 		}
 		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
-			do_action( 'payer_authorize_payment', $order_id, $response );
-
 			$payment_operations = $response['payment']['paymentOperations'][0];
 			update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
 			update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );

@@ -150,7 +150,7 @@ class PB2B_Order_Management {
 		}
 
 		// Card.
-		if ( 'payer_b2b_card' === $payment_method && $this->order_management_enabled ) {
+		if ( 'payer_b2b_card' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_card_payment_captured' ) ) {
 				// Card payment already captured with Payer, bail.
 				return;

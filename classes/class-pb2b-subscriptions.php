@@ -17,7 +17,7 @@ class PB2B_Subscriptions {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		add_action( 'payer_authorize_payment', array( $this, 'set_recurring_token_for_order' ), 10, 2 );
+		add_action( 'payer_stored_card', array( $this, 'set_recurring_token_for_order' ), 10, 2 );
 		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_v1_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
 		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_v2_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
 		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_card', array( $this, 'handle_card_recurring' ), 10, 2 );
@@ -66,9 +66,9 @@ class PB2B_Subscriptions {
 	/**
 	 * Handles recurring payments with Payer Card.
 	 *
-	 * @param [type] $renewal_total
-	 * @param [type] $renewal_order
-	 * @return void
+	 * @param float    $renewal_total The total amount of the renewal order.
+	 * @param WC_Order $renewal_order The WooCommerce order for the renewal order.
+	 * @return bool
 	 */
 	public function handle_card_recurring( $renewal_total, $renewal_order ) {
 		$order_id      = $renewal_order->get_id();
