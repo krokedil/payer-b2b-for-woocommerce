@@ -24,10 +24,8 @@ class PB2B_Request_Refund_Card_Payment extends PB2B_Request {
 		$payer_payment_id = get_post_meta( $this->order_id, '_payer_payment_id', true );
 		$request_url      = $this->base_url . '/api/v2/payments/' . $payer_payment_id . '/cards/refund';
 		$request_args     = apply_filters( 'payer_refund_card_payment_args', $this->get_request_args( $this->order_id, $amount, $reason ), $this->order_id );
-		error_log( 'req ' . var_export( $request_args, true ) );
-		$response = wp_remote_request( $request_url, $request_args );
-		error_log( 'res ' . var_export( $response, true ) );
-		$code = wp_remote_retrieve_response_code( $response );
+		$response         = wp_remote_request( $request_url, $request_args );
+		$code             = wp_remote_retrieve_response_code( $response );
 
 		$formated_response = $this->process_response( $response, $request_args, $request_url );
 		$reference         = ! is_wp_error( $formated_response ) && isset( $formated_response['referenceId'] ) ? $formated_response['referenceId'] : null;

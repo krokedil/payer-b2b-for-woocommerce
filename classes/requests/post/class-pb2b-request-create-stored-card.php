@@ -59,9 +59,9 @@ class PB2B_Request_Create_Stored_Card extends PB2B_Request {
 		$order = wc_get_order( $order_id );
 
 		return array(
-			'backToShopURL'        => wc_get_checkout_url(),
+			'backToShopURL'        => $order->get_cancel_order_url_raw(),
 			'currencyCode'         => get_woocommerce_currency(),
-			'languageCode'         => 'se', // TODO: Add support for multiple languages codes.
+			'languageCode'         => $this->lang_code(),
 			'redirectOnFailURL'    => $order->get_cancel_order_url_raw(),
 			'redirectOnSuccessURL' => $order->get_checkout_order_received_url(),
 		);
