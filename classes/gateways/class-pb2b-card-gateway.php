@@ -219,7 +219,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	public function process_payer_payment() {
 		if ( is_order_received_page() ) {
 			global $wp;
-			// Get the order ID
+			// Get the order ID.
 			$order_id = absint( $wp->query_vars['order-received'] );
 			$order    = wc_get_order( $order_id );
 
@@ -228,13 +228,14 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					$request  = new PB2B_Request_Get_Stored_Payment_Status( $order_id );
 					$response = $request->request();
 					if ( is_wp_error( $response ) ) {
-						return false; // TODO: Show error message.
+						return false;
 					}
 
 					if ( 'READY' === $response['status'] ) {
 						$this->payer_authorize_payment( $order, $order_id );
 					} else {
-						return false; // TODO: Show error message.
+						wc_add_notice( __( 'Incorrect payment status.', 'payer-b2b-for-woocommerce' ), 'error' );
+						return false;
 					}
 				} elseif ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) { // Free subscription.
 					$order->payment_complete();
@@ -243,7 +244,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					$request  = new PB2B_Request_Get_Payment( $order_id );
 					$response = $request->request();
 					if ( is_wp_error( $response ) ) {
-						return false; // TODO: Show error message.
+						return false;
 					}
 
 					if ( 'AUTHORIZED' === $response['payment']['status'] ) {
@@ -254,7 +255,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 						$payer_payment_id = get_post_meta( $order_id, '_payer_payment_id', true );
 						$order->payment_complete( $payer_payment_id );
 					} else {
-						return false; // TODO: Show error message.
+						wc_add_notice( __( 'Incorrect payment status.', 'payer-b2b-for-woocommerce' ), 'error' );
+						return false;
 					}
 				}
 			}
@@ -270,7 +272,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		$request  = new PB2B_Request_Authorize_Payment( $order_id );
 		$response = $request->request();
 		if ( is_wp_error( $response ) ) {
-			return false; // TODO: Show error message.
+			return false;
 		}
 		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
 			$payment_operations = $response['payment']['paymentOperations'][0];
@@ -281,7 +283,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			$payer_payment_id = empty( $response['paymentId'] ) ? '' : $response['paymentId'];
 			$order->payment_complete( $payer_payment_id );
 		} else {
-			return false; // TODO: Show error message.
+			wc_add_notice( __( 'Incorrect payment status.', 'payer-b2b-for-woocommerce' ), 'error' );
+			return false;
 		}
 	}
 

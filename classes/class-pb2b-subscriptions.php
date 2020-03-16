@@ -96,7 +96,8 @@ class PB2B_Subscriptions {
 				}
 			}
 		} else {
-			return false; // TODO: Show error message.
+			wc_add_notice( __( 'Incorrect payment status.', 'payer-b2b-for-woocommerce' ), 'error' );
+			return false;
 		}
 	}
 
