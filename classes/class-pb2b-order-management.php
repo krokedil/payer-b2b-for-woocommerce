@@ -158,7 +158,49 @@ class PB2B_Order_Management {
 			if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) { // Only need to do approve order request if we have payer order id.
 				$this->maybe_request_approve_order( $order, $order_id );
 			}
-			$this->payer_b2b_card( $order, $order_id );
+
+			$request  = new PB2B_Request_Get_Payment( $order_id );
+			$response = $request->request();
+			if ( is_wp_error( $response ) ) {
+				$error = reset( $response->errors )[0];
+				$order->set_status( 'on-hold', __( 'Could not receive payment status for capture request. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
+				$order->save();
+				return;
+			}
+
+			switch ( $response['payment']['status'] ) {
+				case 'AUTHORIZED':
+					$this->activate_payer_b2b_card( $order, $order_id );
+					break;
+				case 'INITIATED':
+					$order->set_status( 'on-hold', __( 'Payment status not correct for capturing payment. Payment status: Initiated.', 'payer-b2b-for-woocommerce' ) );
+					$order->save();
+					break;
+				case 'CANCELLED':
+					$order->set_status( 'on-hold', __( 'Payment status not correct for capturing payment. Payment status: Cancelled.', 'payer-b2b-for-woocommerce' ) );
+					$order->save();
+					break;
+				case 'PARTIALLY_CAPTURED':
+					$payer_captured_amount  = $response['payment']['capturedAmount'];
+					$payer_amount           = $response['payment']['amount'];
+					$payer_remaining_amount = $payer_amount - $payer_captured_amount;
+
+					if ( $order->get_total() <= $payer_remaining_amount ) {
+						$this->activate_payer_b2b_card( $order, $order_id );
+					} else {
+						// Translators: 1. Payer remaining amount, 2. WC order total.
+						$note = sprintf( __( 'Amount exceeds the remaining amount to capture. Remaining amount to capture: %1$s. Amount tried to capture: %2$s', 'payer-b2b-for-woocommerce' ), $payer_remaining_amount, $order->get_total() );
+						$order->set_status( 'on-hold', $note );
+						$order->save();
+					}
+					break;
+				case 'FULLY_CAPTURED':
+					update_post_meta( $order_id, '_payer_card_payment_captured', 'yes' );
+					$text = __( 'Payment already captured.', 'payer-b2b-for-woocommerce' );
+					$order->add_order_note( $text );
+					break;
+
+			}
 		}
 
 	}
@@ -241,7 +283,7 @@ class PB2B_Order_Management {
 	 * @param int      $order_id Order id.
 	 * @return void
 	 */
-	public function payer_b2b_card( $order, $order_id ) {
+	public function activate_payer_b2b_card( $order, $order_id ) {
 		$request  = new PB2B_Request_Capture_Card_Payment( $order_id );
 		$response = $request->request();
 		if ( is_wp_error( $response ) ) {
@@ -252,7 +294,7 @@ class PB2B_Order_Management {
 		}
 
 		update_post_meta( $order_id, '_payer_card_payment_captured', 'yes' );
-		$text = __( 'Card payment created with Payer.', 'payer-b2b-for-woocommerce' );
+		$text = __( 'Card payment captured with Payer.', 'payer-b2b-for-woocommerce' );
 		$order->add_order_note( $text );
 	}
 
