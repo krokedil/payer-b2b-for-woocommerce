@@ -19,7 +19,7 @@ class PB2B_Request {
 	 * @param int  $order_id The WooCommerce order id.
 	 * @param bool $auth If the request is a auth or not.
 	 */
-	public function __construct( $order_id, $auth = false ) {
+	public function __construct( $order_id = null, $auth = false ) {
 		$this->order_id = $order_id;
 		$this->auth     = $auth;
 		$this->set_environment_variables();
