@@ -27,10 +27,9 @@ class PB2B_Request_Approve_Order extends PB2B_Request {
 		$code           = wp_remote_retrieve_response_code( $response );
 
 		$formated_response = $this->process_response( $response, $request_args, $request_url );
-		$reference         = null;
 
 		// Log the request.
-		$log = PB2B_Logger::format_log( $reference, 'PUT', 'Payer approve order', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
+		$log = PB2B_Logger::format_log( $payer_order_id, 'PUT', 'Payer approve order', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
 		PB2B_Logger::log( $log );
 
 		return $formated_response;

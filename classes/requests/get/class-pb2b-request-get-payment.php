@@ -16,20 +16,20 @@ class PB2B_Request_Get_Payment extends PB2B_Request {
 	/**
 	 * Makes the request.
 	 *
+	 * @param int $payment_id The payer payment id. Used in API Callback function.
 	 * @return array
 	 */
-	public function request() {
-		$payer_payment_id = get_post_meta( $this->order_id, '_payer_payment_id', true );
+	public function request( $payment_id = null ) {
+		$payer_payment_id = isset( $payment_id ) ? $payment_id : get_post_meta( $this->order_id, '_payer_payment_id', true );
 		$request_url      = $this->base_url . '/api/v2/payments/' . $payer_payment_id;
 		$request_args     = apply_filters( 'payer_get_payment_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response         = wp_remote_request( $request_url, $request_args );
 		$code             = wp_remote_retrieve_response_code( $response );
 
 		$formated_response = $this->process_response( $response, $request_args, $request_url );
-		$reference         = null;
 
 		// Log the request.
-		$log = PB2B_Logger::format_log( $reference, 'GET', 'Payer get payment', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
+		$log = PB2B_Logger::format_log( $payer_payment_id, 'GET', 'Payer get payment', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
 		PB2B_Logger::log( $log );
 
 		return $formated_response;

@@ -26,10 +26,9 @@ class PB2B_Request_Get_Stored_Payment_Status extends PB2B_Request {
 		$code         = wp_remote_retrieve_response_code( $response );
 
 		$formated_response = $this->process_response( $response, $request_args, $request_url );
-		$reference         = null;
 
 		// Log the request.
-		$log = PB2B_Logger::format_log( $reference, 'GET', 'Payer get stored payment status', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
+		$log = PB2B_Logger::format_log( $this->order_id, 'GET', 'Payer get stored payment status', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
 		PB2B_Logger::log( $log );
 
 		return $formated_response;
