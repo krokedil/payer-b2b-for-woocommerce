@@ -140,6 +140,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 				return $this->payer_b2b_stored_card( $order, $order_id );
 			}
 		} else { // Regular payment.
+			payer_b2b_register_webhook( $order_id, 'CARD_PAYMENT_AUTHORIZED' ); // Register webhook for card payments.
 			if ( 'yes' === $this->add_order_lines ) {
 				$args     = array( // values is null for now.
 					'b2b'       => null,
@@ -287,7 +288,6 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return false;
 		}
 	}
-
 }
 
 /**
