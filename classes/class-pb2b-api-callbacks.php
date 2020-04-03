@@ -57,6 +57,13 @@ class PB2B_API_Callbacks {
 		}
 	}
 
+	/**
+	 * Check for order callback.
+	 *
+	 * @param int    $payment_id The Payer payment id.
+	 * @param string $event_type The Payer event type.
+	 * @return void
+	 */
 	public function pb2b_check_for_order_callback( $payment_id, $event_type ) {
 		$query          = new WC_Order_Query(
 			array(
@@ -97,6 +104,13 @@ class PB2B_API_Callbacks {
 		}
 	}
 
+	/**
+	 * Check order status.
+	 *
+	 * @param int      $payment_id The Payer payment id.
+	 * @param WC_Order $order The WC order.
+	 * @return void
+	 */
 	public function check_order_status( $payment_id, $order ) {
 		$request     = new PB2B_Request_Get_Payment();
 		$payer_order = $request->request( $payment_id );
@@ -116,6 +130,11 @@ class PB2B_API_Callbacks {
 		}
 	}
 
+	/**
+	 * Set order status.
+	 *
+	 * @return void
+	 */
 	public function set_order_status() {
 		$order->payment_complete( $payer_order['payment']['id'] );
 		$order->add_order_note( 'Payment via Payer. Payment ID: ' . sanitize_key( $payer_order['payment']['id'] ) );
@@ -123,13 +142,17 @@ class PB2B_API_Callbacks {
 	}
 
 	/**
-	 * Check order totals
+	 * Check order totals.
+	 *
+	 * @param array    $payer_order The Payer order.
+	 * @param WC_Order $order The WC order.
+	 * @return bool
 	 */
 	public function check_order_totals( $payer_order, $order ) {
 
 		$order_totals_match = true;
 
-		// Check order total and compare it with Woo
+		// Check order total and compare it with Woo.
 		$woo_order_total   = intval( round( $order->get_total() * 100 ) );
 		$payer_order_total = $payer_order['payment']['authorizedAmount'];
 
