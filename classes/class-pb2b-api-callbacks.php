@@ -112,16 +112,16 @@ class PB2B_API_Callbacks {
 	 * @return void
 	 */
 	public function check_order_status( $payment_id, $order ) {
-		$request     = new PB2B_Request_Get_Payment();
-		$payer_order = $request->request( $payment_id );
 
 		if ( is_object( $order ) ) {
-
+			PB2B_Logger::log( 'API-callback order status check. Order status: ' . $order->get_status() );
 			// Check order status.
 			if ( ! $order->has_status( array( 'on-hold', 'processing', 'completed' ) ) ) {
+				$request     = new PB2B_Request_Get_Payment();
+				$payer_order = $request->request( $payment_id );
+
 				// Check so order totals match.
 				$order_totals_match = $this->check_order_totals( $payer_order, $order );
-
 				// Set order status in Woo if order totals match.
 				if ( true === $order_totals_match ) {
 					$this->set_order_status( $payer_order, $order );
@@ -133,9 +133,11 @@ class PB2B_API_Callbacks {
 	/**
 	 * Set order status.
 	 *
+	 * @param array    $payer_order The Payer order.
+	 * @param WC_Order $order The WC order.
 	 * @return void
 	 */
-	public function set_order_status() {
+	public function set_order_status( $payer_order, $order ) {
 		$order->payment_complete( $payer_order['payment']['id'] );
 		$order->add_order_note( 'Payment via Payer. Payment ID: ' . sanitize_key( $payer_order['payment']['id'] ) );
 		PB2B_Logger::log( 'Order status not set correctly for order ' . $order->get_order_number() . ' during checkout process. Setting order status to Processing/Completed.' );
@@ -154,8 +156,7 @@ class PB2B_API_Callbacks {
 
 		// Check order total and compare it with Woo.
 		$woo_order_total   = intval( round( $order->get_total() * 100 ) );
-		$payer_order_total = $payer_order['payment']['authorizedAmount'];
-
+		$payer_order_total = intval( round( $payer_order['payment']['authorizedAmount'] ) );
 		if ( $woo_order_total > $payer_order_total && ( $woo_order_total - $payer_order_total ) > 30 ) {
 			$order->update_status( 'on-hold', sprintf( __( 'Order needs manual review. WooCommerce order total and Payer order total do not match. Payer order total: %s.', 'payer-b2b-for-woocommerce' ), $payer_order_total ) );
 			PB2B_Logger::log( 'Order total missmatch in order:' . $order->get_order_number() . '. Woo order total: ' . $woo_order_total . '. Payer order total: ' . $payer_order_total );
