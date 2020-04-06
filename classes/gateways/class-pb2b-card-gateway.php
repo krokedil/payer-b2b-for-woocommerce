@@ -140,25 +140,34 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 				return $this->payer_b2b_stored_card( $order, $order_id );
 			}
 		} else { // Regular payment.
-			payer_b2b_register_webhook( $order_id, 'CARD_PAYMENT_AUTHORIZED' ); // Register webhook for card payments.
-			if ( 'yes' === $this->add_order_lines ) {
-				$args     = array( // values is null for now.
-					'b2b'       => null,
-					'pno_value' => null,
-				);
-				$request  = new PB2B_Request_Create_Order( $order_id, $args );
-				$response = $request->request();
+			$payer_payment_url = get_post_meta( $order_id, '_payer_payment_url', true );
+			// Check if we have a payment url for this order already.
+			if ( empty( $payer_payment_url ) ) {
+				payer_b2b_register_webhook( $order_id, 'CARD_PAYMENT_AUTHORIZED' ); // Register webhook for card payments.
+				if ( 'yes' === $this->add_order_lines ) {
+					$args     = array( // values is null for now.
+						'b2b'       => null,
+						'pno_value' => null,
+					);
+					$request  = new PB2B_Request_Create_Order( $order_id, $args );
+					$response = $request->request();
 
-				if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
-					return false;
+					if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
+						return false;
+					}
+
+					update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+					update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
+
+					return $this->payer_b2b_direct_card( $order, $order_id );
+				} else {
+					return $this->payer_b2b_direct_card( $order, $order_id );
 				}
-
-				update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
-				update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
-
-				return $this->payer_b2b_direct_card( $order, $order_id );
-			} else {
-				return $this->payer_b2b_direct_card( $order, $order_id );
+			} else { // If order already have payment url, use it to redirect customer to Payer.
+				return array(
+					'result'   => 'success',
+					'redirect' => $payer_payment_url,
+				);
 			}
 		}
 	}
@@ -202,6 +211,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return false;
 		}
 
+		update_post_meta( $order_id, '_payer_payment_url', esc_url_raw( $response['url'] ) );
 		update_post_meta( $order_id, '_payer_payment_id', sanitize_key( $response['paymentId'] ) );
 		update_post_meta( $order_id, '_payer_token', sanitize_key( $response['token'] ) );
 		$order->add_order_note( __( 'Customer redirected to Payer payment page.', 'payer-b2b-for-woocommerce' ) );
