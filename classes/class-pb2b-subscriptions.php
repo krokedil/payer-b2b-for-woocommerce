@@ -89,7 +89,7 @@ class PB2B_Subscriptions {
 				} else {
 					$payment_operations = $response['payment']['paymentOperations'][0];
 					update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
-					update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+					update_post_meta( $order_id, '_payer_card_operation_id', $payment_operations['operationId'] );
 					update_post_meta( $order_id, '_payer_payment_id', $response['paymentId'] );
 					$renewal_order->add_order_note( __( 'Renewal order created with Payer.' ) . ' ' . $response['paymentId'] );
 					$subscription->payment_complete( $response['paymentId'] );

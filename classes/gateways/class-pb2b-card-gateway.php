@@ -261,7 +261,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					if ( 'AUTHORIZED' === $response['payment']['status'] ) {
 						$payment_operations = $response['payment']['paymentOperations'][0];
 						update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
-						update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+						update_post_meta( $order_id, '_payer_card_operation_id', $payment_operations['operationId'] );
 
 						$payer_payment_id = get_post_meta( $order_id, '_payer_payment_id', true );
 						$order->payment_complete( $payer_payment_id );
@@ -288,7 +288,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
 			$payment_operations = $response['payment']['paymentOperations'][0];
 			update_post_meta( $order_id, '_payer_card_created_date', $payment_operations['createdDate'] );
-			update_post_meta( $order_id, '_payer_card_opertaion_id', $payment_operations['operationId'] );
+			update_post_meta( $order_id, '_payer_card_operation_id', $payment_operations['operationId'] );
 			update_post_meta( $order_id, '_payer_payment_id', $response['paymentId'] );
 
 			$payer_payment_id = empty( $response['paymentId'] ) ? '' : $response['paymentId'];
