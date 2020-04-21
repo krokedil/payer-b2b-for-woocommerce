@@ -27,6 +27,7 @@ class PB2B_Order_Management {
 		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_reservation' ) );
 		add_action( 'woocommerce_order_status_completed', array( $this, 'activate_reservation' ) );
 		add_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_create_invoice_order' ), 45 );
 		$settings                       = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
 		$this->order_management_enabled = 'yes' === $settings['order_management'] ? true : false;
 	}
@@ -169,6 +170,21 @@ class PB2B_Order_Management {
 
 			$order->add_order_note( __( 'Order updated with Payer', 'payer-b2b-for-woocommerce' ) );
 			$order->save();
+		}
+	}
+
+	public function pb2b_maybe_create_invoice_order( $order_id ) {
+		if ( isset( $_POST['pb2b-create-invoice-order'] ) && ! empty( $_POST['pb2b-create-invoice-order'] ) ) {
+			$payment_method = get_post_meta( $order_id, '_payment_method', true );
+			if ( 'payer_b2b_v1_invoice' === $payment_method ) {
+				$pb2b_v1_invoice = new PB2B_V1_Invoice_Gateway();
+				$pb2b_v1_invoice->process_payment( $order_id );
+			}
+
+			if ( 'payer_b2b_v2_invoice' === $payment_method ) {
+				$pb2b_v2_invoice = new PB2B_V2_Invoice_Gateway();
+				$pb2b_v2_invoice->process_payment( $order_id );
+			}
 		}
 	}
 }
