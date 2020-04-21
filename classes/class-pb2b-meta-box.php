@@ -67,7 +67,7 @@ class PB2B_Meta_Box {
 		<?php } if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) { ?>
 		<br>
 		<button type="button" id="pb2b-show-invoice" class="button button-primary"><?php esc_html_e( 'Show Invoice', 'payer-b2b-for-woocommerce' ); ?></button>
-		<?php
-}
+			<?php
+		}
 	}
 } new PB2B_Meta_Box();
