@@ -182,9 +182,10 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 		// @codingStandardsIgnoreStart // We can ignore this because Woo has already done a nonce check here.
 		// Set and sanitize variables.
-		$pno          = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
-		$signatory    = isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '';
-		$invoice_type = isset( $_POST['payer_b2b_invoice_type'] ) ? sanitize_text_field( $_POST['payer_b2b_invoice_type'] ) : '';
+		$pno               = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
+		$signatory         = isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '';
+		$invoice_type	   = isset( $_POST['payer_b2b_invoice_type'] ) ? sanitize_text_field( $_POST['payer_b2b_invoice_type'] ) : '';
+		$created_via_admin = isset( $_POST['pb2b-create-invoice-order'] ) ? true : false;
 		// @codingStandardsIgnoreEnd
 
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
@@ -193,8 +194,13 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 		// Check if we want to create an order.
 		if ( empty( $pno ) ) {
-			wc_add_notice( __( 'Please enter a valid Personal number or Organization number', 'payer-b2b-for-woocommerce' ) );
-			return;
+			if ( $created_via_admin ) {
+				$order->add_order_note( __( 'Please enter a valid Personal number or Organization number', 'payer-b2b-for-woocommerce' ) );
+				return;
+			} else {
+				wc_add_notice( __( 'Please enter a valid Personal number or Organization number', 'payer-b2b-for-woocommerce' ) );
+				return;
+			}
 		}
 
 		// Add invoice type to the order if it exists.
@@ -215,23 +221,31 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$request  = new PB2B_Request_Create_Order( $order_id, $args );
 			$response = $request->request();
 
+			if ( $created_via_admin && is_wp_error( $response ) ) {
+				$error_message = wp_json_encode( $response->errors );
+				$order->add_order_note( $error_message );
+				return;
+			}
+
 			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
 				return false;
 			}
 
 			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
-			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( $response['b2B'] ? 'B2B' : 'B2C' ) );
+			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( $response['isB2B'] ? 'B2B' : 'B2C' ) );
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
 			$order->payment_complete();
 			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
 		}
-		return array(
-			'result'   => 'success',
-			'redirect' => $this->get_return_url( $order ),
-		);
+		if ( ! $created_via_admin ) {
+			return array(
+				'result'   => 'success',
+				'redirect' => $this->get_return_url( $order ),
+			);
+		}
 	}
 }
 

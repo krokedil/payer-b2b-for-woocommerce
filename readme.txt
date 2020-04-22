@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.3.1
+Tested up to: 5.4
 Requires PHP: 5.6
 Stable tag: trunk
-WC requires at least: 3.0.0
-WC tested up to: 3.8.1
+WC requires at least: 3.5.0
+WC tested up to: 4.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,15 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+
+= 2020.04.22 		- Version 1.1.0 =
+* Feature           - Added card payment method.
+* Feature           - Add subscription support for card payments.
+* Fetaure           - Added feature to create Payer invoice from order admin view.
+* Tweak             - Excluding unitPrice and unitVatAmount sent to Payer due to rounding issues.
+* Tweak             - Only try to make a cancel request if order has been captured.
+* Tweak             - Added support for multiple language codes in requests sent to Payer (for card payments).
+
 = 2020.02.12 		- Version 1.0.1 =
 * Enhancement		- Improved the error handling in the request class.
 * Enhancement		- Improved the activation and cancelation calls to Payer to unhook the update function as well.

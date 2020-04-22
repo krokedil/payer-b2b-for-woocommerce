@@ -38,7 +38,7 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$this->form_fields = include PAYER_B2B_PATH . '/includes/pb2b-form-fields.php';
+		$this->form_fields = include PAYER_B2B_PATH . '/includes/pb2b-factory-settings.php';
 	}
 
 	/**

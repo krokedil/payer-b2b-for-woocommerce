@@ -66,8 +66,8 @@ class PB2B_Order_Lines {
 			'description'       => $order_item->get_name(),
 			'quantity'          => $order_item->get_quantity(),
 			'unit'              => 'pcs',
-			'unitPrice'         => self::get_product_unit_price( $order_item ),
-			'unitVatAmount'     => self::get_product_unit_tax( $order_item ),
+			// 'unitPrice'         => self::get_product_unit_price( $order_item ), TODO
+			// 'unitVatAmount'     => self::get_product_unit_tax( $order_item ), TODO
 			'vatPercentage'     => self::get_product_tax_rate( $order, $order_item ),
 			'subtotalPrice'     => self::get_line_total( $order_item ),
 			'subtotalVatAmount' => self::get_line_tax( $order_item ),

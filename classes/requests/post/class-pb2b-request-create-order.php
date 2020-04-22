@@ -2,7 +2,7 @@
 /**
  * Create order request class
  *
- * @package Payer_B2B/Classes/Put/Requests
+ * @package Payer_B2B/Classes/Post/Requests
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -83,7 +83,7 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 			'deliveryCustomer' => array(
 				'customerType' => $customer,
 				'regNumber'    => $this->args['pno_value'],
-				'address'      => PB2B_Customer_Data::get_customer_shipping_data( $order_id ),
+				'address'      => ( '' !== $order->get_shipping_method() ) ? PB2B_Customer_Data::get_customer_shipping_data( $order_id ) : PB2B_Customer_Data::get_customer_billing_data( $order_id ),
 			),
 			'items'            => PB2B_Order_Lines::get_order_items( $order_id ),
 		);
