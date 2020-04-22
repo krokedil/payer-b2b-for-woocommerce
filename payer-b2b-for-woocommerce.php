@@ -3,7 +3,7 @@
  * Plugin Name:     Payer B2B for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
- * Version:         1.0.1
+ * Version:         1.1.0
  * Author:          Krokedil
  * Author URI:      https://krokedil.com/
  * Developer:       Krokedil
@@ -11,10 +11,10 @@
  * Text Domain:     payer-b2b-for-woocommerce
  * Domain Path:     /languages
  *
- * WC requires at least: 3.0
- * WC tested up to: 3.9.1
+ * WC requires at least: 3.5
+ * WC tested up to: 4.0.1
  *
- * Copyright:       © 2016-2019 Krokedil.
+ * Copyright:       © 2016-2020 Krokedil.
  * License:         GNU General Public License v3.0
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'PAYER_B2B_VERSION', '1.0.1' );
+define( 'PAYER_B2B_VERSION', '1.1.0' );
 define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
