@@ -68,9 +68,8 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 	 * @return array
 	 */
 	public function get_body( $order_id ) {
-		$customer             = $this->args['b2b'] || 'B2B' === $this->customer_type ? 'ORGANISATION' : 'PRIVATE';
-		$order                = wc_get_order( $order_id );
-		$has_shipping_address = $order->has_shipping_address();
+		$customer = $this->args['b2b'] || 'B2B' === $this->customer_type ? 'ORGANISATION' : 'PRIVATE';
+		$order    = wc_get_order( $order_id );
 
 		$body = array(
 			'currencyCode'    => get_woocommerce_currency(),
@@ -85,7 +84,7 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 			'items'           => PB2B_Order_Lines::get_order_items( $order_id ),
 		);
 
-		if ( $has_shipping_address ) {
+		if ( $order->has_shipping_address() ) {
 			$body['deliveryCustomer'] = array(
 				'customerType' => $customer,
 				'regNumber'    => $this->args['pno_value'],
