@@ -70,22 +70,27 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 	public function get_body( $order_id ) {
 		$customer = $this->args['b2b'] || 'B2B' === $this->customer_type ? 'ORGANISATION' : 'PRIVATE';
 		$order    = wc_get_order( $order_id );
-		return array(
-			'currencyCode'     => get_woocommerce_currency(),
-			'purchaseChannel'  => 'ECOMMERCE',
-			'referenceId'      => $order->get_order_number(),
-			'description'      => 'Woo Order',
-			'invoiceCustomer'  => array(
+
+		$body = array(
+			'currencyCode'    => get_woocommerce_currency(),
+			'purchaseChannel' => 'ECOMMERCE',
+			'referenceId'     => $order->get_order_number(),
+			'description'     => 'Woo Order',
+			'invoiceCustomer' => array(
 				'customerType' => $customer,
 				'regNumber'    => $this->args['pno_value'],
 				'address'      => PB2B_Customer_Data::get_customer_billing_data( $order_id ),
 			),
-			'deliveryCustomer' => array(
+			'items'           => PB2B_Order_Lines::get_order_items( $order_id ),
+		);
+
+		if ( $order->has_shipping_address() ) {
+			$body['deliveryCustomer'] = array(
 				'customerType' => $customer,
 				'regNumber'    => $this->args['pno_value'],
-				'address'      => ( '' !== $order->get_shipping_method() ) ? PB2B_Customer_Data::get_customer_shipping_data( $order_id ) : PB2B_Customer_Data::get_customer_billing_data( $order_id ),
-			),
-			'items'            => PB2B_Order_Lines::get_order_items( $order_id ),
-		);
+				'address'      => PB2B_Customer_Data::get_customer_shipping_data( $order_id ),
+			);
+		}
+		return $body;
 	}
 }
