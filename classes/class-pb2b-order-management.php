@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Order management class.
  */
 class PB2B_Order_Management {
+
 	/**
 	 * If order management is enabled.
 	 *
@@ -30,6 +31,7 @@ class PB2B_Order_Management {
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_create_invoice_order' ), 45 );
 		$settings                       = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
 		$this->order_management_enabled = 'yes' === $settings['order_management'] ? true : false;
+
 	}
 
 	/**
@@ -132,22 +134,24 @@ class PB2B_Order_Management {
 
 		// V1 Invoice.
 		if ( 'payer_b2b_v1_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
+
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v1_invoice( $order, $order_id ); // V1.
+			$this->activate_payer_v2_invoice( $order, $order_id, 'NORMAL' ); // V2 SUB.
 		}
 
 		// V2 Invoice.
 		if ( 'payer_b2b_v2_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
+
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v2_invoice( $order, $order_id ); // V2.
+			$this->activate_payer_v2_invoice( $order, $order_id, 'PREPAYMENT' ); // V2.
 		}
 
 		// Card.
@@ -227,39 +231,19 @@ class PB2B_Order_Management {
 		}
 	}
 
-	/**
-	 * Activate Payer v1 invoice.
-	 *
-	 * @param WC_Order $order WC order.
-	 * @param int      $order_id Order id.
-	 * @return void
-	 */
-	public function activate_payer_v1_invoice( $order, $order_id ) {
-		$request  = new PB2B_Request_Create_V1_Invoice( $order_id );
-		$response = $request->request();
-		if ( is_wp_error( $response ) ) {
-			$error = reset( $response->errors )[0];
-			$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
-			$order->save();
-			return;
-		}
-		$invoice_number = $response['invoiceNumber'];
-		update_post_meta( $order_id, '_payer_invoice_number', sanitize_key( $invoice_number ) );
-		$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ';
-		$formated_text = sprintf( $text, $invoice_number );
-		$order->add_order_note( $formated_text );
-	}
 
 	/**
 	 * Activate Payer v2 invoice.
 	 *
 	 * @param WC_Order $order WC order.
 	 * @param int      $order_id Order id.
+	 * @param string   $type Type of transaction.
 	 * @return void
 	 */
-	public function activate_payer_v2_invoice( $order, $order_id ) {
+	public function activate_payer_v2_invoice( $order, $order_id, $type ) {
 		$request  = new PB2B_Request_Create_V2_Invoice( $order_id );
-		$response = $request->request();
+		$response = $request->request( $type );
+
 		if ( is_wp_error( $response ) ) {
 			$error = reset( $response->errors )[0];
 			$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
