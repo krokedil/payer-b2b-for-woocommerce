@@ -43,7 +43,7 @@ if ( 'payer_b2b_v2_invoice' === $this->id ) {
 }
 
 // Payer B2B V1 Invoice settings.
-if ( 'payer_b2b_v1_invoice' === $this->id ) {
+if ( 'payer_b2b_normal_invoice' === $this->id ) {
 	$settings['agent_id']               = array(
 		'title'   => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'text',

@@ -12,13 +12,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gateway class.
  */
-class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
+class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id                 = 'payer_b2b_v1_invoice';
+		$this->id                 = 'payer_b2b_normal_invoice';
 		$this->method_title       = __( 'Payer B2B Invoice', 'payer-b2b-for-woocommerce' );
 		$this->icon               = '';
 		$this->method_description = __( 'Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce' ); // phpcs:ignore
@@ -256,8 +256,8 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
  * @param  array $methods All registered payment methods.
  * @return array $methods All registered payment methods.
  */
-function add_payer_b2b_v1_invoice_method( $methods ) {
-	$methods[] = 'PB2B_V1_Invoice_Gateway';
+function add_payer_b2b_normal_invoice_method( $methods ) {
+	$methods[] = 'PB2B_Normal_Invoice_Gateway';
 	return $methods;
 }
-add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_v1_invoice_method' );
+add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_normal_invoice_method' );

@@ -51,7 +51,7 @@ class PB2B_Order_Management {
 		$payer_invoice_payment_method = in_array(
 			$order->get_payment_method(),
 			array( // Payer Invoice payment methods.
-				'payer_b2b_v1_invoice',
+				'payer_b2b_normal_invoice',
 				'payer_b2b_v2_invoice',
 			),
 			true
@@ -133,7 +133,7 @@ class PB2B_Order_Management {
 		$payment_method = $order->get_payment_method();
 
 		// V1 Invoice.
-		if ( 'payer_b2b_v1_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
+		if ( 'payer_b2b_normal_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
@@ -302,7 +302,7 @@ class PB2B_Order_Management {
 			return;
 		}
 
-		if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
+		if ( 'payer_b2b_normal_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_order_approved' ) ) {
 				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. Order has already been approved.', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
@@ -327,9 +327,9 @@ class PB2B_Order_Management {
 	public function pb2b_maybe_create_invoice_order( $order_id ) {
 		if ( isset( $_POST['pb2b-create-invoice-order'] ) && ! empty( $_POST['pb2b-create-invoice-order'] ) ) {
 			$payment_method = get_post_meta( $order_id, '_payment_method', true );
-			if ( 'payer_b2b_v1_invoice' === $payment_method ) {
-				$pb2b_v1_invoice = new PB2B_V1_Invoice_Gateway();
-				$pb2b_v1_invoice->process_payment( $order_id );
+			if ( 'payer_b2b_normal_invoice' === $payment_method ) {
+				$pb2b_normal_invoice = new PB2B_Normal_Invoice_Gateway();
+				$pb2b_normal_invoice->process_payment( $order_id );
 			}
 
 			if ( 'payer_b2b_v2_invoice' === $payment_method ) {
