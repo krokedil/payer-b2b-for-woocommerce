@@ -122,7 +122,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		public function include_files() {
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
-			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v1-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-normal-invoice-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v2-invoice-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-card-gateway.php';
 
