@@ -18,6 +18,8 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		$this->id                 = 'payer_b2b_normal_invoice';
 		$this->method_title       = __( 'Payer B2B Invoice', 'payer-b2b-for-woocommerce' );
 		$this->icon               = '';
@@ -118,12 +120,6 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 				<?php
 			}
 			?>
-			<p class="form-row validate-required form-row-wide" id="payer_b2b_pno_field">
-				<label id="payer_b2b_pno_label" for="payer_b2b_pno"><?php echo esc_html( $pno_text ); ?></label>
-				<span class="woocommerce-input-wrapper">
-					<input type="text" name="<?php echo esc_attr( PAYER_PNO_FIELD_NAME ); ?>" id="payer_b2b_pno"/>
-				</span>
-			</p>
 			<br>
 			<?php
 			if ( $customer_invoice_switch ) {
