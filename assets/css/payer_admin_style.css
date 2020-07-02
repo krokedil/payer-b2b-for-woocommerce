@@ -7,11 +7,16 @@
 	width:100%;
 	height:100%;
 	background-color: rgba( 0, 0, 0, 0.5 );
+
 }
 
 .pb2b-modal-content {
 	margin:15% auto;
-	width:25%;
+	display:flex;
+	flex-direction: column;
+	align-items: flex-end;
+	width:425px;
+	background-color: rgba( 250, 250, 250 );
 }
 
 .pb2b-hide-iframe {
@@ -27,5 +32,6 @@
 	cursor: pointer;
 	clear:both;
 	display:block;
-	width:10px;
+	margin: 10px 10px 0px 0px;
+	/* width:10px; */
 }

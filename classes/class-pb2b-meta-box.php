@@ -51,22 +51,22 @@ class PB2B_Meta_Box {
 		$invoice_transaction_id = get_post_meta( $order_id, '_transaction_id', true );
 		if ( $invoice_number ) {
 			?>
-			<?php if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) { ?>
+			<?php if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<div class="pb2b-modal-wrapper pb2b-hide-iframe" id="pb2b-modal-wrapper">
 				<div class="pb2b-modal-content">
 					<div class="pb2b-close-modal" id="pb2b-close-modal"href="#"><span class="dashicons dashicons-dismiss"></span></div>
-					<iframe width="425" height="575" id="pb2b-iframe" src="<?php echo esc_html( $invoice_url ); ?>" width="auto" height="auto"></iframe>
+					<iframe width="425" height="580" id="pb2b-iframe" src="<?php echo esc_html( $invoice_url ); ?>" width="auto" height="auto"></iframe>
 				</div>
 			</div>
 			<?php } ?>
 			<b><?php esc_html_e( 'PNO/Org number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_pno ); ?><br>
 			<b><?php esc_html_e( 'Invoice Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_number ); ?><br>
-				<?php if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) { ?>
+				<?php if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<b><?php esc_html_e( 'OCR Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_ocr ); ?><br>
 			<?php } ?>
 				<?php if ( $invoice_signatory ) { ?>
 			<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>
-			<?php } if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() ) { ?>
+			<?php } if ( 'payer_b2b_v2_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<br>
 			<button type="button" id="pb2b-show-invoice" class="button button-primary"><?php esc_html_e( 'Show Invoice', 'payer-b2b-for-woocommerce' ); ?></button>
 					<?php

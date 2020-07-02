@@ -240,4 +240,4 @@ function add_payer_b2b_v2_invoice_method( $methods ) {
 	$methods[] = 'PB2B_V2_Invoice_Gateway';
 	return $methods;
 }
-// add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_v2_invoice_method' );
+add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_v2_invoice_method' );
