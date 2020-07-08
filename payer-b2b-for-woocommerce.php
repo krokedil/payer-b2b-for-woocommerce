@@ -104,6 +104,11 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			do_action( 'payer_initiated' );
 		}
 
+		/**
+		 * Conditionaly set additional deffinitions.
+		 *
+		 * @return void
+		 */
 		public function set_defines() {
 			// Set definitions.
 			if ( ! defined( 'PAYER_PNO_FIELD_NAME' ) ) {
@@ -151,7 +156,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-stored-payment-status.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-payload.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-acknowledge.php';
-
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-address.php';
 			// Request helpers.
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
@@ -163,6 +168,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-subscriptions.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-api-callbacks.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-ajax.php';
 
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
@@ -207,8 +213,13 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 					true
 				);
 				$params = array(
-					'b2c_text' => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
-					'b2b_text' => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+					'b2c_text'          => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
+					'b2b_text'          => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+					'pno_name'          => PAYER_PNO_FIELD_NAME,
+					'get_address_text'  => __( 'Get address', 'payer-b2b-for-woocommerce' ),
+					'get_address'       => WC_AJAX::get_endpoint( 'get_address' ),
+					'get_address_nonce' => wp_create_nonce( 'get_address_nonce' ),
 				);
 				wp_localize_script(
 					'payer_wc',
