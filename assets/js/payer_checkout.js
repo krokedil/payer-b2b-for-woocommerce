@@ -104,7 +104,9 @@ jQuery( function($)  {
             response_message_field.remove();
             // Add spinner
             button.prop('disabled', true)
-            button.addClass('payer_spinner');
+			button.addClass('payer_spinner');
+			
+			//AJAX
             $.ajax({
 
                 type: 'POST',
@@ -137,9 +139,8 @@ jQuery( function($)  {
                 }
 			});   
 		},
-		//-------------------------------------------
 
-
+		//Fill the fields with retrieved data.
 		populateAddressFields: function( address_data ) {
             // Set fields
             var first_name      = $('#billing_first_name'),
@@ -158,7 +159,6 @@ jQuery( function($)  {
             address_1.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.address_1 ) : address_data.streetAddress1 ) );
             address_2.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.address_2 ) : address_data.streetAddress2 ) );
         },
-
 
 		init: function(){
 			$( document ).ready( payer_wc.documentReady );

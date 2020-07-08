@@ -81,7 +81,6 @@ class PB2B_Ajax extends WC_AJAX {
 					wp_die();
 				} else {
 					self::set_address( $payer_address_information );
-					// krokedil_log_events( null, 'Payer Get Address Response', $payer_address_information );
 					$return = array(
 						'address_information' => $payer_address_information,
 						'message'             => __( 'Address found and added to the checkout form', 'payer-for-woocommerce' ),
