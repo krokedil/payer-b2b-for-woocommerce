@@ -62,7 +62,6 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	public function add_personal_number_field( $fields ) {
 		$settings = get_option( 'woocommerce_payer_card_payment_settings' );
 		if ( 'yes' !== $settings['get_address'] ) {
-			error_log( 'Address gotten' );
 			$fields['billing'][ PAYER_PNO_FIELD_NAME ] = array(
 				'label'       => apply_filters( 'payer_pno_label', __( 'Personal number', 'payer-for-woocommerce' ) ),
 				'placeholder' => _x( 'xxxxxx-xxxx', 'placeholder', 'payer-for-woocommerce' ),
