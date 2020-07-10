@@ -52,7 +52,7 @@ class PB2B_Order_Management {
 			$order->get_payment_method(),
 			array( // Payer Invoice payment methods.
 				'payer_b2b_normal_invoice',
-				'payer_b2b_v2_invoice',
+				'payer_b2b_prepaid_invoice',
 			),
 			true
 		);
@@ -144,7 +144,7 @@ class PB2B_Order_Management {
 		}
 
 		// V2 Invoice.
-		if ( 'payer_b2b_v2_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
+		if ( 'payer_b2b_prepaid_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
@@ -332,7 +332,7 @@ class PB2B_Order_Management {
 				$pb2b_normal_invoice->process_payment( $order_id );
 			}
 
-			if ( 'payer_b2b_v2_invoice' === $payment_method ) {
+			if ( 'payer_b2b_prepaid_invoice' === $payment_method ) {
 				$pb2b_v2_invoice = new PB2B_V2_Invoice_Gateway();
 				$pb2b_v2_invoice->process_payment( $order_id );
 			}

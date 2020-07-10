@@ -38,7 +38,7 @@ if ( 'payer_b2b_card' === $this->id ) {
 }
 
 // Payer B2B V2 Invoice settings.
-if ( 'payer_b2b_v2_invoice' === $this->id ) {
+if ( 'payer_b2b_prepaid_invoice' === $this->id ) {
 	// Settings.
 }
 

@@ -19,7 +19,7 @@ class PB2B_Subscriptions {
 	public function __construct() {
 		add_action( 'payer_stored_card', array( $this, 'set_recurring_token_for_order' ), 10, 2 );
 		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_normal_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
-		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_v2_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
+		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_prepaid_invoice', array( $this, 'handle_invoice_recurring' ), 10, 2 );
 		add_action( 'woocommerce_scheduled_subscription_payment_payer_b2b_card', array( $this, 'handle_card_recurring' ), 10, 2 );
 	}
 
