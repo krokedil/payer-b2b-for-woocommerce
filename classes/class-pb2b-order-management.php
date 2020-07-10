@@ -333,7 +333,7 @@ class PB2B_Order_Management {
 			}
 
 			if ( 'payer_b2b_prepaid_invoice' === $payment_method ) {
-				$pb2b_v2_invoice = new PB2B_V2_Invoice_Gateway();
+				$pb2b_v2_invoice = new PB2B_Prepaid_Invoice_Gateway();
 				$pb2b_v2_invoice->process_payment( $order_id );
 			}
 		}

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gateway class.
  */
-class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
+class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 	/**
 	 * Class constructor.
@@ -237,7 +237,7 @@ class PB2B_V2_Invoice_Gateway extends PB2B_Factory_Gateway {
  * @return array $methods All registered payment methods.
  */
 function add_payer_b2b_prepaid_invoice_method( $methods ) {
-	$methods[] = 'PB2B_V2_Invoice_Gateway';
+	$methods[] = 'PB2B_Prepaid_Invoice_Gateway';
 	return $methods;
 }
 add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_prepaid_invoice_method' );

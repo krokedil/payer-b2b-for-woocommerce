@@ -128,7 +128,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-normal-invoice-gateway.php';
-			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v2-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-prepaid-invoice-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-card-gateway.php';
 
 			// Requests.
