@@ -26,6 +26,7 @@ class PB2B_Meta_Box {
 	 * @return void
 	 */
 	public function pb2b_meta_box( $post_type ) {
+		error_log( 'Meta Box created' );
 		if ( 'shop_order' === $post_type ) {
 			$order_id = get_the_ID();
 			$order    = wc_get_order( $order_id );
@@ -40,6 +41,8 @@ class PB2B_Meta_Box {
 	 * @return void
 	 */
 	public function pb2b_meta_box_content() {
+
+		// TODO Fetch order from Payer (only for prepaid invoice)
 		$order_id = get_the_ID();
 		$order    = wc_get_order( $order_id );
 
@@ -49,6 +52,14 @@ class PB2B_Meta_Box {
 		$invoice_pno            = get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true );
 		$invoice_signatory      = get_post_meta( $order_id, '_payer_signatory' ) ? get_post_meta( $order_id, '_payer_signatory', true ) : false;
 		$invoice_transaction_id = get_post_meta( $order_id, '_transaction_id', true );
+
+		// TODO ------------------- Place new variable here -------------------------------------------
+		$request                = new PB2B_Request_Get_Invoice( $order_id );
+		$response               = $request->request( $invoice_number );
+		$invoice_payment_status = $response['invoice']['paymentStatus'];
+
+		// --------------------------------------------------------------------------------------------
+
 		if ( $invoice_number ) {
 			?>
 			<?php if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
@@ -64,6 +75,11 @@ class PB2B_Meta_Box {
 				<?php if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<b><?php esc_html_e( 'OCR Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_ocr ); ?><br>
 			<?php } ?>
+
+			<!-- TODO Add Payment Status ----------------------------------------------------- -->
+			<b><?php esc_html_e( 'Payment Status:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_payment_status ); ?><br>
+			<!-- --------------------------------------------------------------------------- -->
+
 				<?php if ( $invoice_signatory ) { ?>
 			<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>
 			<?php } if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>

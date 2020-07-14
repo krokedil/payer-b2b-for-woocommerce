@@ -157,6 +157,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-payload.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-acknowledge.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-address.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-invoice.php';
 			// Request helpers.
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
