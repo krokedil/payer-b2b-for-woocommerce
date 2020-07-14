@@ -26,7 +26,6 @@ class PB2B_Meta_Box {
 	 * @return void
 	 */
 	public function pb2b_meta_box( $post_type ) {
-		error_log( 'Meta Box created' );
 		if ( 'shop_order' === $post_type ) {
 			$order_id = get_the_ID();
 			$order    = wc_get_order( $order_id );
@@ -53,12 +52,12 @@ class PB2B_Meta_Box {
 		$invoice_signatory      = get_post_meta( $order_id, '_payer_signatory' ) ? get_post_meta( $order_id, '_payer_signatory', true ) : false;
 		$invoice_transaction_id = get_post_meta( $order_id, '_transaction_id', true );
 
-		// TODO ------------------- Place new variable here -------------------------------------------
-		$request                = new PB2B_Request_Get_Invoice( $order_id );
-		$response               = $request->request( $invoice_number );
-		$invoice_payment_status = $response['invoice']['paymentStatus'];
+		if ( $invoice_ocr ) {
+			$request  = new PB2B_Request_Get_Invoice( $order_id );
+			$response = $request->request( $invoice_number );
 
-		// --------------------------------------------------------------------------------------------
+			$invoice_payment_status = $response['invoice']['paymentStatus'];
+		}
 
 		if ( $invoice_number ) {
 			?>

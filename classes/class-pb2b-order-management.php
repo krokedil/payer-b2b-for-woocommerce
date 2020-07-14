@@ -29,9 +29,8 @@ class PB2B_Order_Management {
 		add_action( 'woocommerce_order_status_completed', array( $this, 'activate_reservation' ) );
 		add_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_create_invoice_order' ), 45 );
-		$settings                       = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
+		$settings                       = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
 		$this->order_management_enabled = 'yes' === $settings['order_management'] ? true : false;
-
 	}
 
 	/**
@@ -140,7 +139,7 @@ class PB2B_Order_Management {
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v2_invoice( $order, $order_id, 'NORMAL' ); // V2 SUB.
+			$this->activate_payer_prepaid_invoice( $order, $order_id, 'NORMAL' ); // V2 SUB.
 		}
 
 		// V2 Invoice.
@@ -151,7 +150,7 @@ class PB2B_Order_Management {
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v2_invoice( $order, $order_id, 'PREPAYMENT' ); // V2.
+			$this->activate_payer_prepaid_invoice( $order, $order_id, 'PREPAYMENT' ); // V2.
 		}
 
 		// Card.
@@ -240,7 +239,7 @@ class PB2B_Order_Management {
 	 * @param string   $type Type of transaction.
 	 * @return void
 	 */
-	public function activate_payer_v2_invoice( $order, $order_id, $type ) {
+	public function activate_payer_prepaid_invoice( $order, $order_id, $type ) {
 		$request  = new PB2B_Request_Create_V2_Invoice( $order_id );
 		$response = $request->request( $type );
 
@@ -333,8 +332,8 @@ class PB2B_Order_Management {
 			}
 
 			if ( 'payer_b2b_prepaid_invoice' === $payment_method ) {
-				$pb2b_v2_invoice = new PB2B_Prepaid_Invoice_Gateway();
-				$pb2b_v2_invoice->process_payment( $order_id );
+				$pb2b_prepaid_invoice = new PB2B_Prepaid_Invoice_Gateway();
+				$pb2b_prepaid_invoice->process_payment( $order_id );
 			}
 		}
 	}
