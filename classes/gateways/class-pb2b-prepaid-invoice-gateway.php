@@ -165,6 +165,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
+
 		$order              = wc_get_order( $order_id );
 		$create_payer_order = true;
 
@@ -214,6 +215,10 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
+
+			( new PB2B_Order_Management() )->maybe_request_approve_order( $order, $order_id );
+			( new PB2B_Order_Management() )->activate_payer_prepaid_invoice( $order, $order_id, 'PREPAYMENT' );
+
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {

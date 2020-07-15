@@ -41,7 +41,6 @@ class PB2B_Meta_Box {
 	 */
 	public function pb2b_meta_box_content() {
 
-		// TODO Fetch order from Payer (only for prepaid invoice)
 		$order_id = get_the_ID();
 		$order    = wc_get_order( $order_id );
 
@@ -53,9 +52,8 @@ class PB2B_Meta_Box {
 		$invoice_transaction_id = get_post_meta( $order_id, '_transaction_id', true );
 
 		if ( $invoice_ocr ) {
-			$request  = new PB2B_Request_Get_Invoice( $order_id );
-			$response = $request->request( $invoice_number );
-
+			$request                = new PB2B_Request_Get_Invoice( $order_id );
+			$response               = $request->request( $invoice_number );
 			$invoice_payment_status = $response['invoice']['paymentStatus'];
 		}
 
@@ -74,10 +72,7 @@ class PB2B_Meta_Box {
 				<?php if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<b><?php esc_html_e( 'OCR Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_ocr ); ?><br>
 			<?php } ?>
-
-			<!-- TODO Add Payment Status ----------------------------------------------------- -->
 			<b><?php esc_html_e( 'Payment Status:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_payment_status ); ?><br>
-			<!-- --------------------------------------------------------------------------- -->
 
 				<?php if ( $invoice_signatory ) { ?>
 			<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>

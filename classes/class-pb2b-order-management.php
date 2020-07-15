@@ -131,7 +131,7 @@ class PB2B_Order_Management {
 		$order          = wc_get_order( $order_id );
 		$payment_method = $order->get_payment_method();
 
-		// V1 Invoice.
+		// Normal Invoice.
 		if ( 'payer_b2b_normal_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
@@ -139,18 +139,7 @@ class PB2B_Order_Management {
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_prepaid_invoice( $order, $order_id, 'NORMAL' ); // V2 SUB.
-		}
-
-		// V2 Invoice.
-		if ( 'payer_b2b_prepaid_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
-
-			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
-				// Invoice already created with Payer, bail.
-				return;
-			}
-			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_prepaid_invoice( $order, $order_id, 'PREPAYMENT' ); // V2.
+			$this->activate_payer_prepaid_invoice( $order, $order_id, 'NORMAL' ); // Prepaid SUB.
 		}
 
 		// Card.
@@ -232,7 +221,7 @@ class PB2B_Order_Management {
 
 
 	/**
-	 * Activate Payer v2 invoice.
+	 * Activate Payer Prepaid invoice.
 	 *
 	 * @param WC_Order $order WC order.
 	 * @param int      $order_id Order id.
