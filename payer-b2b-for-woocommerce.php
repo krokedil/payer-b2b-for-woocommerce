@@ -158,6 +158,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-acknowledge.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-address.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-credit-check.php';
 			// Request helpers.
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
@@ -170,7 +171,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-api-callbacks.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-ajax.php';
-
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-request-create-order-column.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
 			include_once PAYER_B2B_PATH . '/includes/pb2b-credentials-form-fields.php';
