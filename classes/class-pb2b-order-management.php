@@ -219,7 +219,6 @@ class PB2B_Order_Management {
 		}
 	}
 
-
 	/**
 	 * Activate Payer Prepaid invoice.
 	 *
@@ -325,6 +324,7 @@ class PB2B_Order_Management {
 				$pb2b_prepaid_invoice->process_payment( $order_id );
 			}
 		}
+
 	}
 }
 new PB2B_Order_Management();

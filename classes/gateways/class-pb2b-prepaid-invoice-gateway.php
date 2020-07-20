@@ -37,6 +37,9 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$this->customer_type      = $this->get_option( 'allowed_customer_types' );
 		$this->separate_signatory = $this->get_option( 'separate_signatory' );
 		$this->enable_all_fields  = $this->get_option( 'enable_all_fields' );
+
+		$this->credit = $this->get_option( 'automatic_credit_check' );
+
 		// Supports.
 		$this->supports = array(
 			'products',
@@ -57,6 +60,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 		// Filters.
 		add_filter( 'woocommerce_page_wc-settings', array( $this, 'show_keys_in_settings' ) );
+
 	}
 
 	/**
@@ -166,6 +170,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 
+		$invoice_number     = get_post_meta( $order_id, '_payer_invoice_number', true );
 		$order              = wc_get_order( $order_id );
 		$create_payer_order = true;
 
@@ -218,6 +223,11 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			( new PB2B_Order_Management() )->maybe_request_approve_order( $order, $order_id );
 			( new PB2B_Order_Management() )->activate_payer_prepaid_invoice( $order, $order_id, 'PREPAYMENT' );
+
+			// Customer credit check.
+			if ( 'yes' === $this->credit || false === $this->credit ) {
+				payer_b2b_make_credit_check( $order_id );
+			}
 
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );

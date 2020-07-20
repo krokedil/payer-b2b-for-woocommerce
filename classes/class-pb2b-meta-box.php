@@ -18,6 +18,8 @@ class PB2B_Meta_Box {
 	 */
 	public function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'pb2b_meta_box' ) );
+
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_check_credit' ), 45 );
 	}
 	/**
 	 * Adds meta box to the side of a Payer order
@@ -50,6 +52,7 @@ class PB2B_Meta_Box {
 		$invoice_pno            = get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true );
 		$invoice_signatory      = get_post_meta( $order_id, '_payer_signatory' ) ? get_post_meta( $order_id, '_payer_signatory', true ) : false;
 		$invoice_transaction_id = get_post_meta( $order_id, '_transaction_id', true );
+		$customer_credit_check  = get_post_meta( $order_id, '_payer_credit_check_result', true );
 
 		if ( $invoice_ocr ) {
 			$request                = new PB2B_Request_Get_Invoice( $order_id );
@@ -69,15 +72,37 @@ class PB2B_Meta_Box {
 			<?php } ?>
 			<b><?php esc_html_e( 'PNO/Org number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_pno ); ?><br>
 			<b><?php esc_html_e( 'Invoice Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_number ); ?><br>
-				<?php if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
+			<?php if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
 			<b><?php esc_html_e( 'OCR Number:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_ocr ); ?><br>
 			<?php } ?>
 			<b><?php esc_html_e( 'Payment Status:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_payment_status ); ?><br>
 
-				<?php if ( $invoice_signatory ) { ?>
+			<?php if ( $invoice_signatory ) { ?>
 			<b><?php esc_html_e( 'Signatory:', 'payer-b2b-for-woocommerce' ); ?> </b> <?php echo esc_html( $invoice_signatory ); ?><br>
 			<?php } if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() || 'payer_b2b_normal_invoice' === $order->get_payment_method() ) { ?>
-			<br>
+
+			<b>
+				<?php
+				if ( $customer_credit_check ) {
+					esc_html_e( 'Customer Credit Status:', 'payer-b2b-for-woocommerce' );
+					?>
+				</b>
+					<?php
+					echo esc_html( $customer_credit_check );
+					echo '<br>';
+				} else {
+					?>
+					<form action='#' method="post">
+						<br>
+							<button type="submit" id="pb2b-run-credit-check" name="pb2b-run-credit-check-value" class="button button-primary">
+								<?php esc_html_e( 'Credit Check', 'payer-b2b-for-woocommerce' ); ?>
+							</button>
+						<br>
+					</form>
+					<?php
+				}
+				?>
+				<br>
 			<button type="button" id="pb2b-show-invoice" class="button button-primary"><?php esc_html_e( 'Show Invoice', 'payer-b2b-for-woocommerce' ); ?></button>
 					<?php
 			}
@@ -87,6 +112,19 @@ class PB2B_Meta_Box {
 			<br><br>
 			<input type="submit" id="pb2b-create-invoice-order" name="pb2b-create-invoice-order" class="button button-primary" value="<?php esc_attr_e( 'Create Invoice Order', 'payer-b2b-for-woocommerce' ); ?>">
 			<?php
+		}
+	}
+
+	/**
+	 * Run a credit check on the customer
+	 *
+	 * @param int $order_id The order ID.
+	 * @return void
+	 */
+	public function pb2b_maybe_check_credit( $order_id ) {
+		if ( isset( $_POST['pb2b-run-credit-check-value'] ) ) {
+			payer_b2b_make_credit_check( $order_id );
+
 		}
 	}
 } new PB2B_Meta_Box();
