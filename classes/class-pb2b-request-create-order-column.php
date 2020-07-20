@@ -23,10 +23,10 @@ class PB2B_Crate_Credit_Check_Column {
 	}
 
 	/**
-	 * Undocumented function
+	 * Create column in the Orders page.
 	 *
-	 * @param [type] $columns
-	 * @return void
+	 * @param string $columns Column array.
+	 * @return string
 	 */
 	public function create_credit_check_column( $columns ) {
 		$columns['credit_status'] = 'Credit status';
@@ -34,9 +34,10 @@ class PB2B_Crate_Credit_Check_Column {
 	}
 
 	/**
-	 * Undocumented function
+	 * Create column content.
 	 *
-	 * @param [type] $column
+	 * @param string $column Credit status column.
+	 * @param int    $order_id The order ID.
 	 * @return void
 	 */
 	public function create_credit_check_column_content( $column, $order_id ) {
