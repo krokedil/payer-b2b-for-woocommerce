@@ -39,7 +39,13 @@ if ( 'payer_b2b_card' === $this->id ) {
 
 // Payer B2B V2 Invoice settings.
 if ( 'payer_b2b_prepaid_invoice' === $this->id ) {
-	// Settings.
+	// Automatic Credit check checkbox.
+	$settings['automatic_credit_check'] = array(
+		'title'   => __( 'Automatic Credit Check', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'checkbox',
+		'label'   => __( "Run an automatic check on the customer's credit status", 'payer-b2b-for-woocommerce' ),
+		'default' => 'yes',
+	);
 }
 
 // Payer B2B V1 Invoice settings.
