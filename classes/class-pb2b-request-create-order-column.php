@@ -43,7 +43,7 @@ class PB2B_Crate_Credit_Check_Column {
 	public function create_credit_check_column_content( $column, $order_id ) {
 
 		if ( 'credit_status' === $column ) {
-			echo ( get_post_meta( $order_id, '_payer_credit_check_result', true ) );
+			echo ( esc_html( get_post_meta( $order_id, '_payer_credit_check_result', true ) ) );
 		}
 	}
 

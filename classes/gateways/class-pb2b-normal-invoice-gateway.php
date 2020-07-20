@@ -107,7 +107,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$b2b_enabled             = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
 			$b2b_switch              = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
 			$b2b_default             = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
-			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? $this->customer_invoice_type === 'yes' : false;
+			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? 'yes' === $this->customer_invoice_type : false;
 			$pno_text                = $b2b_default ? __( 'Organization Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
 
 			// Check if we need to have the switch checkbox for the PNO field.
