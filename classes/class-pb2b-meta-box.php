@@ -92,7 +92,8 @@ class PB2B_Meta_Box {
 					echo '<br>';
 				} else {
 					?>
-					<form action='#' method="post">
+					<form method="post">
+						<?php wp_nonce_field( 'get_credit_nonce', 'get_credit_nonce' ); ?>
 						<br>
 							<button type="submit" id="pb2b-run-credit-check" name="pb2b-run-credit-check-value" class="button button-primary">
 								<?php esc_html_e( 'Credit Check', 'payer-b2b-for-woocommerce' ); ?>
@@ -122,9 +123,12 @@ class PB2B_Meta_Box {
 	 * @return void
 	 */
 	public function pb2b_maybe_check_credit( $order_id ) {
-		if ( isset( $_POST['pb2b-run-credit-check-value'] ) ) {
-			payer_b2b_make_credit_check( $order_id );
+		if ( isset( $_POST['get_credit_nonce'] ) &&
+		wp_verify_nonce( $_POST['get_credit_nonce'], 'get_credit_nonce' ) ) {
 
+			if ( isset( $_POST['pb2b-run-credit-check-value'] ) && current_user_can( 'edit_shop_order' ) ) {
+				payer_b2b_make_credit_check( $order_id );
+			}
 		}
 	}
 } new PB2B_Meta_Box();

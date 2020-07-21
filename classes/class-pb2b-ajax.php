@@ -37,6 +37,7 @@ class PB2B_Ajax extends WC_AJAX {
 			'get_address'              => true,
 			'instant_product_purchase' => true,
 			'instant_cart_purchase'    => true,
+			'pb2b_credit_check'        => false,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_woocommerce_' . $ajax_event, array( __CLASS__, $ajax_event ) );
@@ -119,6 +120,18 @@ class PB2B_Ajax extends WC_AJAX {
 		);
 
 		WC()->session->set( 'payer_customer_details', $payer_customer_details );
+	}
+
+	/**
+	 * Perform credit check on a customer
+	 *
+	 * @return void
+	 */
+	public static function pb2b_credit_check() {
+		if ( isset( $_GET['credit_check_nonce'] ) && wp_verify_nonce( sanitize_key( $_GET['credit_check_nonce'] ), 'credit_check_nonce' ) && current_user_can( 'edit_shop_order', $_GET['order_id'] ) ) {
+			payer_b2b_make_credit_check( $_GET['order_id'] );
+			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
+		}
 	}
 
 }
