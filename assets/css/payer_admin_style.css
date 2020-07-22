@@ -35,3 +35,51 @@
 	margin: 10px 10px 0px 0px;
 	/* width:10px; */
 }
+
+/* Passed icon */
+.pb2b-icon-passed:hover + .pb2b-passed-window {
+	display: block;
+}
+.pb2b-passed-window{
+	display:none;
+}
+
+span.pb2b-credit-passed::after {
+	content: none;
+}
+
+/* Failed icon */
+.pb2b-icon-failed:hover + .pb2b-failed-window {
+	display: block;
+}
+.pb2b-failed-window{
+	display:none;
+}
+
+span.pb2b-credit-failed::after {
+	content: none;
+}
+
+/* Check credit icon */
+.pb2b-icon-perform-check:hover .dashicons-plus {
+	color: dodgerblue !important;
+	margin-top:2px;
+	color: white !important;
+	cursor: pointer;
+}
+
+.pb2b-icon-perform-check:hover {
+background-color: deepskyblue;
+}
+
+.pb2b-icon-perform-check:hover + .pb2b-perform-check-window {
+	display: block;
+}
+
+span.pb2b-credit-check::after {
+	content: none;
+}
+
+.pb2b-perform-check-window{
+	/* display:none; */
+}

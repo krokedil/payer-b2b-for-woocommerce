@@ -30,6 +30,7 @@ class PB2B_Crate_Credit_Check_Column {
 	 */
 	public function create_credit_check_column( $columns ) {
 		$columns['credit_status'] = 'Credit status';
+
 		return $columns;
 	}
 
@@ -46,16 +47,23 @@ class PB2B_Crate_Credit_Check_Column {
 			$customer_credit_check = get_post_meta( $order_id, '_payer_credit_check_result', true );
 
 			if ( 'PASSED' === $customer_credit_check ) {
-
 				?>
-					<span style="color:green" class="dashicons dashicons-yes"></span>
+					<div style="display: flex">
+						<div class="pb2b-icon-passed" style="height: 28px; width: 28px; display: flex;" >
+							<span style="color:green; font-size: 28px" class="pb2b-credit-failed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
+						</div>
+					</div>
 				<?php
+
 			} elseif ( 'FAILED' === $customer_credit_check ) {
 				?>
-					<span style="color:red" class="dashicons dashicons-no"></span>
+					<div style="display: flex">
+						<div class="pb2b-icon-failed" style = "height: 28px; width: 28px; display: flex;" >
+							<span style="text-align: center; color:red ; font-size: 28px" class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip="FAILED"></span>
+						</div>
+					</div>
 				<?php
 			} else {
-
 					$url = add_query_arg(
 						array(
 							'action'             => 'woocommerce_pb2b_credit_check',
@@ -65,10 +73,16 @@ class PB2B_Crate_Credit_Check_Column {
 						admin_url( 'admin-ajax.php' )
 					);
 				?>
-					<a href="<?php echo esc_html( $url ); ?>" id="pb2b-run-credit-check" name="pb2b-run-credit-check-value" style="padding:0px; margin:0px; color: orange; border:none">
-						<span class="dashicons dashicons-no"></span>
-					</a>
-				<?php
+					<div style="display: flex;">
+						<div class="pb2b-icon-perform-check" style = "display:flex; height:28px; width:28px;" >
+							<a href="<?php echo esc_html( $url ); ?>"
+							id="pb2b-run-credit-check" name="pb2b-run-credit-check-value"
+							style="padding:0px; margin:0px;  border:none;">
+							<span style="font-size: 28px; color: deepskyblue;" class="pb2b-credit-check dashicons dashicons-plus woocommerce-help-tip" data-tip="Check credit status"></span>
+							</a>
+						</div>
+					</div>
+									<?php
 			}
 		}
 	}
