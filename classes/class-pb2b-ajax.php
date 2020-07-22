@@ -81,6 +81,7 @@ class PB2B_Ajax extends WC_AJAX {
 					wp_send_json_error( $return );
 					wp_die();
 				} else {
+
 					self::set_address( $payer_address_information );
 					$return = array(
 						'address_information' => $payer_address_information,
@@ -119,7 +120,7 @@ class PB2B_Ajax extends WC_AJAX {
 			'city'       => $payer_address_information['city'],
 		);
 
-		WC()->session->set( 'payer_customer_details', $payer_customer_details );
+		WC()->session->set( 'pb2b_customer_details', $payer_customer_details );
 	}
 
 	/**

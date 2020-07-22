@@ -142,7 +142,8 @@ jQuery( function($)  {
 
 		//Fill the fields with retrieved data.
 		populateAddressFields: function( address_data ) {
-            // Set fields
+
+            // Set fields.
             var first_name      = $('#billing_first_name'),
                 last_name       = $('#billing_last_name'),
                 organisation    = $('#billing_company'),
@@ -150,14 +151,32 @@ jQuery( function($)  {
                 post_code       = $('#billing_postcode'),
                 address_1       = $('#billing_address_1'),
                 address_2       = $('#billing_address_2');
-            // Populate fields
-            first_name.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.firstName ) : address_data.firstName ) );
-            last_name.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.lastName ) : address_data.lastName ) );
-            organisation.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.coAddress ) : address_data.coAddress ) );
-            city.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.city ) : address_data.city ) );
+            // Populate fields.
+            first_name.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.firstName ) : address_data.firstName ) );
+            last_name.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.lastName ) : address_data.lastName ) );
+            organisation.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.coAddress ) : address_data.coAddress ) );
+            city.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.city ) : address_data.city ) );
             post_code.val( address_data.zipCode );
-            address_1.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.address_1 ) : address_data.streetAddress1 ) );
-            address_2.val( ( '' === address_data.organisation ? payer_wc.maskFormField( address_data.address_2 ) : address_data.streetAddress2 ) );
+            address_1.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.streetAddress1) : address_data.streetAddress1 ) );
+            address_2.val( ( null === address_data.companyName ? payer_wc.maskFormField( address_data.streetAddress2 ) : address_data.streetAddress2 ) );
+        },
+
+        //Hide characters on checkout page input fields.
+        maskFormField: function( field ) {
+            if ( field !== null && typeof field !== 'undefined') {
+                var field_split = field.split( ' ' );
+                var field_masked = new Array();
+    
+                $.each(field_split, function ( i, val ) {
+                    if ( isNaN( val ) ) {
+                        field_masked.push( val.charAt( 0 ) + Array( val.length ).join( '*' ) );
+                    } else {
+                        field_masked.push( '**' + val.substr( val.length - 3 ) );
+                    }
+                });
+    
+                return field_masked.join( ' ' );
+            }
         },
 
 		init: function(){
