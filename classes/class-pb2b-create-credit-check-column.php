@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Checks customer credit score
  */
-class PB2B_Crate_Credit_Check_Column {
+class PB2B_Create_Credit_Check_Column {
 	/**
 	 * Class constructor.
 	 */
@@ -82,9 +82,9 @@ class PB2B_Crate_Credit_Check_Column {
 							</a>
 						</div>
 					</div>
-									<?php
+				<?php
 			}
 		}
 	}
 
-} new PB2B_Crate_Credit_Check_Column();
+} new PB2B_Create_Credit_Check_Column();
