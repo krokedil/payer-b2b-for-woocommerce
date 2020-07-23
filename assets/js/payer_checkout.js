@@ -122,10 +122,11 @@ jQuery( function($)  {
                 success: function(data) {
                     var address_data = data.data.address_information,
                         message = data.data.message;
+
                     if( data.success === false ) { 
-                        button.after('<div id="payer-get-address-response" class="woocommerce-error">' + message + '</div>');
+                        button.after('<div id="payer-get-address-response" style="margin-top:10px" class="woocommerce-error">' + message + '</div>');
                     } else {
-                        button.after('<div id="payer-get-address-response" class="woocommerce-message">' + message + '</div>');
+                        button.after('<div id="payer-get-address-response" style="margin-top:10px" class="woocommerce-message">' + message + '</div>');
                         payer_wc.populateAddressFields( address_data );
                     }
                 },
