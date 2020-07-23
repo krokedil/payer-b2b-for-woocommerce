@@ -48,20 +48,20 @@ class PB2B_Create_Credit_Check_Column {
 
 			if ( 'PASSED' === $customer_credit_check ) {
 				?>
-					<div style="display: flex">
-						<div class="pb2b-icon-passed" style="height: 28px; width: 28px; display: flex;" >
-							<span style="color:green; font-size: 28px" class="pb2b-credit-failed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
+
+						<div class="pb2b-icon-passed">
+							<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
 						</div>
-					</div>
+
 				<?php
 
 			} elseif ( 'FAILED' === $customer_credit_check ) {
 				?>
-					<div style="display: flex">
-						<div class="pb2b-icon-failed" style = "height: 28px; width: 28px; display: flex;" >
-							<span style="text-align: center; color:red ; font-size: 28px" class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip="FAILED"></span>
+
+						<div class="pb2b-icon-failed">
+							<span class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip="FAILED"></span>
 						</div>
-					</div>
+
 				<?php
 			} else {
 					$url = add_query_arg(
@@ -73,15 +73,13 @@ class PB2B_Create_Credit_Check_Column {
 						admin_url( 'admin-ajax.php' )
 					);
 				?>
-					<div style="display: flex;">
-						<div class="pb2b-icon-perform-check" style = "display:flex; height:28px; width:28px;" >
-							<a href="<?php echo esc_html( $url ); ?>"
-							id="pb2b-run-credit-check" name="pb2b-run-credit-check-value"
-							style="padding:0px; margin:0px;  border:none;">
-							<span style="font-size: 28px; color: deepskyblue;" class="pb2b-credit-check dashicons dashicons-plus woocommerce-help-tip" data-tip="Check credit status"></span>
+
+						<div class="pb2b-icon-perform-check" >
+							<a href="<?php echo esc_html( $url ); ?>" id="pb2b-run-credit-check" name="pb2b-run-credit-check-value">
+							<span class="pb2b-credit-check dashicons dashicons-plus woocommerce-help-tip" data-tip="Check credit status"></span>
 							</a>
 						</div>
-					</div>
+
 				<?php
 			}
 		}
