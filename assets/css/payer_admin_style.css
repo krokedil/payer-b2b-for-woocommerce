@@ -42,23 +42,14 @@
 	display: flex;
 	height: 28px;
 	width: 28px;
-	margin-top:6px;
-
+	place-items:center;
+	margin-left:-2px;
 	font-size: 28px;
 }
 
 /* Passed icon */
-
-.pb2b-icon-passed {
-	height: 28px;
-	width: 28px;
-	display: flex;
-}
-
 span.pb2b-credit-passed {
 	color:green;
-	margin-top:2px;
-	margin-left: -3px !important;
 	font-size: 28px;
 }
 
@@ -70,8 +61,6 @@ span.pb2b-credit-passed::after {
 /* Failed container*/
 span.pb2b-credit-failed {
 	color:red;
-	margin-top:5px;
-	margin-left: -1px !important;
 	font-size: 27px;
 
 }
@@ -81,8 +70,8 @@ span.pb2b-credit-failed {
 	height: 28px;
 	width: 28px;
 	display: flex;
-
 	font-size: 25px;
+	place-items:center;
 }
 
 span.pb2b-credit-failed::after {
@@ -95,11 +84,10 @@ span.pb2b-credit-failed::after {
 	display:flex;
 	border: 1px solid #0071a1;
 	border-radius: 3px;
-
 	min-height:32px;
 	width:26px;
 	box-sizing:border-box;
-
+	place-items: center;
 	justify-content: center;
 	cursor: pointer;
 }
@@ -107,16 +95,12 @@ span.pb2b-credit-failed::after {
 /* Default padding : HOVER */
 	.pb2b-icon-perform-check:hover {
 		display:flex;
-		/* min-height:30px;
-		width:28px; */
 		box-sizing:border-box;
 		background-color: #0071a1;
 	}
 
 /* Cross */
 span.pb2b-credit-check {
-	margin-top:2px;
-	font-size:28px;
 	color: #0071a1;
 }
 
