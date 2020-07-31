@@ -48,17 +48,41 @@ if ( 'payer_b2b_prepaid_invoice' === $this->id ) {
 	);
 }
 
-// Payer B2B V1 Invoice settings.
-if ( 'payer_b2b_normal_invoice' === $this->id ) {
-	$settings['agent_id']               = array(
-		'title'   => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
-		'type'    => 'text',
-		'default' => '',
+// -------
+if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' === $this->id ) {
+	$settings['enable_all_fields'] = array(
+		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
+		'type'        => 'checkbox',
+		'label'       => __( 'Enables the extra checkout fields added by Payer.', 'payer-b2b-for-woocommerce' ),
+		'default'     => 'yes',
+		'description' => __( 'If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used.', 'payer-b2b-for-woocommerce' ),
+		'desc_tip'    => true,
+
 	);
-	$settings['api_key']                = array(
-		'title'   => __( 'API Key', 'payer-b2b-for-woocommerce' ),
-		'type'    => 'text',
-		'default' => '',
+	$settings['separate_signatory']     = array(
+		'title'   => __( 'Enable separate signatory', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'checkbox',
+		'label'   => __( 'Enable the customer to enter a separate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
+		'default' => 'yes',
+	);
+	$settings['default_invoice_type']   = array(
+		'title'       => __( 'Default invoice type', 'payer-b2b-for-woocommerce' ),
+		'type'        => 'select',
+		'options'     => array(
+			'EMAIL'    => 'Email',
+			'PRINT'    => 'Mail',
+			'PDF'      => 'PDF',
+			'EINVOICE' => 'E-Invoice',
+		),
+		'description' => __( 'Select what invoice type you want to use', 'payer-b2b-for-woocommerce' ),
+		'default'     => 'EMAIL',
+		'desc_tip'    => false,
+	);
+	$settings['customer_invoice_type']  = array(
+		'title'   => __( 'Customer selects invoice type', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'checkbox',
+		'label'   => __( 'This allows the customer to select what invoice type they want.', 'payer-b2b-for-woocommerce' ),
+		'default' => 'no',
 	);
 	$settings['allowed_customer_types'] = array(
 		'title'       => __( 'Allowed Customer Types', 'payer-b2b-for-woocommerce' ),
@@ -73,53 +97,34 @@ if ( 'payer_b2b_normal_invoice' === $this->id ) {
 		'default'     => 'B2BC',
 		'desc_tip'    => false,
 	);
-	$settings['order_management']       = array(
+}
+// Payer B2B V1 Invoice settings.
+if ( 'payer_b2b_normal_invoice' === $this->id ) {
+	$settings['agent_id'] = array(
+		'title'   => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'text',
+		'default' => '',
+	);
+	$settings['api_key']  = array(
+		'title'   => __( 'API Key', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'text',
+		'default' => '',
+	);
+
+	$settings['order_management'] = array(
 		'title'   => __( 'Enable Order Management', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable Payer order capture on WooCommerce order completion and Payer order cancellation on WooCommerce order cancellation', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['enable_all_fields']      = array(
-		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
-		'type'        => 'checkbox',
-		'label'       => __( 'Enables the extra checkout fields added by Payer.', 'payer-b2b-for-woocommerce' ),
-		'default'     => 'yes',
-		'description' => __( 'If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used.', 'payer-b2b-for-woocommerce' ),
-		'desc_tip'    => true,
 
-	);
-	$settings['separate_signatory']    = array(
-		'title'   => __( 'Enable separate signatory', 'payer-b2b-for-woocommerce' ),
-		'type'    => 'checkbox',
-		'label'   => __( 'Enable the customer to enter a separate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
-		'default' => 'yes',
-	);
-	$settings['default_invoice_type']  = array(
-		'title'       => __( 'Default invoice type', 'payer-b2b-for-woocommerce' ),
-		'type'        => 'select',
-		'options'     => array(
-			'EMAIL'    => 'Email',
-			'PRINT'    => 'Mail',
-			'PDF'      => 'PDF',
-			'EINVOICE' => 'E-Invoice',
-		),
-		'description' => __( 'Select what invoice type you want to use', 'payer-b2b-for-woocommerce' ),
-		'default'     => 'EMAIL',
-		'desc_tip'    => false,
-	);
-	$settings['customer_invoice_type'] = array(
-		'title'   => __( 'Customer selects invoice type', 'payer-b2b-for-woocommerce' ),
-		'type'    => 'checkbox',
-		'label'   => __( 'This allows the customer to select what invoice type they want.', 'payer-b2b-for-woocommerce' ),
-		'default' => 'no',
-	);
-	$settings['testmode']              = array(
+	$settings['testmode'] = array(
 		'title'   => __( 'Testmode', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable Payer testmode', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['debug']                 = array(
+	$settings['debug']    = array(
 		'title'   => __( 'Debug', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable debug logging for the plugin', 'payer-b2b-for-woocommerce' ),
