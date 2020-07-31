@@ -44,8 +44,13 @@ class PB2B_Create_Credit_Check_Column {
 	public function create_credit_check_column_content( $column, $order_id ) {
 
 		if ( 'credit_status' === $column ) {
-			$customer_credit_check = get_post_meta( $order_id, '_payer_credit_check_result', true );
+			$order = wc_get_order( $order_id );
 
+			if ( ! in_array( $order->get_payment_method(), array( 'payer_b2b_prepaid_invoice', 'payer_b2b_normal_invoice' ) ) ) {
+				return;
+			}
+
+			$customer_credit_check = get_post_meta( $order_id, '_payer_credit_check_result', true );
 			if ( 'PASSED' === $customer_credit_check ) {
 				?>
 
