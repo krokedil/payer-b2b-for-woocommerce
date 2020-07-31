@@ -48,7 +48,6 @@ if ( 'payer_b2b_prepaid_invoice' === $this->id ) {
 	);
 }
 
-// -------
 if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' === $this->id ) {
 	$settings['enable_all_fields'] = array(
 		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
