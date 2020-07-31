@@ -59,7 +59,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
 
 		// Filters.
-		add_filter( 'woocommerce_page_wc-settings', array( $this, 'show_keys_in_settings' ) );
+		add_filter( 'woocommerce_get_settings_checkout', array( $this, 'show_keys_in_settings' ), 10, 2 );
 
 	}
 
@@ -78,15 +78,17 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	}
 
 	/**
-	 * Shows setting keys on the settings page.
+	 * Show setting keys on Settings page.
 	 *
-	 * @return void
+	 * @param array $settings Standard settings.
+	 * @param int   $current_section Section ID.
+	 * @return mixed
 	 */
-	public function show_keys_in_settings() {
-		if ( isset( $_GET['section'] ) ) {
-			if ( $this->id === $_GET['section'] ) {
-				payer_b2b_show_credentials_form();
-			}
+	public function show_keys_in_settings( $settings, $current_section ) {
+		if ( $this->id === $current_section ) { // Check the current section is what we want.
+			return payer_b2b_show_credentials_form();
+		} else { // If not, return the standard settings.
+			return $settings;
 		}
 	}
 
@@ -109,7 +111,9 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @return void
 	 */
 	public function payment_fields() {
+
 		if ( 'yes' === $this->enable_all_fields ) {
+
 			// Set the needed variables.
 			$b2b_enabled = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
 			$b2b_switch  = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
@@ -126,19 +130,14 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 				<?php
 			}
 			?>
-			<p class="form-row validate-required form-row-wide" id="payer_b2b_pno_field">
-				<label id="payer_b2b_pno_label" for="payer_b2b_pno"><?php echo esc_html( $pno_text ); ?></label>
-				<span class="woocommerce-input-wrapper">
-					<input type="text" name="<?php echo esc_attr( PAYER_PNO_FIELD_NAME ); ?>" id="payer_b2b_pno"/>
-				</span>
-			</p>
-			<br>
+
 			<?php
 
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
 				?>
 				<div id="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
+				<br>
 					<label style="padding-bottom:5px;" for="payer_b2b_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
 					<span style="padding:10px;" class="woocommerce-input-wrapper">
 						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory"/>

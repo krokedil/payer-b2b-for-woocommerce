@@ -52,7 +52,6 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 		// Unset sessions.
 	}
 
-
 	/**
 	 * Adds Personalnumber field to checkout.
 	 *
@@ -60,12 +59,15 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	 * @return array $fields
 	 */
 	public function add_personal_number_field( $fields ) {
-		$settings = get_option( 'woocommerce_payer_card_payment_settings' );
+		$settings    = get_option( 'woocommerce_payer_card_payment_settings' );
+		$b2b_default = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
+		$pno_text    = $b2b_default ? __( 'Organisation Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
+
 		if ( 'yes' !== $settings['get_address'] ) {
 			$fields['billing'][ PAYER_PNO_FIELD_NAME ] = array(
-				'label'       => apply_filters( 'payer_pno_label', __( 'Personal number', 'payer-for-woocommerce' ) ),
+				'label'       => $pno_text,
 				'placeholder' => _x( 'xxxxxx-xxxx', 'placeholder', 'payer-for-woocommerce' ),
-				'required'    => false,
+				'required'    => true,
 				'class'       => array( 'form-row-wide' ),
 				'clear'       => true,
 			);

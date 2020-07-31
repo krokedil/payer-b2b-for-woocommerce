@@ -5,12 +5,15 @@ const init = function() {
 	let signatoryStatus = 'hidden';
 	// Add event listener for maybeSetB2B.
 	const signatoryWrapper = document.getElementById('signatory_wrapper');
-	const pnoFieldLabel = document.getElementById('payer_b2b_pno_label');
-	const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
+    const pnoFieldLabel = document.getElementById('payer_b2b_pno_field')
+    const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
+        
 	if ( maybeSetB2B ) {
+        cll('Situation 1');
 		maybeSetB2B.addEventListener('change', (maybeSetB2B) => {
 			if ( maybeSetB2B.target.checked === true ) {
-				pnoFieldLabel.innerHTML =  payer_wc_params.b2b_text;
+                cll('Situation 2');
+                pnoFieldLabel.childNodes[0].childNodes[0].nodeValue =  payer_wc_params.b2b_text ;
 				if ( signatoryWrapper ) {
 					signatoryWrapper.style = 'display:block';
 					if ( 'display' === signatoryStatus ) {
@@ -18,7 +21,8 @@ const init = function() {
 					}
 				}
 			} else {
-				pnoFieldLabel.innerHTML = payer_wc_params.b2c_text;
+                cll('Situation 3');
+                pnoFieldLabel.childNodes[0].childNodes[0].nodeValue = payer_wc_params.b2c_text;
 				if ( signatoryWrapper ) {
 					signatoryWrapper.style = 'display:none';
 					if ( 'display' === signatoryStatus ) {
@@ -88,7 +92,7 @@ jQuery( function($)  {
 
         addGetAddressButton: function() {
             var post_code   = $('#billing_postcode_field'),
-                button      = '<button type="button" class="payer_get_address_button button" id="payer_get_address">' + payer_wc_params.get_address_text + '</button>';
+                button      = '<button type="button" class="payer_get_address_button button" style="display:block; clear:both" id="payer_get_address">' + payer_wc_params.get_address_text + '</button>';
 
             post_code.after(button);
         },
