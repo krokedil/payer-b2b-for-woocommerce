@@ -41,8 +41,11 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$this->credit = $this->get_option( 'automatic_credit_check' );
 
 		// Supports.
+
+		// TODO Added 'refunds'
 		$this->supports = array(
 			'products',
+			'refunds',
 			'subscriptions',
 			'subscription_cancellation',
 			'subscription_suspension',
@@ -100,9 +103,38 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @param string $reasson The reasson given for the refund.
 	 * @return void
 	 */
-	public function process_refund( $order_id, $amount = null, $reasson = '' ) {
+	public function process_refund( $order_id, $amount = null, $reason = '' ) {
+
 		$order = wc_get_order( $order_id );
 		// Run logic here.
+
+		if ( $amount === $order->get_total() ) {
+			// Full refund.
+			error_log( 'Full refund' );
+			$request = new PB2B_Request_Credit_Invoice( $order_id );
+
+		} else {
+			$request  = new PB2B_Request_Partial_Refund_Credit_Invoice( $order_id );
+			$response = $request->request( $amount, $reason );
+
+			if ( is_wp_error( $response ) ) {
+				$order->add_order_note( __( 'Partial Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+				return false;
+			}
+
+			if ( 0 == ( $response['invoice']['items'] ) ) {
+				$request  = new PB2B_Request_Manual_Refund_Credit_Invoice( $order_id );
+				$response = $request->request( $amount, $reason );
+
+				if ( is_wp_error( $response ) ) {
+					$order->add_order_note( __( 'Manual Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+					return false;
+				}
+			}
+		}
+
+		$order->add_order_note( wc_price( $amount ) . ' ' . __( 'refunded with Payer.', 'payer-b2b-for-woocommerce' ) );
+		return true;
 	}
 
 	/**
