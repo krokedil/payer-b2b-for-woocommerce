@@ -141,7 +141,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 				?>
 				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
 				<span style="padding:5px;" class="woocommerce-input-wrapper">
-					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
+					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" class="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
 				</span>
 				<?php
 			}
@@ -153,7 +153,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 				<p class="form-row validate-required form-row-wide" id="payer_b2b_invoice_type_field">
 					<label id="payer_b2b_invoice_type_label" for="payer_b2b_invoice_type"><?php esc_html_e( 'Invoice type', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
-						<select name="payer_b2b_invoice_type" id="payer_b2b_invoice_type">
+						<select name="payer_b2b_invoice_type" id="payer_b2b_invoice_type" class="payer_b2b_invoice_type">
 							<option value="EMAIL" <?php 'EMAIL' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Email</option>
 							<option value="PRINT" <?php 'PRINT' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Mail</option>
 							<option value="PDF" <?php 'PDF' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>PDF</option>
@@ -168,10 +168,10 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
 				?>
-				<div id="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
+				<div class="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
 					<label style="padding-bottom:5px;" for="payer_b2b_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
 					<span style="padding:10px;" class="woocommerce-input-wrapper">
-						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory"/>
+						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory" class="payer_b2b_signatory"/>
 					</span>
 				</div>
 				<?php
@@ -180,7 +180,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we want to add the signatory field.
 			if ( $b2b_enabled && 'yes' === $this->separate_signatory ) {
 				?>
-				<p class="form-row validate-required form-row-wide" id="payer_b2b_signatory_text_field" style="display:none">
+				<p class="form-row validate-required form-row-wide payer_b2b_signatory_text_field" style="display:none">
 					<label for="payer_b2b_signatory_text"><?php esc_html_e( 'Signatory name', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
 						<input type="text" name="payer_b2b_signatory_text" id="payer_b2b_signatory_text"/>

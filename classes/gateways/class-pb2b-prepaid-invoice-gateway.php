@@ -145,36 +145,50 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @return void
 	 */
 	public function payment_fields() {
-
 		if ( 'yes' === $this->enable_all_fields ) {
-
 			// Set the needed variables.
-			$b2b_enabled = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
-			$b2b_switch  = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
-			$b2b_default = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
-			$pno_text    = $b2b_default ? __( 'Organisation Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
+			$b2b_enabled             = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
+			$b2b_switch              = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
+			$b2b_default             = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
+			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? 'yes' === $this->customer_invoice_type : false;
+			$pno_text                = $b2b_default ? __( 'Organization Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
 
 			// Check if we need to have the switch checkbox for the PNO field.
 			if ( $b2b_switch ) {
 				?>
-				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
+				<label style="padding-bottom:15px;" for="payer_b2b_set_prepaid_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
 				<span style="padding:5px;" class="woocommerce-input-wrapper">
-					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
+					<input type="checkbox" name="payer_b2b_set_prepaid_b2b" id="payer_b2b_set_prepaid_b2b" class="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
 				</span>
 				<?php
 			}
 			?>
-
+			<br>
 			<?php
+			if ( $customer_invoice_switch ) {
+				?>
+				<p class="form-row validate-required form-row-wide" id="payer_b2b_invoice_type_field">
+					<label id="payer_b2b_invoice_type_label" for="payer_b2b_invoice_prepaid_type"><?php esc_html_e( 'Invoice type', 'payer-b2b-for-woocommerce' ); ?></label>
+					<span class="woocommerce-input-wrapper">
+						<select name="payer_b2b_invoice_prepaid_type" id="payer_b2b_invoice_prepaid_type" class="payer_b2b_invoice_type">
+							<option value="EMAIL" <?php 'EMAIL' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Email</option>
+							<option value="PRINT" <?php 'PRINT' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Mail</option>
+							<option value="PDF" <?php 'PDF' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>PDF</option>
+							<option value="EINVOICE" <?php 'EINVOICE' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>E-Invoice</option>
+						</select>
+					</span>
+				</p>
+				<br>
+				<?php
+			}
 
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
 				?>
-				<div id="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
-				<br>
-					<label style="padding-bottom:5px;" for="payer_b2b_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
+				<div class="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
+					<label style="padding-bottom:5px;" for="payer_b2b_prepaid_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
 					<span style="padding:10px;" class="woocommerce-input-wrapper">
-						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory"/>
+						<input type="checkbox" name="payer_b2b_prepaid_signatory" id="payer_b2b_prepaid_signatory" class="payer_b2b_signatory"/>
 					</span>
 				</div>
 				<?php
@@ -183,10 +197,10 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we want to add the signatory field.
 			if ( $b2b_enabled && 'yes' === $this->separate_signatory ) {
 				?>
-				<p class="form-row validate-required form-row-wide" id="payer_b2b_signatory_text_field" style="display:none">
-					<label for="payer_b2b_signatory_text"><?php esc_html_e( 'Signatory name', 'payer-b2b-for-woocommerce' ); ?></label>
+				<p class="form-row validate-required form-row-wide payer_b2b_signatory_text_field" style="display:none">
+					<label for="payer_b2b_signatory_prepaid_text"><?php esc_html_e( 'Signatory name', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
-						<input type="text" name="payer_b2b_signatory_text" id="payer_b2b_signatory_text"/>
+						<input type="text" name="payer_b2b_signatory_prepaid_text" id="payer_b2b_signatory_prepaid_text"/>
 					</span>
 				</p>
 				<?php
@@ -210,7 +224,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		// @codingStandardsIgnoreStart // We can ignore this because Woo has already done a nonce check here.
 		// Set and sanitize variables.
 		$pno      		   = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
-		$signatory 		   = isset( $_POST['payer_b2b_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_signatory_text'] ) : '';
+		$signatory 		   = isset( $_POST['payer_b2b_prepaid_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_prepaid_signatory_text'] ) : '';
 		$created_via_admin = isset( $_POST['pb2b-create-invoice-order'] ) ? true : false;
 		// @codingStandardsIgnoreEnd
 
@@ -234,7 +248,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 				update_post_meta( $order_id, '_payer_signatory', $signatory );
 			}
 			$args     = array(
-				'b2b'             => isset( $_POST['payer_b2b_set_b2b'] ), // phpcs:ignore
+				'b2b'             => isset( $_POST['payer_b2b_set_prepaid_b2b'] ), // phpcs:ignore
 				'pno_value'       => $pno,
 				'signatory_value' => $signatory,
 			);
