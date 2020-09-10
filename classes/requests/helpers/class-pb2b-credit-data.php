@@ -23,40 +23,41 @@ class PB2B_Credit_Data {
 		return intval( round( ( $tax_amount / $amount ) * 100 ) );
 	}
 
-	public static function get_partial_refund_items( $order_id ) {
-		$order           = wc_get_order( $order_id );
-		$refund_order    = self::get_refunded_order( $order_id );
-		$refund_items    = $refund_order->get_items();
-		$refund_shipping = $refund_order->get_items( 'shipping' );
-		$refund_fees     = $refund_order->get_items( 'fee' );
-
-		$modified_item_prices = 0;
-
-		$position = 0;
-
+	/**
+	 * Generates the refund data for manual and partial refunds.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return array
+	 */
+	public static function get_refund_data( $order_id ) {
+		$order               = wc_get_order( $order_id );
+		$refund_order        = self::get_refunded_order( $order_id );
+		$refund_items        = $refund_order->get_items();
+		$refund_shipping     = $refund_order->get_items( 'shipping' );
+		$refund_fees         = $refund_order->get_items( 'fee' );
+		$position            = 0;
 		$partial_refund_data = array();
 		$manual_refund_data  = array();
 
 		if ( $refund_items ) {
-
 			// Item refund.
 			foreach ( $refund_items as $item ) {
 				foreach ( $order->get_items() as $original_order_item ) {
-
-					$position += 1;
-
 					if ( $item->get_product_id() === $original_order_item->get_product_id() ) {
 						break;
 					}
 				}
 
-				if ( abs( $item->get_total() ) / abs( $item->get_quantity() ) === $original_order_item->get_total() / $original_order_item->get_quantity() ) {
+				$item_quantity     = 0 === abs( $item->get_quantity() ) ? 1 : abs( $item->get_quantity() );
+				$org_item_quantity = 0 === abs( $original_order_item->get_quantity() ) ? 1 : abs( $original_order_item->get_quantity() );
+				if ( abs( $item->get_total() ) / $item_quantity === $original_order_item->get_total() / $org_item_quantity ) {
+					++$position;
 					$partial_refund_data[] = array(
 						'position' => $position,
 						'quantity' => abs( $item->get_quantity() ),
 					);
 				} else {
-					error_log( 'Item manual' );
+					++$position;
 					// The item is partial refunded.
 					$tmp                      = PB2B_Order_Lines::get_order_item( $refund_order, $item );
 					$tmp['quantity']          = 1;
@@ -69,29 +70,24 @@ class PB2B_Credit_Data {
 		}
 
 		if ( $refund_fees ) {
-
 			// Fee item refund.
 			if ( $refund_fees ) {
 				foreach ( $refund_fees as $fee ) {
-
 					foreach ( $order->get_items( 'shipping' ) as $original_order_fee ) {
-						$position += 1;
-
 						if ( $fee->get_name() === $original_order_fee->get_name() ) {
 							// Found product match, continue.
 							break;
 						}
 					}
-
 					if ( abs( $fee->get_total() ) / abs( $fee->get_quantity() ) === $original_order_fee->get_total() / $original_order_fee->get_quantity() ) {
+						++$position;
 						$partial_refund_data[] = array(
 							'position' => $position,
 							'quantity' => 1,
 						);
-
 					} else {
-						error_log( 'Fee manual' );
 						// The fee is partial refunded.
+						++$position;
 						$tmp                      = PB2B_Order_Lines::get_fee( $fee );
 						$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
 						$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
@@ -103,14 +99,10 @@ class PB2B_Credit_Data {
 		}
 
 		if ( $refund_shipping ) {
-
 			// Shipping item refund.
 			if ( $refund_shipping ) {
 				foreach ( $refund_shipping as $shipping ) {
-
 					foreach ( $order->get_items( 'shipping' ) as $original_order_shipping ) {
-						$position += 1;
-
 						if ( $shipping->get_name() === $original_order_shipping->get_name() ) {
 							// Found product match, continue.
 							break;
@@ -118,25 +110,23 @@ class PB2B_Credit_Data {
 					}
 
 					if ( abs( $shipping->get_total() ) / abs( $shipping->get_quantity() ) === $original_order_shipping->get_total() / $original_order_shipping->get_quantity() ) {
+						++$position;
 						$partial_refund_data[] = array(
 							'position' => $position,
 							'quantity' => 1,
 						);
-
 					} else {
-						error_log( 'Shipping manual' );
+						++$position;
 						// The shipping is partial refunded.
 						$tmp                      = PB2B_Order_Lines::get_shipping( $refund_order );
 						$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
 						$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
 						$tmp['position']          = $position;
 						$manual_refund_data[]     = $tmp;
-
 					}
 				}
 			}
 		}
-
 		return array(
 			'partial_refund_data' => $partial_refund_data,
 			'manual_refund_data'  => $manual_refund_data,
@@ -147,7 +137,7 @@ class PB2B_Credit_Data {
 	/**
 	 * Gets refunded order
 	 *
-	 * @param int $order_id
+	 * @param int $order_id The WooCommerce order id.
 	 * @return WC_Order
 	 */
 	public static function get_refunded_order( $order_id ) {
