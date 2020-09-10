@@ -136,7 +136,6 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			// Post.
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-oauth.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-order.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v1-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v2-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-direct-card.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-stored-card.php';
@@ -144,15 +143,12 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-refund-card-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-authorize-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-register-webhook.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-full-credit-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-partial-credit-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-manual-credit-invoice.php';
 			// Put.
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-order.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-v1-invoice.php';
-			// ---------
-			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-invoice.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-partial-refund-credit-invoice.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-manual-refund-credit-invoice.php';
-			// --------
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-release-card-payment.php';
 			// Delete.
 			include_once PAYER_B2B_PATH . '/classes/requests/delete/class-pb2b-request-delete-order.php';

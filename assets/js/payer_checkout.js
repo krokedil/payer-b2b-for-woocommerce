@@ -9,10 +9,8 @@ const init = function() {
     const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
         
 	if ( maybeSetB2B ) {
-        cll('Situation 1');
 		maybeSetB2B.addEventListener('change', (maybeSetB2B) => {
 			if ( maybeSetB2B.target.checked === true ) {
-                cll('Situation 2');
                 pnoFieldLabel.childNodes[0].childNodes[0].nodeValue =  payer_wc_params.b2b_text ;
 				if ( signatoryWrapper ) {
 					signatoryWrapper.style = 'display:block';
@@ -21,7 +19,6 @@ const init = function() {
 					}
 				}
 			} else {
-                cll('Situation 3');
                 pnoFieldLabel.childNodes[0].childNodes[0].nodeValue = payer_wc_params.b2c_text;
 				if ( signatoryWrapper ) {
 					signatoryWrapper.style = 'display:none';
