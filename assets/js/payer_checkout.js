@@ -1,70 +1,3 @@
-// Set contants and variables.
-const targetNode = document.getElementById('order_review');
-
-const init = function() {
-	let signatoryStatus = 'hidden';
-	// Add event listener for maybeSetB2B.
-	const signatoryWrapper = document.getElementById('signatory_wrapper');
-    const pnoFieldLabel = document.getElementById('payer_b2b_pno_field')
-    const maybeSetB2B = document.getElementById('payer_b2b_set_b2b');
-        
-	if ( maybeSetB2B ) {
-		maybeSetB2B.addEventListener('change', (maybeSetB2B) => {
-			if ( maybeSetB2B.target.checked === true ) {
-                pnoFieldLabel.childNodes[0].childNodes[0].nodeValue =  payer_wc_params.b2b_text ;
-				if ( signatoryWrapper ) {
-					signatoryWrapper.style = 'display:block';
-					if ( 'display' === signatoryStatus ) {
-						signatoryField.style = 'display:block';
-					}
-				}
-			} else {
-                pnoFieldLabel.childNodes[0].childNodes[0].nodeValue = payer_wc_params.b2c_text;
-				if ( signatoryWrapper ) {
-					signatoryWrapper.style = 'display:none';
-					if ( 'display' === signatoryStatus ) {
-						signatoryField.style = 'display:none';
-					}
-				}
-			}
-		});
-	}
-
-	// Add event listener for toggleSignatoryField.
-	const toggleSignatoryField = document.getElementById('payer_b2b_signatory');
-	const signatoryField = document.getElementById('payer_b2b_signatory_text_field');
-	if ( toggleSignatoryField ) {
-		toggleSignatoryField.addEventListener('change', (toggleSignatoryField) => {
-			if ( toggleSignatoryField.target.checked === true ) {
-				signatoryField.style = 'display:block';
-				signatoryStatus = 'display';
-			} else {
-				signatoryField.style = 'display:none';
-				signatoryStatus = 'hidden';
-			}		
-		});
-	}
-}
-
-/**
- * Callback for MutationObserver.
- * 
- * @param {*} mutationsList 
- * @param {*} observer 
- */
-const callback = function(mutationsList, observer) {
-    for ( var mutation of mutationsList ) {
-        if ( mutation.type == 'childList' ) {
-			init();
-			break;
-        }
-    }
-};
-const observer = new MutationObserver(callback);
-const config = { childList: true };
-observer.observe( targetNode, config );
-
-
 jQuery( function($)  {
 	var payer_wc = {
 		documentReady: function(){
@@ -181,12 +114,32 @@ jQuery( function($)  {
             }
         },
 
+		maybeSetB2B: function( e ) {
+			let target = e.target;
+			let pnoLabel = $( '#payer_b2b_pno_field' ).find('label');
+
+			if( $(target).is(":checked") ) {
+				pnoLabel.html( payer_wc_params.b2b_text + ' <abbr class="required" title="required">*</abbr>' )
+			} else {
+				pnoLabel.html( payer_wc_params.b2c_text + ' <abbr class="required" title="required">*</abbr>' )
+			}
+		},
+
+		toggleSignatoryField: function( e ) {
+			let target = e.target;
+			let p = $( target ).parent().parent().siblings( 'p.payer_b2b_signatory_text_field' );
+			if( $(target).is(":checked") ) {
+				p.css('display', 'block');
+			} else {
+				p.css('display', 'none');
+			}
+		},
+
 		init: function(){
 			$( document ).ready( payer_wc.documentReady );
-
-			$('body').on('click', '#payer_get_address', function() {
-				payer_wc.getAddress();
-		});
+			$('body').on('click', '#payer_get_address', function() { payer_wc.getAddress(); });
+			$('body').on('click', '.payer_b2b_set_b2b', function( e ) { payer_wc.maybeSetB2B( e ) });
+			$('body').on('click', '.payer_b2b_signatory', function( e ) { payer_wc.toggleSignatoryField( e ) });
 		}
 	}
 	payer_wc.init();
