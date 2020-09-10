@@ -85,17 +85,39 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
-		// Run logic here.
-		if ( $amount === $order->get_total() + $order->get_total_tax() ) {
-			// Full refund
-			error_log( 'Full refund' );
+		if ( $amount === $order->get_total() ) {
+			// Full refund.
+			$request  = new PB2B_Request_Credit_Invoice( $order_id );
+			$response = $request->request();
+			if ( is_wp_error( $response ) ) {
+				$order->add_order_note( __( 'Full Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+				return false;
+			}
+		} else {
+			// Partial refund.
+			$refund_data = PB2B_Credit_Data::get_refund_data( $order_id );
+
+			if ( isset( $refund_data['partial_refund_data'] ) && ! empty( $refund_data['partial_refund_data'] ) ) {
+				$request  = new PB2B_Request_Partial_Refund_Credit_Invoice( $order_id );
+				$response = $request->request( $refund_data );
+				if ( is_wp_error( $response ) ) {
+					$order->add_order_note( __( 'Partial Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+					return false;
+				}
+			}
+
+			// Manual refund.
+			if ( isset( $refund_data['manual_refund_data'] ) && ! empty( $refund_data['manual_refund_data'] ) ) {
+				$request  = new PB2B_Request_Manual_Refund_Credit_Invoice( $order_id );
+				$response = $request->request( $refund_data );
+
+				if ( is_wp_error( $response ) ) {
+					$order->add_order_note( __( 'Manual Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+					return false;
+				}
+			}
 		}
-		$request  = new PB2B_Request_Credit_Invoice( $order_id );
-		$response = $request->request( $amount, $reason );
-		if ( is_wp_error( $response ) ) {
-			$order->add_order_note( __( 'Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
-			return false;
-		}
+
 		$order->add_order_note( wc_price( $amount ) . ' ' . __( 'refunded with Payer.', 'payer-b2b-for-woocommerce' ) );
 		return true;
 	}
