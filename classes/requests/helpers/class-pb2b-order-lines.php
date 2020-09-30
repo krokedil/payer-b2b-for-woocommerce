@@ -172,10 +172,10 @@ class PB2B_Order_Lines {
 			'description'       => $fee->get_name(),
 			'quantity'          => 1,
 			'unit'              => 'pcs',
-			'unitPrice'         => $fee->get_total(),
+			'unitPrice'         => intval( round( $fee->get_total() * 100 ) ),
 			'unitVatAmount'     => 0,
 			'vatPercentage'     => 0,
-			'subtotalPrice'     => $fee->get_total(),
+			'subtotalPrice'     => intval( round( $fee->get_total() * 100 ) ),
 			'subtotalVatAmount' => 0,
 		);
 	}
