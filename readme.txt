@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.4.1
+Tested up to: 5.5.1
 Requires PHP: 5.6
 Stable tag: trunk
 WC requires at least: 3.5.0
-WC tested up to: 4.1.1
+WC tested up to: 4.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,8 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.09.30        - Version 1.1.2 =
+* Fix               - Fixed incorrect price calculation of fees when creating a Payer order.
 
 = 2020.06.01        - Version 1.1.1 =
 * Fix               - Able to create Payer Invoice from admin without having to add shipping address.
