@@ -41,6 +41,8 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$this->enable_all_fields     = $this->get_option( 'enable_all_fields' );
 		$this->default_invoice_type  = $this->get_option( 'default_invoice_type' );
 		$this->customer_invoice_type = $this->get_option( 'customer_invoice_type' );
+		$this->credit                = $this->get_option( 'automatic_credit_check' );
+
 		// Supports.
 		$this->supports = array(
 			'products',
@@ -210,6 +212,11 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$created_via_admin = isset( $_POST['pb2b-create-invoice-order'] ) ? true : false;
 		// @codingStandardsIgnoreEnd
 
+		// Check if we need to create a payer order or not.
+		if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) {
+			$create_payer_order = false;
+		}
+
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
@@ -251,6 +258,11 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
 				return false;
+			}
+
+			// Customer credit check.
+			if ( 'yes' === $this->credit || false === $this->credit ) {
+				payer_b2b_make_credit_check( $order_id );
 			}
 
 			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );

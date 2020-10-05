@@ -37,8 +37,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$this->customer_type      = $this->get_option( 'allowed_customer_types' );
 		$this->separate_signatory = $this->get_option( 'separate_signatory' );
 		$this->enable_all_fields  = $this->get_option( 'enable_all_fields' );
-
-		$this->credit = $this->get_option( 'automatic_credit_check' );
+		$this->credit             = $this->get_option( 'automatic_credit_check' );
 
 		// Supports.
 		$this->supports = array(
@@ -227,6 +226,11 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		$signatory 		   = isset( $_POST['payer_b2b_prepaid_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_prepaid_signatory_text'] ) : '';
 		$created_via_admin = isset( $_POST['pb2b-create-invoice-order'] ) ? true : false;
 		// @codingStandardsIgnoreEnd
+
+		// Check if we need to create a payer order or not.
+		if ( ! empty( get_post_meta( $order_id, '_payer_order_id', true ) ) ) {
+			$create_payer_order = false;
+		}
 
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 			$create_payer_order = false;
