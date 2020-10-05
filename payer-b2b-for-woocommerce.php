@@ -104,6 +104,11 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			do_action( 'payer_initiated' );
 		}
 
+		/**
+		 * Conditionaly set additional deffinitions.
+		 *
+		 * @return void
+		 */
 		public function set_defines() {
 			// Set definitions.
 			if ( ! defined( 'PAYER_PNO_FIELD_NAME' ) ) {
@@ -122,8 +127,8 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		public function include_files() {
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
-			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v1-invoice-gateway.php';
-			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-v2-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-normal-invoice-gateway.php';
+			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-prepaid-invoice-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-card-gateway.php';
 
 			// Requests.
@@ -131,7 +136,6 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			// Post.
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-oauth.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-order.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v1-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-v2-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-direct-card.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-stored-card.php';
@@ -139,10 +143,12 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-refund-card-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-authorize-payment.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-register-webhook.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-full-credit-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-partial-credit-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-manual-credit-invoice.php';
 			// Put.
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-order.php';
-			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-credit-v1-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-release-card-payment.php';
 			// Delete.
 			include_once PAYER_B2B_PATH . '/classes/requests/delete/class-pb2b-request-delete-order.php';
@@ -151,11 +157,14 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-stored-payment-status.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-payload.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-event-acknowledge.php';
-
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-address.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/get/class-pb2b-request-get-credit-check.php';
 			// Request helpers.
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-customer-data.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-order-lines.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-v1-credit-data.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/helpers/class-pb2b-credit-data.php';
 
 			// Classes.
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-logger.php';
@@ -163,7 +172,9 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-subscriptions.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-api-callbacks.php';
-
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-ajax.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-create-credit-check-column.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-address-filter.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
 			include_once PAYER_B2B_PATH . '/includes/pb2b-credentials-form-fields.php';
@@ -190,7 +201,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 * @return string Setting link
 		 */
 		public function get_setting_link() {
-			$section_slug = 'payer_b2b_v1_invoice';
+			$section_slug = 'payer_b2b_normal_invoice';
 			return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
 		}
 
@@ -207,8 +218,13 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 					true
 				);
 				$params = array(
-					'b2c_text' => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
-					'b2b_text' => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+					'b2c_text'          => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
+					'b2b_text'          => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+					'pno_name'          => PAYER_PNO_FIELD_NAME,
+					'get_address_text'  => __( 'Get address', 'payer-b2b-for-woocommerce' ),
+					'get_address'       => WC_AJAX::get_endpoint( 'get_address' ),
+					'get_address_nonce' => wp_create_nonce( 'get_address_nonce' ),
 				);
 				wp_localize_script(
 					'payer_wc',

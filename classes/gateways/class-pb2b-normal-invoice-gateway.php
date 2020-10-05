@@ -12,13 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gateway class.
  */
-class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
+class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id                 = 'payer_b2b_v1_invoice';
+		parent::__construct();
+
+		$this->id                 = 'payer_b2b_normal_invoice';
 		$this->method_title       = __( 'Payer B2B Invoice', 'payer-b2b-for-woocommerce' );
 		$this->icon               = '';
 		$this->method_description = __( 'Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce' ); // phpcs:ignore
@@ -83,13 +85,39 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
-		// Run logic here.
-		$request  = new PB2B_Request_Credit_V1_Invoice( $order_id );
-		$response = $request->request( $amount, $reason );
-		if ( is_wp_error( $response ) ) {
-			$order->add_order_note( __( 'Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
-			return false;
+		if ( $amount === $order->get_total() ) {
+			// Full refund.
+			$request  = new PB2B_Request_Credit_Invoice( $order_id );
+			$response = $request->request();
+			if ( is_wp_error( $response ) ) {
+				$order->add_order_note( __( 'Full Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+				return false;
+			}
+		} else {
+			// Partial refund.
+			$refund_data = PB2B_Credit_Data::get_refund_data( $order_id );
+
+			if ( isset( $refund_data['partial_refund_data'] ) && ! empty( $refund_data['partial_refund_data'] ) ) {
+				$request  = new PB2B_Request_Partial_Refund_Credit_Invoice( $order_id );
+				$response = $request->request( $refund_data );
+				if ( is_wp_error( $response ) ) {
+					$order->add_order_note( __( 'Partial Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+					return false;
+				}
+			}
+
+			// Manual refund.
+			if ( isset( $refund_data['manual_refund_data'] ) && ! empty( $refund_data['manual_refund_data'] ) ) {
+				$request  = new PB2B_Request_Manual_Refund_Credit_Invoice( $order_id );
+				$response = $request->request( $refund_data );
+
+				if ( is_wp_error( $response ) ) {
+					$order->add_order_note( __( 'Manual Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
+					return false;
+				}
+			}
 		}
+
 		$order->add_order_note( wc_price( $amount ) . ' ' . __( 'refunded with Payer.', 'payer-b2b-for-woocommerce' ) );
 		return true;
 	}
@@ -105,7 +133,7 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$b2b_enabled             = in_array( $this->customer_type, array( 'B2B', 'B2CB', 'B2BC' ), true );
 			$b2b_switch              = in_array( $this->customer_type, array( 'B2CB', 'B2BC' ), true );
 			$b2b_default             = in_array( $this->customer_type, array( 'B2B', 'B2BC' ), true );
-			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? $this->customer_invoice_type === 'yes' : false;
+			$customer_invoice_switch = isset( $this->customer_invoice_type ) ? 'yes' === $this->customer_invoice_type : false;
 			$pno_text                = $b2b_default ? __( 'Organization Number', 'payer-b2b-for-woocommerce' ) : __( 'Personal Number', 'payer-b2b-for-woocommerce' );
 
 			// Check if we need to have the switch checkbox for the PNO field.
@@ -113,17 +141,11 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 				?>
 				<label style="padding-bottom:15px;" for="payer_b2b_set_b2b"><?php esc_html_e( 'Business', 'payer-b2b-for-woocommerce' ); ?>?</label>
 				<span style="padding:5px;" class="woocommerce-input-wrapper">
-					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
+					<input type="checkbox" name="payer_b2b_set_b2b" id="payer_b2b_set_b2b" class="payer_b2b_set_b2b" <?php 'B2BC' === $this->customer_type ? esc_attr_e( 'checked', 'payer-b2b-for-woocommerce' ) : ''; ?> />
 				</span>
 				<?php
 			}
 			?>
-			<p class="form-row validate-required form-row-wide" id="payer_b2b_pno_field">
-				<label id="payer_b2b_pno_label" for="payer_b2b_pno"><?php echo esc_html( $pno_text ); ?></label>
-				<span class="woocommerce-input-wrapper">
-					<input type="text" name="<?php echo esc_attr( PAYER_PNO_FIELD_NAME ); ?>" id="payer_b2b_pno"/>
-				</span>
-			</p>
 			<br>
 			<?php
 			if ( $customer_invoice_switch ) {
@@ -131,7 +153,7 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 				<p class="form-row validate-required form-row-wide" id="payer_b2b_invoice_type_field">
 					<label id="payer_b2b_invoice_type_label" for="payer_b2b_invoice_type"><?php esc_html_e( 'Invoice type', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
-						<select name="payer_b2b_invoice_type" id="payer_b2b_invoice_type">
+						<select name="payer_b2b_invoice_type" id="payer_b2b_invoice_type" class="payer_b2b_invoice_type">
 							<option value="EMAIL" <?php 'EMAIL' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Email</option>
 							<option value="PRINT" <?php 'PRINT' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>Mail</option>
 							<option value="PDF" <?php 'PDF' === $this->default_invoice_type ? esc_html_e( 'selected' ) : ''; ?>>PDF</option>
@@ -146,10 +168,10 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we need the switch checkbox for signatory.
 			if ( $b2b_switch && 'yes' === $this->separate_signatory ) {
 				?>
-				<div id="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
+				<div class="signatory_wrapper" style="<?php $b2b_default ? esc_attr_e( 'display:block' ) : esc_attr_e( 'display:none' ); ?>">
 					<label style="padding-bottom:5px;" for="payer_b2b_signatory"><?php esc_html_e( 'Separate signatory', 'payer-b2b-for-woocommerce' ); ?>?</label>
 					<span style="padding:10px;" class="woocommerce-input-wrapper">
-						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory"/>
+						<input type="checkbox" name="payer_b2b_signatory" id="payer_b2b_signatory" class="payer_b2b_signatory"/>
 					</span>
 				</div>
 				<?php
@@ -158,7 +180,7 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
 			// Check if we want to add the signatory field.
 			if ( $b2b_enabled && 'yes' === $this->separate_signatory ) {
 				?>
-				<p class="form-row validate-required form-row-wide" id="payer_b2b_signatory_text_field" style="display:none">
+				<p class="form-row validate-required form-row-wide payer_b2b_signatory_text_field" style="display:none">
 					<label for="payer_b2b_signatory_text"><?php esc_html_e( 'Signatory name', 'payer-b2b-for-woocommerce' ); ?></label>
 					<span class="woocommerce-input-wrapper">
 						<input type="text" name="payer_b2b_signatory_text" id="payer_b2b_signatory_text"/>
@@ -256,8 +278,8 @@ class PB2B_V1_Invoice_Gateway extends PB2B_Factory_Gateway {
  * @param  array $methods All registered payment methods.
  * @return array $methods All registered payment methods.
  */
-function add_payer_b2b_v1_invoice_method( $methods ) {
-	$methods[] = 'PB2B_V1_Invoice_Gateway';
+function add_payer_b2b_normal_invoice_method( $methods ) {
+	$methods[] = 'PB2B_Normal_Invoice_Gateway';
 	return $methods;
 }
-add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_v1_invoice_method' );
+add_filter( 'woocommerce_payment_gateways', 'add_payer_b2b_normal_invoice_method' );

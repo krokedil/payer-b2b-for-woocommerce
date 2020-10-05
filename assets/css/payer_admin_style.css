@@ -7,11 +7,16 @@
 	width:100%;
 	height:100%;
 	background-color: rgba( 0, 0, 0, 0.5 );
+
 }
 
 .pb2b-modal-content {
 	margin:15% auto;
-	width:25%;
+	display:flex;
+	flex-direction: column;
+	align-items: flex-end;
+	width:425px;
+	background-color: rgba( 250, 250, 250 );
 }
 
 .pb2b-hide-iframe {
@@ -27,5 +32,85 @@
 	cursor: pointer;
 	clear:both;
 	display:block;
-	width:10px;
+	margin: 10px 10px 0px 0px;
+	/* width:10px; */
 }
+
+/* --- Passed icon --- */
+/* Passed container */
+.pb2b-icon-passed {
+	display: flex;
+	height: 28px;
+	width: 28px;
+	place-items:center;
+	margin-left:-2px;
+	font-size: 28px;
+}
+
+/* Passed icon */
+span.pb2b-credit-passed {
+	color:green;
+	font-size: 28px;
+}
+
+span.pb2b-credit-passed::after {
+	content: none;
+}
+
+/* --- Failed icon --- */
+/* Failed container*/
+span.pb2b-credit-failed {
+	color:red;
+	font-size: 27px;
+
+}
+
+/* Failed icon*/
+.pb2b-icon-failed {
+	height: 28px;
+	width: 28px;
+	display: flex;
+	font-size: 25px;
+	place-items:center;
+}
+
+span.pb2b-credit-failed::after {
+	content: none;
+}
+
+/* --- Check credit icon --- */
+/* Deault padding */
+.pb2b-icon-perform-check{
+	display:flex;
+	border: 1px solid #0071a1;
+	border-radius: 3px;
+	min-height:32px;
+	width:26px;
+	box-sizing:border-box;
+	place-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+/* Default padding : HOVER */
+	.pb2b-icon-perform-check:hover {
+		display:flex;
+		box-sizing:border-box;
+		background-color: #0071a1;
+	}
+
+/* Cross */
+span.pb2b-credit-check {
+	color: #0071a1;
+}
+
+/* Cross : HOVER*/
+.pb2b-icon-perform-check:hover .dashicons-plus {
+	color: white !important;
+	cursor: pointer;
+}
+
+span.pb2b-credit-check::after {
+	content: none;
+}
+

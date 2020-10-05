@@ -52,4 +52,17 @@ function payer_b2b_register_webhook( $order_id, $event_type ) {
 	if ( is_wp_error( $response ) ) {
 		return false;
 	}
+
+}
+
+/**
+ * Get the customer credit status.
+ *
+ * @param int $order_id The order ID.
+ * @return void
+ */
+function payer_b2b_make_credit_check( $order_id ) {
+	$request               = new PB2B_Request_Credit_Check( $order_id );
+	$response_credit_check = $request->request( $order_id );
+	update_post_meta( $order_id, '_payer_credit_check_result', $response_credit_check['result'] );
 }
