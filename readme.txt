@@ -36,6 +36,13 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.10.05        - Version 2.0.0 =
+* Feature           - Moved all payment methods over to the v2 API.
+* Feature           - Added address fetch functionality in the checkout.
+* Feature           - Added automatic or manual credit checks for invoice payments.
+* Feature           - Added metabox to be able to see the payment status for invoices and other information.
+* Enhancement       - Improved logic on checkout to only attempt to create an order with Payer if it is needed.
+
 = 2020.09.30        - Version 1.1.2 =
 * Fix               - Fixed incorrect price calculation of fees when creating a Payer order.
 
