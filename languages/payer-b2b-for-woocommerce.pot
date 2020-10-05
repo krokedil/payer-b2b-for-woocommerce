@@ -1,4 +1,4 @@
-# Copyright (C) 2019 payer-b2b-for-woocommerce
+# Copyright (C) 2020 payer-b2b-for-woocommerce
 # This file is distributed under the same license as the payer-b2b-for-woocommerce package.
 msgid ""
 msgstr ""
@@ -16,186 +16,371 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../classes/class-pb2b-order-management.php:46
+#: ../classes/class-pb2b-api-callbacks.php:165, ../classes/class-pb2b-api-callbacks.php:161
+msgid "Order needs manual review. WooCommerce order total and Payer order total do not match. Payer order total: %s."
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:35
+msgid "Payer B2B"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:112
+msgid "PNO/Org number"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:114
+msgid "Create Invoice Order"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:73
+msgid "PNO/Org number:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:74
+msgid "Invoice Number:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:76, ../classes/class-pb2b-order-management.php:246
+msgid "OCR Number:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:78
+msgid "Payment Status:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:81
+msgid "Signatory:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:99
+msgid "Credit Check"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:87
+msgid "Customer Credit Status:"
+msgstr ""
+
+#: ../classes/class-pb2b-meta-box.php:107
+msgid "Show Invoice"
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:71
+msgid "Card payment has already been captured for this order, can not cancel at this point use refund instead."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:62
 msgid "An invoice has already been created for this order, can not cancel at this point use refund instead."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:56
+#: ../classes/class-pb2b-order-management.php:93, ../classes/class-pb2b-order-management.php:114
 msgid "Failed to cancel the order with Payer. Please try again."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:61
+#: ../classes/class-pb2b-order-management.php:98, ../classes/class-pb2b-order-management.php:119
 msgid "Order canceled with Payer"
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:84
-msgid "Invoice approval failed with Payer. Please try again."
+#: ../classes/class-pb2b-order-management.php:159
+msgid "Could not receive payment status for capture request. Please try again."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:94
+#: ../classes/class-pb2b-order-management.php:169
+msgid "Payment status not correct for capturing payment. Payment status: Initiated."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:173
+msgid "Payment status not correct for capturing payment. Payment status: Cancelled."
+msgstr ""
+
+#. translators: 1. Payer remaining amount, 2. WC order total.
+#: ../classes/class-pb2b-order-management.php:185
+msgid "Amount exceeds the remaining amount to capture. Remaining amount to capture: %1$s. Amount tried to capture: %2$s"
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:192
+msgid "Payment already captured."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:214
+msgid "Order approval failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:236
 msgid "Invoice creation failed with Payer. Please try again."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:100
-msgid "Invoice created with Payer. Invoice number:"
+#: ../classes/class-pb2b-order-management.php:246
+msgid "Invoice created with Payer. Invoice Number:"
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:118
-msgid "Failed to update the order with Payer. An invoice has already been approved for this order"
+#: ../classes/class-pb2b-order-management.php:263
+msgid "Card capture failed with Payer. Please try again."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:128
+#: ../classes/class-pb2b-order-management.php:269
+msgid "Card payment captured with Payer."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:294
+msgid "Failed to update the order with Payer. Order has already been approved."
+msgstr ""
+
+#: ../classes/class-pb2b-order-management.php:304
 msgid "Failed to update the order with Payer. Please try again."
 msgstr ""
 
-#: ../classes/class-pb2b-order-management.php:133
+#: ../classes/class-pb2b-order-management.php:309
 msgid "Order updated with Payer"
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:22
-msgid "Payer B2B Invoice"
+#: ../classes/class-pb2b-subscriptions.php:99, ../classes/gateways/class-pb2b-card-gateway.php:269, ../classes/gateways/class-pb2b-card-gateway.php:248, ../classes/gateways/class-pb2b-card-gateway.php:297
+msgid "Incorrect payment status."
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:97, ../payer-b2b-for-woocommerce.php:174
-msgid "Organisation Number"
+#: ../classes/gateways/class-pb2b-card-gateway.php:22
+msgid "Payer B2B Card"
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:97, ../payer-b2b-for-woocommerce.php:173
-msgid "Personal Number"
+#: ../classes/gateways/class-pb2b-card-gateway.php:103
+msgid "Refund request failed with Payer. Please try again."
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:102
-msgid "Bussiness"
+#: ../classes/gateways/class-pb2b-card-gateway.php:106, ../classes/gateways/class-pb2b-normal-invoice-gateway.php:123, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:137
+msgid "refunded with Payer."
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:104
-msgid "checked"
+#: ../classes/gateways/class-pb2b-card-gateway.php:191, ../classes/gateways/class-pb2b-card-gateway.php:217
+msgid "Customer redirected to Payer payment page."
 msgstr ""
 
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:122
-msgid "Separate signatory"
-msgstr ""
-
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:134
-msgid "Signatory name"
-msgstr ""
-
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:180
-msgid "Payment made with Payer"
-msgstr ""
-
-#: ../classes/gateways/class-pb2b-invoice-gateway.php:183
+#: ../classes/gateways/class-pb2b-card-gateway.php:253, ../classes/gateways/class-pb2b-normal-invoice-gateway.php:275, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:287
 msgid "Free subscription order. No order created with Payer"
 msgstr ""
 
-#: ../classes/requests/helpers/class-pb2b-order-lines.php:193
+#: ../classes/gateways/class-pb2b-factory-gateway.php:64, ../payer-b2b-for-woocommerce.php:222
+msgid "Organisation Number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-factory-gateway.php:64, ../classes/gateways/class-pb2b-normal-invoice-gateway.php:139, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:153, ../payer-b2b-for-woocommerce.php:221
+msgid "Personal Number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:24
+msgid "Payer B2B Invoice"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:106, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:120
+msgid "Partial Refund request failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:117, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:131
+msgid "Manual Refund request failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:95, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:110
+msgid "Full Refund request failed with Payer. Please try again."
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:139, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:153
+msgid "Organization Number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:144, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:158
+msgid "Business"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:146, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:160
+msgid "checked"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:156, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:170
+msgid "Invoice type"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:174, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:188
+msgid "Separate signatory"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:186, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:200
+msgid "Signatory name"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:230, ../classes/gateways/class-pb2b-normal-invoice-gateway.php:227, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:244, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:241
+msgid "Please enter a valid Personal number or Organization number"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-normal-invoice-gateway.php:272, ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:284
+msgid "Payment made with Payer"
+msgstr ""
+
+#: ../classes/gateways/class-pb2b-prepaid-invoice-gateway.php:22
+msgid "Payer B2B Prepaid Invoice"
+msgstr ""
+
+#: ../classes/requests/helpers/class-pb2b-order-lines.php:197
 msgid "Free Shipping"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:10
+#: ../includes/pb2b-credentials-form-fields.php:19
+msgid "Payer B2B credentials:"
+msgstr ""
+
+#: ../includes/pb2b-credentials-form-fields.php:23
+msgid "Agent ID: %s"
+msgstr ""
+
+#: ../includes/pb2b-credentials-form-fields.php:27
+msgid "Soap ID: %s"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:8
 msgid "Enable/Disable"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:16
+#: ../includes/pb2b-factory-settings.php:14
 msgid "Title"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:18
+#: ../includes/pb2b-factory-settings.php:16
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:23
+#: ../includes/pb2b-factory-settings.php:21
 msgid "Description"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:25
-msgid "Pay with Payer via invoice."
-msgstr ""
-
-#: ../includes/pb2b-form-fields.php:27
+#: ../includes/pb2b-factory-settings.php:24
 msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:30
-msgid "Agent ID"
+#: ../includes/pb2b-factory-settings.php:25
+msgid "Place a payment with Payer"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:35
-msgid "API Key"
+#: ../includes/pb2b-factory-settings.php:32
+msgid "Add order lines"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:40
-msgid "Allowed Customer Types"
+#: ../includes/pb2b-factory-settings.php:34
+msgid "Enable Add order lines"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:43
-msgid "B2C only"
+#: ../includes/pb2b-factory-settings.php:36
+msgid "Add order lines to the card payment."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:44
-msgid "B2B only"
+#: ../includes/pb2b-factory-settings.php:43
+msgid "Automatic Credit Check"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:45
-msgid "B2C & B2B (defaults to B2C)"
+#: ../includes/pb2b-factory-settings.php:45
+msgid "Run an automatic check on the customer's credit status"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:46
-msgid "B2B & B2C (defaults to B2B)"
-msgstr ""
-
-#: ../includes/pb2b-form-fields.php:48
-msgid "Select what customer type that you want to sell to"
-msgstr ""
-
-#: ../includes/pb2b-form-fields.php:53
-msgid "Enable Order Management"
-msgstr ""
-
-#: ../includes/pb2b-form-fields.php:55
-msgid "Enable Payer order capture on WooCommerce order completion and Payer order cancellation on WooCommerce order cancellation"
-msgstr ""
-
-#: ../includes/pb2b-form-fields.php:59
+#: ../includes/pb2b-factory-settings.php:49
 msgid "Enable extra checkout fields"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:61
+#: ../includes/pb2b-factory-settings.php:51
 msgid "Enables the extra checkout fields added by Payer."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:63
+#: ../includes/pb2b-factory-settings.php:53
 msgid "If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:68
+#: ../includes/pb2b-factory-settings.php:58
 msgid "Enable separate signatory"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:70
+#: ../includes/pb2b-factory-settings.php:60
 msgid "Enable the customer to enter a separate signatory for B2B purchases."
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:74
+#: ../includes/pb2b-factory-settings.php:64
+msgid "Default invoice type"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:72
+msgid "Select what invoice type you want to use"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:77
+msgid "Customer selects invoice type"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:79
+msgid "This allows the customer to select what invoice type they want."
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:83
+msgid "Allowed Customer Types"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:86
+msgid "B2C only"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:87
+msgid "B2B only"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:88
+msgid "B2C & B2B (defaults to B2C)"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:89
+msgid "B2B & B2C (defaults to B2B)"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:91
+msgid "Select what customer type that you want to sell to"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:130
+msgid "Put credentials in the Payer B2B Invoice settings."
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:99
+msgid "Agent ID"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:104
+msgid "API Key"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:110
+msgid "Enable Order Management"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:112
+msgid "Enable Payer order capture on WooCommerce order completion and Payer order cancellation on WooCommerce order cancellation"
+msgstr ""
+
+#: ../includes/pb2b-factory-settings.php:117
 msgid "Testmode"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:76
+#: ../includes/pb2b-factory-settings.php:119
 msgid "Enable Payer testmode"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:80
+#: ../includes/pb2b-factory-settings.php:123
 msgid "Debug"
 msgstr ""
 
-#: ../includes/pb2b-form-fields.php:82
+#: ../includes/pb2b-factory-settings.php:125
 msgid "Enable debug logging for the plugin"
 msgstr ""
 
-#: ../payer-b2b-for-woocommerce.php:144
+#: ../payer-b2b-for-woocommerce.php:191
 msgid "Settings"
 msgstr ""
 
-#: ../payer-b2b-for-woocommerce.php:145
+#: ../payer-b2b-for-woocommerce.php:192
 msgid "Support"
+msgstr ""
+
+#: ../payer-b2b-for-woocommerce.php:224
+msgid "Get address"
 msgstr ""
