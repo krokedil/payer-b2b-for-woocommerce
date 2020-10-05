@@ -22,6 +22,7 @@ $settings = array(
 		'type'        => 'textarea',
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'payer-b2b-for-woocommerce' ),
+		'default'     => __( 'Place a payment with Payer', 'payer-b2b-for-woocommerce' ),
 	),
 );
 
@@ -37,19 +38,14 @@ if ( 'payer_b2b_card' === $this->id ) {
 	);
 }
 
-// Payer B2B V2 Invoice settings.
-if ( 'payer_b2b_prepaid_invoice' === $this->id ) {
-	// Automatic Credit check checkbox.
+if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' === $this->id ) {
 	$settings['automatic_credit_check'] = array(
 		'title'   => __( 'Automatic Credit Check', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( "Run an automatic check on the customer's credit status", 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-}
-
-if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' === $this->id ) {
-	$settings['enable_all_fields'] = array(
+	$settings['enable_all_fields']      = array(
 		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
 		'type'        => 'checkbox',
 		'label'       => __( 'Enables the extra checkout fields added by Payer.', 'payer-b2b-for-woocommerce' ),
