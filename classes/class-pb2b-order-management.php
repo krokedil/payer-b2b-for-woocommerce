@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Order management class.
  */
 class PB2B_Order_Management {
+
 	/**
 	 * If order management is enabled.
 	 *
@@ -28,7 +29,7 @@ class PB2B_Order_Management {
 		add_action( 'woocommerce_order_status_completed', array( $this, 'activate_reservation' ) );
 		add_action( 'woocommerce_saved_order_items', array( $this, 'update_order' ) );
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_create_invoice_order' ), 45 );
-		$settings                       = get_option( 'woocommerce_payer_b2b_v1_invoice_settings' );
+		$settings                       = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
 		$this->order_management_enabled = 'yes' === $settings['order_management'] ? true : false;
 	}
 
@@ -49,8 +50,8 @@ class PB2B_Order_Management {
 		$payer_invoice_payment_method = in_array(
 			$order->get_payment_method(),
 			array( // Payer Invoice payment methods.
-				'payer_b2b_v1_invoice',
-				'payer_b2b_v2_invoice',
+				'payer_b2b_normal_invoice',
+				'payer_b2b_prepaid_invoice',
 			),
 			true
 		);
@@ -130,24 +131,15 @@ class PB2B_Order_Management {
 		$order          = wc_get_order( $order_id );
 		$payment_method = $order->get_payment_method();
 
-		// V1 Invoice.
-		if ( 'payer_b2b_v1_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
-			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
-				// Invoice already created with Payer, bail.
-				return;
-			}
-			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v1_invoice( $order, $order_id ); // V1.
-		}
+		// Normal Invoice.
+		if ( 'payer_b2b_normal_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 
-		// V2 Invoice.
-		if ( 'payer_b2b_v2_invoice' === $payment_method && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_invoice_number' ) ) {
 				// Invoice already created with Payer, bail.
 				return;
 			}
 			$this->maybe_request_approve_order( $order, $order_id );
-			$this->activate_payer_v2_invoice( $order, $order_id ); // V2.
+			$this->activate_payer_prepaid_invoice( $order, $order_id, 'NORMAL' ); // Prepaid SUB.
 		}
 
 		// Card.
@@ -228,38 +220,17 @@ class PB2B_Order_Management {
 	}
 
 	/**
-	 * Activate Payer v1 invoice.
+	 * Activate Payer Prepaid invoice.
 	 *
 	 * @param WC_Order $order WC order.
 	 * @param int      $order_id Order id.
+	 * @param string   $type Type of transaction.
 	 * @return void
 	 */
-	public function activate_payer_v1_invoice( $order, $order_id ) {
-		$request  = new PB2B_Request_Create_V1_Invoice( $order_id );
-		$response = $request->request();
-		if ( is_wp_error( $response ) ) {
-			$error = reset( $response->errors )[0];
-			$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
-			$order->save();
-			return;
-		}
-		$invoice_number = $response['invoiceNumber'];
-		update_post_meta( $order_id, '_payer_invoice_number', sanitize_key( $invoice_number ) );
-		$text          = __( 'Invoice created with Payer. Invoice Number:', 'payer-b2b-for-woocommerce' ) . ' %s ';
-		$formated_text = sprintf( $text, $invoice_number );
-		$order->add_order_note( $formated_text );
-	}
-
-	/**
-	 * Activate Payer v2 invoice.
-	 *
-	 * @param WC_Order $order WC order.
-	 * @param int      $order_id Order id.
-	 * @return void
-	 */
-	public function activate_payer_v2_invoice( $order, $order_id ) {
+	public function activate_payer_prepaid_invoice( $order, $order_id, $type ) {
 		$request  = new PB2B_Request_Create_V2_Invoice( $order_id );
-		$response = $request->request();
+		$response = $request->request( $type );
+
 		if ( is_wp_error( $response ) ) {
 			$error = reset( $response->errors )[0];
 			$order->set_status( 'on-hold', __( 'Invoice creation failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) . ' ' . $error );
@@ -318,7 +289,7 @@ class PB2B_Order_Management {
 			return;
 		}
 
-		if ( 'payer_b2b_v1_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
+		if ( 'payer_b2b_normal_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_order_approved' ) ) {
 				$order->set_status( 'on-hold', __( 'Failed to update the order with Payer. Order has already been approved.', 'payer-b2b-for-woocommerce' ) );
 				$order->save();
@@ -343,16 +314,17 @@ class PB2B_Order_Management {
 	public function pb2b_maybe_create_invoice_order( $order_id ) {
 		if ( isset( $_POST['pb2b-create-invoice-order'] ) && ! empty( $_POST['pb2b-create-invoice-order'] ) ) {
 			$payment_method = get_post_meta( $order_id, '_payment_method', true );
-			if ( 'payer_b2b_v1_invoice' === $payment_method ) {
-				$pb2b_v1_invoice = new PB2B_V1_Invoice_Gateway();
-				$pb2b_v1_invoice->process_payment( $order_id );
+			if ( 'payer_b2b_normal_invoice' === $payment_method ) {
+				$pb2b_normal_invoice = new PB2B_Normal_Invoice_Gateway();
+				$pb2b_normal_invoice->process_payment( $order_id );
 			}
 
-			if ( 'payer_b2b_v2_invoice' === $payment_method ) {
-				$pb2b_v2_invoice = new PB2B_V2_Invoice_Gateway();
-				$pb2b_v2_invoice->process_payment( $order_id );
+			if ( 'payer_b2b_prepaid_invoice' === $payment_method ) {
+				$pb2b_prepaid_invoice = new PB2B_Prepaid_Invoice_Gateway();
+				$pb2b_prepaid_invoice->process_payment( $order_id );
 			}
 		}
+
 	}
 }
 new PB2B_Order_Management();
