@@ -74,15 +74,38 @@ class PB2B_Subscriptions {
 		$order_id      = $renewal_order->get_id();
 		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
 		$error         = false;
+		$settings      = get_option( 'woocommerce_payer_b2b_card_settings' );
+		if ( 'yes' === $settings['add_order_lines'] && 0 < $renewal_order->get_total() ) {
+			$args     = array( // values is null for now.
+				'b2b'       => null,
+				'pno_value' => null,
+			);
+			$request  = new PB2B_Request_Create_Order( $order_id, $args );
+			$response = $request->request();
 
-		$request  = new PB2B_Request_Authorize_Payment( $order_id );
-		$response = $request->request();
-		if ( is_wp_error( $response ) ) {
-			$error = $response;
+			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
+				$error = $response;
+			}
+
+			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
+		}
+
+		if ( ! $error ) {
+			$request  = new PB2B_Request_Authorize_Payment( $order_id );
+			$response = $request->request();
+			if ( is_wp_error( $response ) ) {
+				$error = $response;
+			}
 		}
 		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
 			foreach ( $subscriptions as $subscription ) {
 				if ( is_wp_error( $error ) ) {
+					/**
+					 * Process errors.
+					 *
+					 * @var WP_Error $error WordPress error.
+					 */
 					$error = reset( $error->errors )[0];
 					$renewal_order->add_order_note( __( 'Renewal order failed with Payer.' ) . ' ' . $error );
 					$subscription->payment_failed();
