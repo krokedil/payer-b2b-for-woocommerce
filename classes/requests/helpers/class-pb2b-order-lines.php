@@ -38,7 +38,7 @@ class PB2B_Order_Lines {
 		$order_fees = $order->get_fees();
 		foreach ( $order_fees as $fee ) {
 			self::$i++;
-			$formated_order_items[] = self::get_fee( $fee );
+			$formated_order_items[] = self::get_fee( $order, $fee );
 		}
 
 		// Get order shipping.
@@ -66,9 +66,9 @@ class PB2B_Order_Lines {
 			'description'       => $order_item->get_name(),
 			'quantity'          => $order_item->get_quantity(),
 			'unit'              => 'pcs',
-			'unitPrice'         => self::get_product_unit_price( $order_item ),
-			'unitVatAmount'     => self::get_product_unit_tax( $order_item ),
-			'vatPercentage'     => self::get_product_tax_rate( $order, $order_item ),
+			'unitPrice'         => self::get_line_unit_price( $order_item ),
+			'unitVatAmount'     => self::get_line_unit_tax( $order_item ),
+			'vatPercentage'     => self::get_line_tax_rate( $order, $order_item ),
 			'subtotalPrice'     => self::get_line_total( $order_item ),
 			'subtotalVatAmount' => self::get_line_tax( $order_item ),
 		);
@@ -86,10 +86,10 @@ class PB2B_Order_Lines {
 	/**
 	 * Gets the products unit price.
 	 *
-	 * @param WC_Order_Item_Product $order_item The order item.
+	 * @param WC_Order_Item_Product|WC_Order_Item_Fee $order_item The order item.
 	 * @return int
 	 */
-	public static function get_product_unit_price( $order_item ) {
+	public static function get_line_unit_price( $order_item ) {
 		$quantity      = 0 === abs( $order_item->get_quantity() ) ? 1 : abs( $order_item->get_quantity() );
 		$item_subtotal = round( ( $order_item->get_total() + $order_item->get_total_tax() ) / $quantity * 100 );
 		return intval( $item_subtotal );
@@ -98,7 +98,7 @@ class PB2B_Order_Lines {
 	/**
 	 * Gets the line total.
 	 *
-	 * @param WC_Order_Item_Product $order_item WooCommerce order item.
+	 * @param WC_Order_Item_Product|WC_Order_Item_Fee $order_item WooCommerce order item.
 	 * @return int
 	 */
 	public static function get_line_total( $order_item ) {
@@ -109,10 +109,10 @@ class PB2B_Order_Lines {
 	/**
 	 * Gets the product tax amount.
 	 *
-	 * @param WC_Order_Item_Product $order_item WooCommerce order item.
+	 * @param WC_Order_Item_Product|WC_Order_Item_Fee $order_item WooCommerce order item.
 	 * @return int
 	 */
-	public static function get_product_unit_tax( $order_item ) {
+	public static function get_line_unit_tax( $order_item ) {
 		$quantity    = 0 === abs( $order_item->get_quantity() ) ? 1 : abs( $order_item->get_quantity() );
 		$product_tax = round( $order_item->get_total_tax() / $quantity * 100 );
 		return intval( $product_tax );
@@ -121,7 +121,7 @@ class PB2B_Order_Lines {
 	/**
 	 * Gets the product tax amount.
 	 *
-	 * @param WC_Order_Item_Product $order_item WooCommerce order item.
+	 * @param WC_Order_Item_Product|WC_Order_Item_Fee $order_item WooCommerce order item.
 	 * @return int
 	 */
 	public static function get_line_tax( $order_item ) {
@@ -132,11 +132,11 @@ class PB2B_Order_Lines {
 	/**
 	 * Gets the tax rate for the product.
 	 *
-	 * @param WC_Order              $order The order item.
-	 * @param WC_Order_Item_Product $order_item WooCommerce order item.
+	 * @param WC_Order                                                       $order The order item.
+	 * @param WC_Order_Item_Product|WC_Order_Item_Fee|WC_Order_Item_Shipping $order_item WooCommerce order item.
 	 * @return float
 	 */
-	public static function get_product_tax_rate( $order, $order_item ) {
+	public static function get_line_tax_rate( $order, $order_item ) {
 		$tax_items = $order->get_items( 'tax' );
 		foreach ( $tax_items as $tax_item ) {
 			$rate_id = $tax_item->get_rate_id();
@@ -163,10 +163,11 @@ class PB2B_Order_Lines {
 	/**
 	 * Formats the fee.
 	 *
-	 * @param object $fee A WooCommerce Fee.
+	 * @param WC_Order_Item_Fee $fee A WooCommerce Fee.
+	 * @param WC_Order          $order The WooCommerce order.
 	 * @return array
 	 */
-	public static function get_fee( $fee ) {
+	public static function get_fee( $order, $fee ) {
 		return array(
 			'itemType'          => 'FREEFORM',
 			'position'          => self::$i,
@@ -174,11 +175,11 @@ class PB2B_Order_Lines {
 			'description'       => $fee->get_name(),
 			'quantity'          => 1,
 			'unit'              => 'pcs',
-			'unitPrice'         => intval( round( $fee->get_total() * 100 ) ),
-			'unitVatAmount'     => 0,
-			'vatPercentage'     => 0,
-			'subtotalPrice'     => intval( round( $fee->get_total() * 100 ) ),
-			'subtotalVatAmount' => 0,
+			'unitPrice'         => self::get_line_unit_price( $fee ),
+			'unitVatAmount'     => self::get_line_unit_tax( $fee ),
+			'vatPercentage'     => self::get_line_tax_rate( $order, $fee ),
+			'subtotalPrice'     => self::get_line_total( $fee ),
+			'subtotalVatAmount' => self::get_line_tax( $fee ),
 		);
 	}
 
@@ -213,7 +214,7 @@ class PB2B_Order_Lines {
 				'unit'              => 'pcs',
 				'unitPrice'         => intval( round( ( $order->get_shipping_total() + $order->get_shipping_tax() ) * 100 ) ),
 				'unitVatAmount'     => intval( round( $order->get_shipping_tax() * 100 ) ),
-				'vatPercentage'     => ( '0' !== $order->get_shipping_tax() ) ? self::get_product_tax_rate( $order, current( $order->get_items( 'shipping' ) ) ) : 0,
+				'vatPercentage'     => ( '0' !== $order->get_shipping_tax() ) ? self::get_line_tax_rate( $order, current( $order->get_items( 'shipping' ) ) ) : 0,
 				'subtotalPrice'     => intval( round( ( $order->get_shipping_total() + $order->get_shipping_tax() ) * 100 ) ),
 				'subtotalVatAmount' => intval( round( $order->get_shipping_tax() * 100 ) ),
 			);

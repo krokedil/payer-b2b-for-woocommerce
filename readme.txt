@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.10.12        - Version 2.0.1 =
+* Enhancement       - Added sending order lines on recurring payments with card payments.
+* Enhancement       - Added tax calculations for fees.
+
 = 2020.10.05        - Version 2.0.0 =
 * Feature           - Moved all payment methods over to the v2 API.
 * Feature           - Added address fetch functionality in the checkout.
@@ -49,7 +53,7 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 = 2020.06.01        - Version 1.1.1 =
 * Fix               - Able to create Payer Invoice from admin without having to add shipping address.
 
-= 2020.04.22 		- Version 1.1.0 =
+= 2020.04.22        - Version 1.1.0 =
 * Feature           - Added card payment method.
 * Feature           - Add subscription support for card payments.
 * Fetaure           - Added feature to create Payer invoice from order admin view.
@@ -57,10 +61,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 * Tweak             - Only try to make a cancel request if order has been captured.
 * Tweak             - Added support for multiple language codes in requests sent to Payer (for card payments).
 
-= 2020.02.12 		- Version 1.0.1 =
-* Enhancement		- Improved the error handling in the request class.
-* Enhancement		- Improved the activation and cancelation calls to Payer to unhook the update function as well.
-* Fix				- Changed so we do not make an attempt at updating an order without a Payer Order ID.
+= 2020.02.12        - Version 1.0.1 =
+* Enhancement       - Improved the error handling in the request class.
+* Enhancement       - Improved the activation and cancelation calls to Payer to unhook the update function as well.
+* Fix               - Changed so we do not make an attempt at updating an order without a Payer Order ID.
 
-= 2019.12.17 		- Version 1.0.0 =
+= 2019.12.17        - Version 1.0.0 =
 * First release on Wordpress.org
