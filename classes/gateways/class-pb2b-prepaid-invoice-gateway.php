@@ -224,6 +224,7 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		// Set and sanitize variables.
 		$pno      		   = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
 		$signatory 		   = isset( $_POST['payer_b2b_prepaid_signatory_text'] ) ? sanitize_text_field( $_POST['payer_b2b_prepaid_signatory_text'] ) : '';
+		$invoice_type	   = isset( $_POST['payer_b2b_invoice_type'] ) ? sanitize_text_field( $_POST['payer_b2b_invoice_type'] ) : '';
 		$created_via_admin = isset( $_POST['pb2b-create-invoice-order'] ) ? true : false;
 		// @codingStandardsIgnoreEnd
 
@@ -245,6 +246,12 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 				return;
 			}
 		}
+
+		// Add invoice type to the order if it exists.
+		if ( ! empty( $invoice_type ) ) {
+			update_post_meta( $order_id, 'pb2b_invoice_type', $invoice_type );
+		}
+
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
 		if ( $create_payer_order ) {
 

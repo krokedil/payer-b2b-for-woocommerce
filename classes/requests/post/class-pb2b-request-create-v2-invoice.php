@@ -45,16 +45,43 @@ class PB2B_Request_Create_V2_Invoice extends PB2B_Request {
 	 * @return array
 	 */
 	public function get_request_args( $order_id, $type ) {
+
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
 			'body'    => wp_json_encode(
 				array(
 					'dueDays'      => 30,
-					'deliveryType' => 'NONE',
+					'deliveryType' => $this->get_invoice_type( $order_id ),
 					'type'         => $type,
 				)
 			),
 		);
+	}
+
+	/**
+	 * Get the invoice type for the invoice.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return string
+	 */
+	public function get_invoice_type( $order_id ) {
+		$order = wc_get_order( $order_id );
+
+		$invoice_type = get_post_meta( $order_id, 'pb2b_invoice_type', true );
+
+		if ( 'payer_b2b_prepaid_invoice' === $order->get_payment_method() && empty( $invoice_type ) ) {
+			$options      = get_option( 'woocommerce_payer_b2b_prepaid_invoice_settings' );
+			$invoice_type = $options['default_invoice_type'];
+		} elseif ( 'payer_b2b_normal_invoice' === $order->get_payment_method() && empty( $invoice_type ) ) {
+			$options      = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
+			$invoice_type = $options['default_invoice_type'];
+		}
+
+		if ( empty( $invoice_type ) ) {
+			$invoice_type = 'EMAIL';
+		}
+
+		return $invoice_type;
 	}
 }
