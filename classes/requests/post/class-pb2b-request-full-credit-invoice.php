@@ -47,6 +47,7 @@ class PB2B_Request_Credit_Invoice extends PB2B_Request {
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
 			'body'    => wp_json_encode( $this->get_body( $order_id ) ),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 

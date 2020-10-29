@@ -57,6 +57,7 @@ class PB2B_Request_Refund_Card_Payment extends PB2B_Request {
 					'transactionDescription' => empty( $reason ) ? 'None' : $reason,
 				)
 			),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }

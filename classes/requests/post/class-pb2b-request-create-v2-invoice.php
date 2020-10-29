@@ -56,6 +56,7 @@ class PB2B_Request_Create_V2_Invoice extends PB2B_Request {
 					'type'         => $type,
 				)
 			),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 

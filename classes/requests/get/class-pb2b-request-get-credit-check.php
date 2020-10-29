@@ -52,6 +52,7 @@ class PB2B_Request_Credit_Check extends PB2B_Request {
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'GET',
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }

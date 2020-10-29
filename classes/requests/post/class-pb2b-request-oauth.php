@@ -52,6 +52,7 @@ class PB2B_Request_Oauth extends PB2B_Request {
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
 			'body'    => array( 'grant_type' => 'client_credentials' ),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }

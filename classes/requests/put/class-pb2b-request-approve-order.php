@@ -45,6 +45,7 @@ class PB2B_Request_Approve_Order extends PB2B_Request {
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'PUT',
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }

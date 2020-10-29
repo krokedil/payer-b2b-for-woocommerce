@@ -51,6 +51,7 @@ class PB2B_Request_Register_Webhook extends PB2B_Request {
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }
