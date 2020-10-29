@@ -54,6 +54,7 @@ class PB2B_Request_Capture_Card_Payment extends PB2B_Request {
 					'transactionDescription' => '',
 				)
 			),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 }

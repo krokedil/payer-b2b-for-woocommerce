@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.10.29        - Version 2.0.2 =
+* Enhancement       - Added a filterable 10 second timeout for requests.
+* Fix               - Correctly send the invoice delivery type to Payer.
+
 = 2020.10.12        - Version 2.0.1 =
 * Enhancement       - Added sending order lines on recurring payments with card payments.
 * Enhancement       - Added tax calculations for fees.

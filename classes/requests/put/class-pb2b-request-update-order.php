@@ -46,6 +46,7 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 			'headers' => $this->get_headers(),
 			'method'  => 'PUT',
 			'body'    => wp_json_encode( $this->get_body( $order_id ) ),
+			'timeout' => apply_filters( 'pb2b_request_timeout', 10 ),
 		);
 	}
 
