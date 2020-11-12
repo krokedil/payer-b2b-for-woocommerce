@@ -98,7 +98,7 @@ class PB2B_Subscriptions {
 				$error = $response;
 			}
 		}
-		if ( 'AUTHORIZED' === $response['payment']['status'] ) {
+		if ( is_wp_error( $response ) || 'AUTHORIZED' === $response['payment']['status'] ) {
 			foreach ( $subscriptions as $subscription ) {
 				if ( is_wp_error( $error ) ) {
 					/**
