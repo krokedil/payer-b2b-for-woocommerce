@@ -248,7 +248,6 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 				if ( class_exists( 'WC_Subscriptions' ) && ( $is_subscription_renewal || wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) ) {
 					$request  = new PB2B_Request_Get_Stored_Payment_Status( $order_id );
 					$response = $request->request();
-					error_log( var_export( $response, true ) );
 					if ( is_wp_error( $response ) ) {
 						return false;
 					}
