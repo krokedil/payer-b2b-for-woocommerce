@@ -96,19 +96,9 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 				return false;
 			}
 		} else {
-			// Partial refund.
+			// Manual refund.
 			$refund_data = PB2B_Credit_Data::get_refund_data( $order_id );
 
-			if ( isset( $refund_data['partial_refund_data'] ) && ! empty( $refund_data['partial_refund_data'] ) ) {
-				$request  = new PB2B_Request_Partial_Refund_Credit_Invoice( $order_id );
-				$response = $request->request( $refund_data );
-				if ( is_wp_error( $response ) ) {
-					$order->add_order_note( __( 'Partial Refund request failed with Payer. Please try again.', 'payer-b2b-for-woocommerce' ) );
-					return false;
-				}
-			}
-
-			// Manual refund.
 			if ( isset( $refund_data['manual_refund_data'] ) && ! empty( $refund_data['manual_refund_data'] ) ) {
 				$request  = new PB2B_Request_Manual_Refund_Credit_Invoice( $order_id );
 				$response = $request->request( $refund_data );
