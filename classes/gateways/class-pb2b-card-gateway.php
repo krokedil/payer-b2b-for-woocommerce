@@ -45,11 +45,10 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			'subscription_reactivation',
 			'subscription_amount_changes',
 			'subscription_date_changes',
-			'subscription_payment_method_change',
+			'subscription_payment_method_change_customer',
 			'subscription_payment_method_change_admin',
 			'multiple_subscriptions',
 		);
-
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
@@ -117,24 +116,33 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
+		$is_subscription_renewal = $order->get_meta( '_subscription_renewal' );
+		// Order-pay purchase (or subscription payment method change)
+		if ( ! empty( $is_subscription_renewal ) ) {
+			return $this->payer_b2b_stored_card( $order, $order_id );
+		}
+
 		// Subscription payment.
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) ) {
 			if ( 'yes' === $this->add_order_lines && 0 < $order->get_total() ) {
-				$args = array( // values is null for now.
-					'b2b'       => null,
-					'pno_value' => null,
-				);
-				// Total amount must be greater than zero.
-				$request  = new PB2B_Request_Create_Order( $order_id, $args );
-				$response = $request->request();
+				$payer_payment_url = get_post_meta( $order_id, '_payer_payment_url', true );
+				// Check if we have a payment url for this order already.
+				if ( empty( $payer_payment_url ) ) {
+					$args = array( // values is null for now.
+						'b2b'       => null,
+						'pno_value' => null,
+					);
+					// Total amount must be greater than zero.
+					$request  = new PB2B_Request_Create_Order( $order_id, $args );
+					$response = $request->request();
 
-				if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
-					return false;
+					if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
+						return false;
+					}
+
+					update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
+					update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 				}
-
-				update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
-				update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
-
 				return $this->payer_b2b_stored_card( $order, $order_id );
 			} else {
 				return $this->payer_b2b_stored_card( $order, $order_id );
@@ -187,7 +195,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return false;
 		}
 		do_action( 'payer_stored_card', $order_id, $response );
-
+		
+		update_post_meta( $order_id, '_payer_payment_url', esc_url_raw( $response['url'] ) );
 		$order->add_order_note( __( 'Customer redirected to Payer payment page.', 'payer-b2b-for-woocommerce' ) );
 
 		return array(
@@ -233,9 +242,10 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			// Get the order ID.
 			$order_id = absint( $wp->query_vars['order-received'] );
 			$order    = wc_get_order( $order_id );
-
+			
 			if ( $this->id === $order->get_payment_method() && ! $order->has_status( array( 'on-hold', 'processing', 'completed' ) ) ) {
-				if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) {
+				$is_subscription_renewal = $order->get_meta( '_subscription_renewal' );
+				if ( class_exists( 'WC_Subscriptions' ) && ( $is_subscription_renewal || wcs_order_contains_subscription( $order ) && 0 < $order->get_total() ) ) {
 					$request  = new PB2B_Request_Get_Stored_Payment_Status( $order_id );
 					$response = $request->request();
 					if ( is_wp_error( $response ) ) {

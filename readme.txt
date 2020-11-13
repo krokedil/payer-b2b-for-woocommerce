@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.11.13        - Version 2.0.3 =
+* Enhancement       - Allow customers to update the card used on a failed subscription purchase.
+* Enhancement       - Improved refunds to prevent a mismatch on order line numbers for invoices.
+
 = 2020.10.29        - Version 2.0.2 =
 * Enhancement       - Added a filterable 10 second timeout for requests.
 * Fix               - Correctly send the invoice delivery type to Payer.

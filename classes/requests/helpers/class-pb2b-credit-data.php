@@ -48,24 +48,14 @@ class PB2B_Credit_Data {
 					}
 				}
 
-				$item_quantity     = 0 === abs( $item->get_quantity() ) ? 1 : abs( $item->get_quantity() );
-				$org_item_quantity = 0 === abs( $original_order_item->get_quantity() ) ? 1 : abs( $original_order_item->get_quantity() );
-				if ( abs( $item->get_total() ) / $item_quantity === $original_order_item->get_total() / $org_item_quantity ) {
-					++$position;
-					$partial_refund_data[] = array(
-						'position' => $position,
-						'quantity' => abs( $item->get_quantity() ),
-					);
-				} else {
-					++$position;
-					// The item is partial refunded.
-					$tmp                      = PB2B_Order_Lines::get_order_item( $refund_order, $item );
-					$tmp['quantity']          = 1;
-					$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-					$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-					$tmp['position']          = $position;
-					$manual_refund_data[]     = $tmp;
-				}
+				++$position;
+				// The item is partial refunded.
+				$tmp                      = PB2B_Order_Lines::get_order_item( $refund_order, $item );
+				$tmp['quantity']          = 1;
+				$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
+				$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
+				$tmp['position']          = $position;
+				$manual_refund_data[]     = $tmp;
 			}
 		}
 
@@ -79,21 +69,14 @@ class PB2B_Credit_Data {
 							break;
 						}
 					}
-					if ( abs( $fee->get_total() ) / abs( $fee->get_quantity() ) === $original_order_fee->get_total() / $original_order_fee->get_quantity() ) {
-						++$position;
-						$partial_refund_data[] = array(
-							'position' => $position,
-							'quantity' => 1,
-						);
-					} else {
-						// The fee is partial refunded.
-						++$position;
-						$tmp                      = PB2B_Order_Lines::get_fee( $fee );
-						$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-						$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-						$tmp['position']          = $position;
-						$manual_refund_data[]     = $tmp;
-					}
+
+					// The fee is partial refunded.
+					++$position;
+					$tmp                      = PB2B_Order_Lines::get_fee( $fee );
+					$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
+					$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
+					$tmp['position']          = $position;
+					$manual_refund_data[]     = $tmp;
 				}
 			}
 		}
@@ -109,21 +92,13 @@ class PB2B_Credit_Data {
 						}
 					}
 
-					if ( abs( $shipping->get_total() ) / abs( $shipping->get_quantity() ) === $original_order_shipping->get_total() / $original_order_shipping->get_quantity() ) {
-						++$position;
-						$partial_refund_data[] = array(
-							'position' => $position,
-							'quantity' => 1,
-						);
-					} else {
-						++$position;
-						// The shipping is partial refunded.
-						$tmp                      = PB2B_Order_Lines::get_shipping( $refund_order );
-						$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-						$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-						$tmp['position']          = $position;
-						$manual_refund_data[]     = $tmp;
-					}
+					++$position;
+					// The shipping is partial refunded.
+					$tmp                      = PB2B_Order_Lines::get_shipping( $refund_order );
+					$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
+					$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
+					$tmp['position']          = $position;
+					$manual_refund_data[]     = $tmp;
 				}
 			}
 		}
