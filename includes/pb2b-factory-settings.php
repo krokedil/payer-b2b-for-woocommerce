@@ -66,7 +66,7 @@ if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' ===
 		'options'     => array(
 			'EMAIL'    => 'Email',
 			'PRINT'    => 'Mail',
-			'PDF'      => 'PDF',
+			'NONE'     => 'None',
 			'EINVOICE' => 'E-Invoice',
 		),
 		'description' => __( 'Select what invoice type you want to use', 'payer-b2b-for-woocommerce' ),

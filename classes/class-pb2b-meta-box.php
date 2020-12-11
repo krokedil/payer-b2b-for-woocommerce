@@ -20,6 +20,8 @@ class PB2B_Meta_Box {
 		add_action( 'add_meta_boxes', array( $this, 'pb2b_meta_box' ) );
 
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_check_credit' ), 45 );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'pb2b_maybe_set_invoice_data' ), 45 );
+
 	}
 	/**
 	 * Adds meta box to the side of a Payer order
@@ -31,8 +33,23 @@ class PB2B_Meta_Box {
 		if ( 'shop_order' === $post_type ) {
 			$order_id = get_the_ID();
 			$order    = wc_get_order( $order_id );
-			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_normal_invoice', 'payer_b2b_prepaid_invoice' ), true ) && ( ! empty( get_post_meta( $order_id, '_payer_invoice_number', true ) ) || empty( get_post_meta( $order_id, '_transaction_id', true ) ) ) ) {
-				add_meta_box( 'kom_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_content' ), 'shop_order', 'side', 'core' );
+			// Invoice created metabox metabox.
+			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_normal_invoice', 'payer_b2b_prepaid_invoice' ), true ) 
+				&& ( ! empty( get_post_meta( $order_id, '_payer_invoice_number', true ) ) 
+				|| empty( get_post_meta( $order_id, '_transaction_id', true ) ) ) ) {
+				add_meta_box( 'pb2b_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_invoice_content' ), 'shop_order', 'side', 'core' );
+				return;
+			}
+		}
+
+		if ( 'shop_order' === $post_type || 'shop_subscription' === $post_type ) {
+			$order_id = get_the_ID();
+			$order    = 'shop_order' === $post_type ? wc_get_order( $order_id ) : wcs_get_subscription( $order_id );
+			// Invoice not created metabox.
+			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_normal_invoice', 'payer_b2b_prepaid_invoice' ), true ) ) {
+				add_meta_box( 'pb2b_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_no_invoice_content' ), 'shop_order', 'side', 'core' );
+				add_meta_box( 'pb2b_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_no_invoice_content' ), 'shop_subscription', 'side', 'core' );
+				return;
 			}
 		}
 	}
@@ -41,7 +58,7 @@ class PB2B_Meta_Box {
 	 *
 	 * @return void
 	 */
-	public function pb2b_meta_box_content() {
+	public function pb2b_meta_box_invoice_content() {
 
 		$order_id = get_the_ID();
 		$order    = wc_get_order( $order_id );
@@ -117,6 +134,40 @@ class PB2B_Meta_Box {
 	}
 
 	/**
+	 * Adds content for the second Payer meta box.
+	 *
+	 * @return void
+	 */
+	public function pb2b_meta_box_no_invoice_content() {
+		$order_id = get_the_ID();
+		$order    = wc_get_order( $order_id );
+		$settings = 'payer_b2b_normal_invoice' === $order->get_payment_method() ? get_option( 'woocommerce_payer_b2b_normal_invoice_settings' ) : get_option( 'woocommerce_payer_b2b_prepaid_invoice_settings' );
+
+		$invoice_length = ! empty( get_post_meta( $order_id, 'pb2b_invoice_length', true ) ) ? get_post_meta( $order_id, 'pb2b_invoice_length', true ) : 30;
+		$type           = ! empty( get_post_meta( $order_id, 'pb2b_invoice_type', true ) ) ? get_post_meta( $order_id, 'pb2b_invoice_type', true ) : $settings['default_invoice_type'];
+		?>
+		<p>
+			<label for="payer_b2b_invoice_length"><?php esc_html_e( 'Invoice length', 'payer-b2b-for-woocommerce' ); ?></label>
+				<input type="number" id="payer_b2b_invoice_length" name="payer_b2b_invoice_length" value="<?php esc_attr_e( $invoice_length ); ?>" style="max-width:90px" />
+			</label>
+		<p>
+		<p>
+		<label for="payer_b2b_invoice_type"><?php esc_html_e( 'Invoice method', 'payer-b2b-for-woocommerce' ); ?>
+			<select id="payer_b2b_invoice_type" name="payer_b2b_invoice_type" style="max-width:90px">
+				<option value="PRINT" <?php selected( 'PRINT', $type ); ?>><?php esc_html_e( 'Mail', 'payer-b2b-for-woocommerce' ); ?></option>
+				<option value="EMAIL" <?php selected( 'EMAIL', $type ); ?>><?php esc_html_e( 'Email', 'payer-b2b-for-woocommerce' ); ?></option>
+				<option value="EINVOICE" <?php selected( 'EINVOICE', $type ); ?>><?php esc_html_e( 'E-Invoice', 'payer-b2b-for-woocommerce' ); ?></option>
+				<option value="NONE" <?php selected( 'NONE', $type ); ?>><?php esc_html_e( 'None', 'payer-b2b-for-woocommerce' ); ?></option>
+			</select>
+		</label>
+		<br><br>
+		<?php wp_nonce_field( 'set_invoice_data_nonce', 'set_invoice_data_nonce' ); ?>
+		<input type="submit" id="pb2b-set-invoice-data" name="pb2b-set-invoice-data" class="button button-primary" value="<?php esc_attr_e( 'Set Invoice data', 'payer-b2b-for-woocommerce' ); ?>">
+		</p>
+		<?php
+	}
+
+	/**
 	 * Run a credit check on the customer
 	 *
 	 * @param int $order_id The order ID.
@@ -128,6 +179,24 @@ class PB2B_Meta_Box {
 
 			if ( isset( $_POST['pb2b-run-credit-check-value'] ) && current_user_can( 'edit_shop_order' ) ) {
 				payer_b2b_make_credit_check( $order_id );
+			}
+		}
+	}
+
+	/**
+	 * Run a credit check on the customer
+	 *
+	 * @param int $order_id The order ID.
+	 * @return void
+	 */
+	public function pb2b_maybe_set_invoice_data( $order_id ) {
+		error_log( var_export( $_POST, true ) );
+		if ( isset( $_POST['set_invoice_data_nonce'] ) &&
+		wp_verify_nonce( $_POST['set_invoice_data_nonce'], 'set_invoice_data_nonce' ) ) {
+
+			if ( isset( $_POST['pb2b-set-invoice-data'] ) && current_user_can( 'edit_shop_order' ) ) {
+				update_post_meta( $order_id, 'pb2b_invoice_length', $_POST['payer_b2b_invoice_length'] );
+				update_post_meta( $order_id, 'pb2b_invoice_type', $_POST['payer_b2b_invoice_type'] );
 			}
 		}
 	}
