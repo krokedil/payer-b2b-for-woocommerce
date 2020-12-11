@@ -6,7 +6,7 @@ Tested up to: 5.5.1
 Requires PHP: 5.6
 Stable tag: trunk
 WC requires at least: 3.5.0
-WC tested up to: 4.5.2
+WC tested up to: 4.5.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,9 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2020.12.11        - Version 2.1.0 =
+* Feature           - Added feature to change invoice delivery type and due date length on orders and subscriptions placed with either invoice option.
+
 = 2020.11.13        - Version 2.0.3 =
 * Enhancement       - Allow customers to update the card used on a failed subscription purchase.
 * Enhancement       - Improved refunds to prevent a mismatch on order line numbers for invoices.
