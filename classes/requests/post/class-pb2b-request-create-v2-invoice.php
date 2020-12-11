@@ -46,12 +46,14 @@ class PB2B_Request_Create_V2_Invoice extends PB2B_Request {
 	 */
 	public function get_request_args( $order_id, $type ) {
 
+		$due_days = ! empty( get_post_meta( $order_id, 'pb2b_invoice_length', true ) ) ? intval( get_post_meta( $order_id, 'pb2b_invoice_length', true ) ) : 30;
+
 		return array(
 			'headers' => $this->get_headers(),
 			'method'  => 'POST',
 			'body'    => wp_json_encode(
 				array(
-					'dueDays'      => 30,
+					'dueDays'      => $due_days,
 					'deliveryType' => $this->get_invoice_type( $order_id ),
 					'type'         => $type,
 				)
