@@ -190,7 +190,6 @@ class PB2B_Meta_Box {
 	 * @return void
 	 */
 	public function pb2b_maybe_set_invoice_data( $order_id ) {
-		error_log( var_export( $_POST, true ) );
 		if ( isset( $_POST['set_invoice_data_nonce'] ) &&
 		wp_verify_nonce( $_POST['set_invoice_data_nonce'], 'set_invoice_data_nonce' ) ) {
 
