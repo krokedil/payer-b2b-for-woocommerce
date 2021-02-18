@@ -121,7 +121,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 		}
 
 		// Subscription payment.
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order,  array( 'parent', 'resubscribe', 'switch', 'renewal' ) ) ) {
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) ) ) {
 			// Check if the order has already been created.
 			$payer_order_id = get_post_meta( $order_id, '_payer_order_id', true );
 			if ( 'yes' === $this->add_order_lines && 0 < $order->get_total() && empty( $payer_order_id ) ) {

@@ -216,14 +216,18 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 					PAYER_B2B_VERSION,
 					true
 				);
+				$settings            = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
+				$get_address_enabled = isset( $settings['get_address'] ) ? ( ( 'yes' === $settings['get_address'] ) ? true : false ) : true;
+
 				$params = array(
-					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-					'b2c_text'          => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
-					'b2b_text'          => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
-					'pno_name'          => PAYER_PNO_FIELD_NAME,
-					'get_address_text'  => __( 'Get address', 'payer-b2b-for-woocommerce' ),
-					'get_address'       => WC_AJAX::get_endpoint( 'get_address' ),
-					'get_address_nonce' => wp_create_nonce( 'get_address_nonce' ),
+					'ajaxurl'             => admin_url( 'admin-ajax.php' ),
+					'b2c_text'            => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
+					'b2b_text'            => __( 'Organisation Number', 'payer-b2b-for-woocommerce' ),
+					'pno_name'            => PAYER_PNO_FIELD_NAME,
+					'get_address_enabled' => $get_address_enabled,
+					'get_address_text'    => __( 'Get address', 'payer-b2b-for-woocommerce' ),
+					'get_address'         => WC_AJAX::get_endpoint( 'get_address' ),
+					'get_address_nonce'   => wp_create_nonce( 'get_address_nonce' ),
 				);
 				wp_localize_script(
 					'payer_wc',
