@@ -6,25 +6,29 @@ jQuery( function($)  {
 		},
 
 		moveInputFields: function() {
-            var pno_field           = $('#' + payer_wc_params.pno_name + '_field'),
-                post_code           = $('#billing_postcode_field'),
-                customer_details    = $('div.woocommerce-billing-fields div'),
-                button              = $('#payer_get_address');
+            if ( payer_wc_params.get_address_enabled ) {
+                var pno_field           = $('#' + payer_wc_params.pno_name + '_field'),
+                    post_code           = $('#billing_postcode_field'),
+                    customer_details    = $('div.woocommerce-billing-fields div'),
+                    button              = $('#payer_get_address');
 
-            pno_field.addClass('form-row-first');
-            post_code.addClass('form-row-last');
-            post_code.removeClass('form-row-wide');
-            post_code.before('<div id="payer_postcode_placeholder"></div>');
-            customer_details.prepend(post_code);     
-            customer_details.prepend(pno_field);
-            post_code.after(button);      
+                pno_field.addClass('form-row-first');
+                post_code.addClass('form-row-last');
+                post_code.removeClass('form-row-wide');
+                post_code.before('<div id="payer_postcode_placeholder"></div>');
+                customer_details.prepend(post_code);     
+                customer_details.prepend(pno_field);
+                post_code.after(button);
+            }
         },
 
         addGetAddressButton: function() {
-            var post_code   = $('#billing_postcode_field'),
-                button      = '<button type="button" class="payer_get_address_button button" style="display:block; clear:both" id="payer_get_address">' + payer_wc_params.get_address_text + '</button>';
+            if ( payer_wc_params.get_address_enabled ) {
+                var post_code   = $('#billing_postcode_field'),
+                    button      = '<button type="button" class="payer_get_address_button button" style="display:block; clear:both" id="payer_get_address">' + payer_wc_params.get_address_text + '</button>';
 
-            post_code.after(button);
+                post_code.after(button);
+            }
         },
 
         getAddress: function() {

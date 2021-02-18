@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.5.1
+Tested up to: 5.6.1
 Requires PHP: 5.6
 Stable tag: trunk
 WC requires at least: 3.5.0
-WC tested up to: 4.5.3
+WC tested up to: 5.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2021.02.18        - Version 2.1.1 =
+* Fix               - Fixed an issue when a customer tried to complete a failed subscription payment using Payer B2B Card payments.
+* Fix               - Fixed a logic error for the get address feature.
+
 = 2020.12.11        - Version 2.1.0 =
 * Feature           - Added feature to change invoice delivery type and due date length on orders and subscriptions placed with either invoice option.
 

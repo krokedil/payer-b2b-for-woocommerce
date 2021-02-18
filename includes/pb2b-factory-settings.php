@@ -52,7 +52,13 @@ if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' ===
 		'default'     => 'yes',
 		'description' => __( 'If you disable these fields you need to have your own field for PNO and Org Nr. And use the filter payer_pno_field_name to change what field is used.', 'payer-b2b-for-woocommerce' ),
 		'desc_tip'    => true,
-
+	);
+	$settings['get_address']            = array(
+		'title'    => __( 'Enable get address', 'payer-b2b-for-woocommerce' ),
+		'type'     => 'checkbox',
+		'label'    => __( 'Enables the address lookup feature from Payer.', 'payer-b2b-for-woocommerce' ),
+		'default'  => 'yes',
+		'desc_tip' => true,
 	);
 	$settings['separate_signatory']     = array(
 		'title'   => __( 'Enable separate signatory', 'payer-b2b-for-woocommerce' ),
