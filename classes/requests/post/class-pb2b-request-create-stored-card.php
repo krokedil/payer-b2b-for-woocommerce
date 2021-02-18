@@ -58,12 +58,18 @@ class PB2B_Request_Create_Stored_Card extends PB2B_Request {
 	public function get_body( $order_id ) {
 		$order = wc_get_order( $order_id );
 
+		$success_url = $order->get_checkout_order_received_url();
+
+		if ( $this->change_payment_method ) {
+			$success_url = add_query_arg( array( 'change_payment_method' => true ), $success_url );
+		}
+
 		return array(
 			'backToShopURL'        => $order->get_cancel_order_url_raw(),
 			'currencyCode'         => get_woocommerce_currency(),
 			'languageCode'         => $this->lang_code(),
 			'redirectOnFailURL'    => $order->get_cancel_order_url_raw(),
-			'redirectOnSuccessURL' => $order->get_checkout_order_received_url(),
+			'redirectOnSuccessURL' => $success_url,
 		);
 	}
 }
