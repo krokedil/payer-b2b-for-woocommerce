@@ -292,7 +292,6 @@ class PB2B_Order_Management {
 		if ( 'payer_b2b_normal_invoice' === $order->get_payment_method() && $this->order_management_enabled && 0 < $order->get_total() ) {
 			if ( get_post_meta( $order_id, '_payer_order_approved' ) ) {
 				$order->add_order_note( __( 'Did not update the order with Payer. Order has already been approved.', 'payer-b2b-for-woocommerce' ) );
-				$order->save();
 				return;
 			}
 			// Make request if we get here.
