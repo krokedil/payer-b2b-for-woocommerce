@@ -116,6 +116,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 	public function process_payment( $order_id ) {
 		$order                 = wc_get_order( $order_id );
 		$change_payment_method = filter_input( INPUT_GET, 'change_payment_method', FILTER_SANITIZE_STRING );
+		$pno                   = isset( $_POST[ PAYER_PNO_FIELD_NAME ] ) ? sanitize_text_field( $_POST[ PAYER_PNO_FIELD_NAME ] ) : '';
+
 		if ( ! empty( $change_payment_method ) ) {
 			return $this->payer_b2b_stored_card( $order, $order_id, true );
 		}
@@ -128,9 +130,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 				$payer_payment_url = get_post_meta( $order_id, '_payer_payment_url', true );
 				// Check if we have a payment url for this order already.
 				if ( empty( $payer_payment_url ) ) {
-					$args = array( // values is null for now.
+					$args = array(
 						'b2b'       => null,
-						'pno_value' => null,
+						'pno_value' => $pno,
 					);
 					// Total amount must be greater than zero.
 					$request  = new PB2B_Request_Create_Order( $order_id, $args );
@@ -139,6 +141,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
 						return false;
 					}
+
+					update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
 					update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 					update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 				}
@@ -152,9 +156,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			if ( empty( $payer_payment_url ) ) {
 				payer_b2b_register_webhook( $order_id, 'CARD_PAYMENT_AUTHORIZED' ); // Register webhook for card payments.
 				if ( 'yes' === $this->add_order_lines ) {
-					$args     = array( // values is null for now.
+					$args     = array(
 						'b2b'       => null,
-						'pno_value' => null,
+						'pno_value' => $pno,
 					);
 					$request  = new PB2B_Request_Create_Order( $order_id, $args );
 					$response = $request->request();
@@ -163,6 +167,7 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 						return false;
 					}
 
+					update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
 					update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 					update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 
