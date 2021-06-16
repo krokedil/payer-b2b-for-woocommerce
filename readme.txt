@@ -36,7 +36,7 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
-= 2021.02.18        - Version 2.1.2 =
+= 2021.06.16        - Version 2.1.2 =
 * Fix               - Fixed an issue that would trigger an update attempt when updating an order in WooCommerce that Payer has already completed.
 * Fix               - Fixed not sending the PNO or Org number to Payer for Card payments.
 * Tweak             - Remove UI Version from card payments.
