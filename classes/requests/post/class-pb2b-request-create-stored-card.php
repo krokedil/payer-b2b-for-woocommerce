@@ -19,7 +19,7 @@ class PB2B_Request_Create_Stored_Card extends PB2B_Request {
 	 * @return array
 	 */
 	public function request() {
-		$request_url  = $this->base_url . '/api/v2/payments/cards/stored?uiVersion=V1';
+		$request_url  = $this->base_url . '/api/v2/payments/cards/stored';
 		$request_args = apply_filters( 'payer_create_stored_card_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response     = wp_remote_request( $request_url, $request_args );
 

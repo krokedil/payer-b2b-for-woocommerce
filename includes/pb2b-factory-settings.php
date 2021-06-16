@@ -43,7 +43,7 @@ if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' ===
 		'title'   => __( 'Automatic Credit Check', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( "Run an automatic check on the customer's credit status", 'payer-b2b-for-woocommerce' ),
-		'default' => 'yes',
+		'default' => 'no',
 	);
 	$settings['enable_all_fields']      = array(
 		'title'       => __( 'Enable extra checkout fields', 'payer-b2b-for-woocommerce' ),
@@ -64,7 +64,7 @@ if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' ===
 		'title'   => __( 'Enable separate signatory', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable the customer to enter a separate signatory for B2B purchases.', 'payer-b2b-for-woocommerce' ),
-		'default' => 'yes',
+		'default' => 'no',
 	);
 	$settings['default_invoice_type']   = array(
 		'title'       => __( 'Default invoice type', 'payer-b2b-for-woocommerce' ),
@@ -102,12 +102,12 @@ if ( 'payer_b2b_normal_invoice' === $this->id || 'payer_b2b_prepaid_invoice' ===
 // Payer B2B V1 Invoice settings.
 if ( 'payer_b2b_normal_invoice' === $this->id ) {
 	$settings['agent_id'] = array(
-		'title'   => __( 'Agent ID', 'payer-b2b-for-woocommerce' ),
+		'title'   => __( 'ClientId', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'text',
 		'default' => '',
 	);
 	$settings['api_key']  = array(
-		'title'   => __( 'API Key', 'payer-b2b-for-woocommerce' ),
+		'title'   => __( 'ClientSecret', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'text',
 		'default' => '',
 	);

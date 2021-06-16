@@ -22,7 +22,7 @@ class PB2B_Request_Refund_Card_Payment extends PB2B_Request {
 	 */
 	public function request( $amount, $reason ) {
 		$payer_payment_id = get_post_meta( $this->order_id, '_payer_payment_id', true );
-		$request_url      = $this->base_url . '/api/v2/payments/' . $payer_payment_id . '/cards/refund';
+		$request_url      = $this->base_url . '/api/v2/payments/' . $payer_payment_id . '/cards/refund-and-credit';
 		$request_args     = apply_filters( 'payer_refund_card_payment_args', $this->get_request_args( $this->order_id, $amount, $reason ), $this->order_id );
 		$response         = wp_remote_request( $request_url, $request_args );
 		$code             = wp_remote_retrieve_response_code( $response );
