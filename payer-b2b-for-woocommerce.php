@@ -1,9 +1,9 @@
 <?php // phpcs:ignore
 /**
- * Plugin Name:     Payer B2B for WooCommerce
+ * Plugin Name:     Payer B2B for WooCommerce - DONT REMOVE! Onboarding demo
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
- * Version:         2.1.2
+ * Version:         9.9.9
  * Author:          Krokedil
  * Author URI:      https://krokedil.com/
  * Developer:       Krokedil
@@ -146,6 +146,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-full-credit-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-partial-credit-invoice.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-manual-credit-invoice.php';
+			include_once PAYER_B2B_PATH . '/classes/requests/post/class-pb2b-request-create-onboarding-session.php';
 			// Put.
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-update-order.php';
 			include_once PAYER_B2B_PATH . '/classes/requests/put/class-pb2b-request-approve-order.php';
@@ -174,6 +175,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-ajax.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-create-credit-check-column.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-address-filter.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-onboarding.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
 			include_once PAYER_B2B_PATH . '/includes/pb2b-credentials-form-fields.php';
@@ -216,9 +218,19 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 					PAYER_B2B_VERSION,
 					true
 				);
+
+				wp_register_style(
+					'payer_wc',
+					PAYER_B2B_URL . '/assets/css/payer_checkout.css',
+					array(),
+					PAYER_B2B_VERSION
+				);
+
 				$settings            = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
 				$get_address_enabled = isset( $settings['get_address'] ) ? ( ( 'yes' === $settings['get_address'] ) ? true : false ) : true;
+				$onboarding_enabled = ( isset($settings['onboarding']) && "yes" === $settings['onboarding'] ) ? true : false;
 
+				
 				$params = array(
 					'ajaxurl'             => admin_url( 'admin-ajax.php' ),
 					'b2c_text'            => __( 'Personal Number', 'payer-b2b-for-woocommerce' ),
@@ -228,13 +240,42 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 					'get_address_text'    => __( 'Get address', 'payer-b2b-for-woocommerce' ),
 					'get_address'         => WC_AJAX::get_endpoint( 'get_address' ),
 					'get_address_nonce'   => wp_create_nonce( 'get_address_nonce' ),
+					'onboarding_enabled'  => $onboarding_enabled,
 				);
+
+				if($onboarding_enabled){
+					if( WC()->session->get( 'pb2b_onboarding_client_token' ) ) {
+						$sdk_url      = WC()->session->get( 'pb2b_onboarding_skd_url');
+						$client_token = WC()->session->get( 'pb2b_onboarding_client_token');
+						$session_id   = WC()->session->get( 'pb2b_onboarding_session_id');
+					} else {
+						$onboarding   = new PB2B_Request_Create_Onboarding(array());
+						$onboarding   = $onboarding->request();
+						$sdk_url      = $onboarding['sdkUrl'];
+						$client_token = $onboarding['clientToken'];
+						$session_id   = $onboarding['sessionId'];
+						WC()->session->set( 'pb2b_onboarding_skd_url', $sdk_url );
+						WC()->session->set( 'pb2b_onboarding_client_token', $client_token );
+						WC()->session->set( 'pb2b_onboarding_session_id', $session_id );
+					}
+					wp_register_script(
+						'payer_onboarding',
+						$sdk_url,
+						array(),
+						null,
+						true
+					);
+					$params['client_token'] = $client_token;
+				}
+				
 				wp_localize_script(
 					'payer_wc',
 					'payer_wc_params',
 					$params
 				);
 				wp_enqueue_script( 'payer_wc' );
+				wp_enqueue_style( 'payer_wc' );
+				wp_enqueue_script( 'payer_onboarding' );
 			}
 		}
 

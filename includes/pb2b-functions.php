@@ -12,6 +12,7 @@
  * @return string
  */
 function payer_b2b_maybe_create_token( $order_id ) {
+	delete_transient( 'payer_b2b_auth_token' );
 	$token = get_transient( 'payer_b2b_auth_token' );
 	if ( false === $token ) {
 		$request  = new PB2B_Request_Oauth( $order_id );
@@ -69,4 +70,12 @@ function payer_b2b_make_credit_check( $order_id ) {
 	}
 
 	update_post_meta( $order_id, '_payer_credit_check_result', $response_credit_check['result'] );
+}
+
+
+function payer_b2b_show_shippet(){
+	?>
+	<div id="payer-onboarding-container">
+	</div>
+	<?php
 }

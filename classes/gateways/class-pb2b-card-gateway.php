@@ -139,7 +139,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					$response = $request->request();
 
 					if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
-						return false;
+						return array(
+							'result'   => 'error',
+						);
 					}
 
 					update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );

@@ -131,6 +131,12 @@ if ( 'payer_b2b_normal_invoice' === $this->id ) {
 		'label'   => __( 'Enable debug logging for the plugin', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
+	$settings['onboarding']    = array(
+		'title'   => __( 'Enable Payer Onboarding', 'payer-b2b-for-woocommerce' ),
+		'type'    => 'checkbox',
+		'label'   => __( 'Enable Payers Onboarding iFrame', 'payer-b2b-for-woocommerce' ),
+		'default' => 'no',
+	);
 } else {
 	$settings['factory_notice'] = array(
 		'title' => __( 'Put credentials in the Payer B2B Invoice settings.', 'payer-b2b-for-woocommerce' ),

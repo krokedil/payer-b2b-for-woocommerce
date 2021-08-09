@@ -243,7 +243,10 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			if ( $created_via_admin && is_wp_error( $response ) ) {
 				$error_message = wp_json_encode( $response->errors );
 				$order->add_order_note( $error_message );
-				return;
+				wc_print_notice($error_message, 'error');
+				return array(
+					'result'   => 'error',
+				);
 			}
 
 			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {

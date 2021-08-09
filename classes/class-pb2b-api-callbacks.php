@@ -18,6 +18,7 @@ class PB2B_API_Callbacks {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_api_pb2b_wc_notification', array( $this, 'notification_cb' ) );
+		add_action( 'woocommerce_api_pb2b_wc_onboarding', array( $this, 'onboarding_cb' ) );
 		add_action( 'payer_check_for_order', array( $this, 'pb2b_check_for_order_callback' ), 10, 2 );
 	}
 
@@ -168,6 +169,10 @@ class PB2B_API_Callbacks {
 		}
 
 		return $order_totals_match;
+	}
+
+	public function onboarding_cb(){
+		return true;
 	}
 }
 
