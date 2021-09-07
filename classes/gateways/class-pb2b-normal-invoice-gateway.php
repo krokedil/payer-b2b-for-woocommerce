@@ -69,12 +69,22 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @return boolean
 	 */
 	public function is_available() {
-		if ( 'yes' === $this->enabled ) {
-			if ( in_array( get_woocommerce_currency(), array( 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ), true ) ) {
-				return true;
-			}
+		if ( 'yes' !== $this->enabled ) {
+			return false;
 		}
-		return false;
+
+		if ( ! in_array( get_woocommerce_currency(), array( 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ), true ) ) {
+			return false;
+		}
+
+		if ( null !== WC()->session
+			&& WC()->session->get( 'pb2b_credit_decision' )
+			&& 'APPROVED' !== WC()->session->get( 'pb2b_credit_decision' )
+		) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -243,9 +253,9 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			if ( $created_via_admin && is_wp_error( $response ) ) {
 				$error_message = wp_json_encode( $response->errors );
 				$order->add_order_note( $error_message );
-				wc_print_notice($error_message, 'error');
+				wc_print_notice( $error_message, 'error' );
 				return array(
-					'result'   => 'error',
+					'result' => 'error',
 				);
 			}
 

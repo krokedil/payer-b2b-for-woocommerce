@@ -58,7 +58,6 @@ jQuery( function($)  {
 			
 			//AJAX
             $.ajax({
-
                 type: 'POST',
                 url: payer_wc_params.get_address,
                 data: {
@@ -93,7 +92,6 @@ jQuery( function($)  {
 
 		//Fill the fields with retrieved data.
 		populateAddressFields: function( address_data ) {
-
             // Set fields.
             var first_name      = $('#billing_first_name'),
                 last_name       = $('#billing_last_name'),
@@ -163,35 +161,53 @@ jQuery( function($)  {
 
 if( payer_wc_params.onboarding_enabled ) {
     const onSuccess = (data) => {
-        console.log(data);
-        jQuery('#pb2b-payment-wrapper').show();
-
-        jQuery( '#' + payer_wc_params.pno_name).val(data.company.regNumber)
-        jQuery('#billing_first_name').val(data.customer.firstName);
-        jQuery('#billing_last_name').val(data.customer.lastName);
-        jQuery('#billing_company').val(data.invoiceAddress.name);
-        jQuery('#billing_country').val(data.company.countryCode);
-        jQuery('#billing_address_1').val(data.invoiceAddress.streetAddress1);
-        jQuery('#billing_address_2').val(data.invoiceAddress.streetAddress2);
-        jQuery('#billing_city').val(data.invoiceAddress.city);
-        jQuery('#billing_postcode').val(data.invoiceAddress.zipCode);
-        jQuery('#billing_phone').val(data.customer.phoneNumber);
-        jQuery('#billing_email').val(data.customer.email);
-
-        jQuery( '#ship-to-different-address-checkbox' ).prop( 'checked', true);
-        jQuery('#shipping_first_name').val(data.customer.firstName);
-        jQuery('#shipping_last_name').val(data.customer.lastName);
-        jQuery('#shipping_company').val(data.deliveryAddress.name);
-        jQuery('#shipping_country').val(data.company.countryCode);
-        jQuery('#shipping_address_1').val(data.deliveryAddress.streetAddress1);
-        jQuery('#shipping_address_2').val(data.deliveryAddress.streetAddress2);
-        jQuery('#shipping_city').val(data.deliveryAddress.city);
-        jQuery('#shipping_postcode').val(data.deliveryAddress.zipCode);
+		console.log(data);
+		setCreditDecision(data);
     };
 
     const onFailure = (error) => {
         console.error('Onboarding failed', error);
     };
+
+	const setCreditDecision = (data) => {
+		console.log("setCreditDecision");
+		jQuery.ajax({
+			type: 'POST',
+			url: payer_wc_params.set_credit_decision,
+			data: {
+				'action': 'set_credit_decision',
+				'credit_decision' : data.creditDecision,
+				'set_credit_decision_nonce' : payer_wc_params.set_credit_decision_nonce,
+			},
+			dataType: 'json',
+			complete: function(res) {
+				console.log(res);
+				jQuery( '#' + payer_wc_params.pno_name).val(data.company.regNumber)
+				jQuery('#billing_first_name').val(data.customer.firstName);
+				jQuery('#billing_last_name').val(data.customer.lastName);
+				jQuery('#billing_company').val(data.invoiceAddress.name);
+				jQuery('#billing_country').val(data.company.countryCode);
+				jQuery('#billing_address_1').val(data.invoiceAddress.streetAddress1);
+				jQuery('#billing_address_2').val(data.invoiceAddress.streetAddress2);
+				jQuery('#billing_city').val(data.invoiceAddress.city);
+				jQuery('#billing_postcode').val(data.invoiceAddress.zipCode);
+				jQuery('#billing_phone').val(data.customer.phoneNumber);
+				jQuery('#billing_email').val(data.customer.email);
+		
+				jQuery('#ship-to-different-address-checkbox').prop( 'checked', true);
+				jQuery('#shipping_first_name').val(data.customer.firstName);
+				jQuery('#shipping_last_name').val(data.customer.lastName);
+				jQuery('#shipping_company').val(data.deliveryAddress.name);
+				jQuery('#shipping_country').val(data.company.countryCode);
+				jQuery('#shipping_address_1').val(data.deliveryAddress.streetAddress1);
+				jQuery('#shipping_address_2').val(data.deliveryAddress.streetAddress2);
+				jQuery('#shipping_city').val(data.deliveryAddress.city);
+				jQuery('#shipping_postcode').val(data.deliveryAddress.zipCode);
+				jQuery('body').trigger('update_checkout');
+				jQuery('#pb2b-payment-wrapper').show();
+			}
+		});   
+	}
 
     window.payerAsyncCallback = function () {
         PayerOnboard.init({
