@@ -20,8 +20,7 @@ class PB2B_Request_Create_Onboarding extends PB2B_Request {
 	 */
 	public function request() {
 		$request_url  = $this->base_url . '/api/v1/onboard';
-		$request_args = stripslashes_deep(apply_filters( 'payer_create_onboarding_args', $this->get_request_args() ));
-		error_log( var_export( $request_args, true ) );
+		$request_args = stripslashes_deep( apply_filters( 'payer_create_onboarding_args', $this->get_request_args() ) );
 		$response     = wp_remote_request( $request_url, $request_args );
 		$code         = wp_remote_retrieve_response_code( $response );
 
@@ -56,15 +55,15 @@ class PB2B_Request_Create_Onboarding extends PB2B_Request {
 	 */
 	public function get_body() {
 		return array(
-			"callbackUrl"  => get_home_url() . '/wc-api/PB2B_WC_Onboarding/',
-			"countryCode"  => "SE",
-			"currencyCode" => get_woocommerce_currency(),
-			"languageCode" => "sv",
-			"buyer"        => array(
-				"firstName"   => WC()->customer->get_billing_first_name(),
-				"lastName"    => WC()->customer->get_billing_last_name(),
-				"email"       => WC()->customer->get_billing_email(),
-				"phoneNumber" => WC()->customer->get_billing_phone(),
+			'callbackUrl'  => get_home_url() . '/wc-api/PB2B_WC_Onboarding/',
+			'countryCode'  => 'SE',
+			'currencyCode' => get_woocommerce_currency(),
+			'languageCode' => 'sv',
+			'buyer'        => array(
+				'firstName'   => WC()->customer->get_billing_first_name(),
+				'lastName'    => WC()->customer->get_billing_last_name(),
+				'email'       => WC()->customer->get_billing_email(),
+				'phoneNumber' => WC()->customer->get_billing_phone(),
 			),
 		);
 	}

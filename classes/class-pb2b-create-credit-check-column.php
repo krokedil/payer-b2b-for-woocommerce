@@ -18,7 +18,6 @@ class PB2B_Create_Credit_Check_Column {
 	 */
 	public function __construct() {
 		add_filter( 'manage_edit-shop_order_columns', array( $this, 'create_credit_check_column' ) );
-
 		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'create_credit_check_column_content' ), 10, 2 );
 	}
 
@@ -29,6 +28,11 @@ class PB2B_Create_Credit_Check_Column {
 	 * @return string
 	 */
 	public function create_credit_check_column( $columns ) {
+		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
+		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
+			return $columns;
+		}
+
 		$columns['credit_status'] = 'Credit status';
 
 		return $columns;
@@ -42,6 +46,10 @@ class PB2B_Create_Credit_Check_Column {
 	 * @return void
 	 */
 	public function create_credit_check_column_content( $column, $order_id ) {
+		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
+		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
+			return;
+		}
 
 		if ( 'credit_status' === $column ) {
 			$order = wc_get_order( $order_id );

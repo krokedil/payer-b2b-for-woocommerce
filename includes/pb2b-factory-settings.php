@@ -119,19 +119,19 @@ if ( 'payer_b2b_normal_invoice' === $this->id ) {
 		'default' => 'yes',
 	);
 
-	$settings['testmode'] = array(
+	$settings['testmode']   = array(
 		'title'   => __( 'Testmode', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable Payer testmode', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['debug']    = array(
+	$settings['debug']      = array(
 		'title'   => __( 'Debug', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable debug logging for the plugin', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['onboarding']    = array(
+	$settings['onboarding'] = array(
 		'title'   => __( 'Enable Payer Onboarding', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable Payers Onboarding iFrame', 'payer-b2b-for-woocommerce' ),
