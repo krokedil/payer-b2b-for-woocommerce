@@ -60,21 +60,19 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 		$customer = get_post_meta( $order_id, '_payer_customer_type', true ) || 'B2B' === $this->customer_type ? 'ORGANISATION' : 'PRIVATE';
 		$order    = wc_get_order( $order_id );
 		return array(
-			'currencyCode'     => get_woocommerce_currency(),
-			'purchaseChannel'  => 'ECOMMERCE',
-			'referenceId'      => $order->get_order_number(),
-			'description'      => 'Woo Order',
-			'invoiceCustomer'  => array(
+			'currencyCode'                          => get_woocommerce_currency(),
+			'purchaseChannel'                       => 'ECOMMERCE',
+			'referenceId'                           => $order->get_order_number(),
+			'description'                           => 'Woo Order',
+			'invoiceCustomer'                       => array(
 				'customerType' => $customer,
-				'regNumber'    => get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true ),
+				'regNumber'    => $this->args['pno_value'],
 				'address'      => PB2B_Customer_Data::get_customer_billing_data( $order_id ),
 			),
-			'deliveryCustomer' => array(
-				'customerType' => $customer,
-				'regNumber'    => get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true ),
-				'address'      => PB2B_Customer_Data::get_customer_shipping_data( $order_id ),
-			),
-			'items'            => PB2B_Order_Lines::get_order_items( $order_id ),
+			'items'                                 => PB2B_Order_Lines::get_order_items( $order_id ),
+			'totalVatAmount'                        => intval( round( $order->get_total_tax() * 100, 2 ) ),
+			'totalVatAmountsGroupedByVatPercentage' => PB2B_Order_Lines::get_tax_array( $order ),
+			'totalAmountIncludingVat'               => intval( round( $order->get_total() * 100, 2 ) ),
 		);
 	}
 }
