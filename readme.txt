@@ -3,9 +3,9 @@ Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
 Tested up to: 5.6.1
-Requires PHP: 5.6
+Requires PHP: 7.0
 Stable tag: trunk
-WC requires at least: 3.5.0
+WC requires at least: 4.0.0
 WC tested up to: 5.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
