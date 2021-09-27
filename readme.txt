@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.6.1
-Requires PHP: 5.6
+Tested up to: 5.8.1
+Requires PHP: 7.0
 Stable tag: trunk
-WC requires at least: 3.5.0
-WC tested up to: 5.0.0
+WC requires at least: 4.0.0
+WC tested up to: 5.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,9 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2021.09.27        - Version 2.2.0 =
+* Enhancement       - Changed API endpoint for order creation to allow us to avoid rounding issues when sending prices to Payer.
+
 = 2021.06.16        - Version 2.1.2 =
 * Fix               - Fixed an issue that would trigger an update attempt when updating an order in WooCommerce that Payer has already completed.
 * Fix               - Fixed not sending the PNO or Org number to Payer for Card payments.
