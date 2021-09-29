@@ -176,6 +176,7 @@ if( payer_wc_params.onboarding_enabled ) {
 			url: payer_wc_params.set_credit_decision,
 			data: {
 				'action': 'set_credit_decision',
+				'status' : data.status,
 				'credit_decision' : data.creditDecision,
 				'set_credit_decision_nonce' : payer_wc_params.set_credit_decision_nonce,
 			},

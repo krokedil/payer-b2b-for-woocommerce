@@ -1,9 +1,9 @@
 <?php // phpcs:ignore
 /**
- * Plugin Name:     Payer B2B for WooCommerce
+ * Plugin Name:     Payer onboarding B2B for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
- * Version:         2.1.2
+ * Version:         9.9.9
  * Author:          Krokedil
  * Author URI:      https://krokedil.com/
  * Developer:       Krokedil
@@ -176,6 +176,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-create-credit-check-column.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-address-filter.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-onboarding.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-user-column.php';
 			// Includes.
 			include_once PAYER_B2B_PATH . '/includes/pb2b-functions.php';
 			include_once PAYER_B2B_PATH . '/includes/pb2b-credentials-form-fields.php';

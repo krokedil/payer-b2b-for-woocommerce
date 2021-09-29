@@ -143,13 +143,17 @@ class PB2B_Ajax extends WC_AJAX {
 	 */
 	public static function set_credit_decision() {
 		$credit_decision = filter_input( INPUT_POST, 'credit_decision', FILTER_SANITIZE_STRING );
+		$status          = filter_input( INPUT_POST, 'status', FILTER_SANITIZE_STRING );
 		$nonce           = filter_input( INPUT_POST, 'set_credit_decision_nonce', FILTER_SANITIZE_STRING );
 		if ( ! wp_verify_nonce( $nonce, 'set_credit_decision_nonce' ) ) {
 			wp_send_json_error( 'Bad request' );
 			wp_die();
 		}
-
 		WC()->session->set( 'pb2b_credit_decision', $credit_decision );
+		if ( is_user_logged_in() ) {
+			$user = wp_get_current_user();
+			update_user_meta( $user->ID, 'pb2b_onboarding_status', $status );
+		}
 		wp_send_json_success();
 		wp_die();
 	}
