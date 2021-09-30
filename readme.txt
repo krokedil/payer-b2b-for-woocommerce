@@ -36,6 +36,9 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2021.09.30        - Version 2.2.1 =
+* Fix               - Change endpoint for update calls to match the new order creation endpoint.
+
 = 2021.09.27        - Version 2.2.0 =
 * Enhancement       - Changed API endpoint for order creation to allow us to avoid rounding issues when sending prices to Payer.
 
