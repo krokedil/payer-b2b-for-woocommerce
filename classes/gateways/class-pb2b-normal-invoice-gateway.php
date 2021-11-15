@@ -78,8 +78,8 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 		}
 
 		if ( null !== WC()->session
-			&& ( empty( WC()->session->get( 'pb2b_credit_decision' ) ) || 'APPROVED' !== WC()->session->get( 'pb2b_credit_decision' ) )
-			&& ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || 'COMPLETED' !== WC()->session->get( 'pb2b_onboarding_status' ) )
+			&& ( ( empty( WC()->session->get( 'pb2b_credit_decision' ) ) || 'APPROVED' !== WC()->session->get( 'pb2b_credit_decision' ) )
+			|| ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || 'COMPLETED' !== WC()->session->get( 'pb2b_onboarding_status' ) ) )
 		) {
 			return false;
 		}
