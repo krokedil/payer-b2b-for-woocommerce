@@ -17,8 +17,8 @@ class PB2B_Create_Credit_Check_Column {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		add_filter( 'manage_edit-shop_order_columns', array( $this, 'create_credit_check_column' ) );
-		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'create_credit_check_column_content' ), 10, 2 );
+		add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_columns' ) );
+		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'add_content' ), 10, 2 );
 	}
 
 	/**
@@ -27,9 +27,11 @@ class PB2B_Create_Credit_Check_Column {
 	 * @param string $columns Column array.
 	 * @return string
 	 */
-	public function create_credit_check_column( $columns ) {
+	public function add_columns( $columns ) {
 		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
 		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
+			$columns['onboarding_credit_decision'] = 'Credit Decision';
+			$columns['onboarding_status']          = 'Onboarding status';
 			return $columns;
 		}
 
@@ -45,9 +47,21 @@ class PB2B_Create_Credit_Check_Column {
 	 * @param int    $order_id The order ID.
 	 * @return void
 	 */
-	public function create_credit_check_column_content( $column, $order_id ) {
+	public function add_content( $column, $order_id ) {
+		$order = wc_get_order( $order_id );
+		if ( strpos( $order->get_payment_method(), 'payer_b2b' ) ) {
+			return;
+		}
+
 		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
 		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
+			if ( 'onboarding_credit_decision' === $column ) {
+				$this->add_onboarding_credit_decision_content( $order_id );
+			}
+
+			if ( 'onboarding_status' === $column ) {
+				$this->add_onboarding_status_content( $order_id );
+			}
 			return;
 		}
 
@@ -98,4 +112,49 @@ class PB2B_Create_Credit_Check_Column {
 		}
 	}
 
+	/**
+	 * Adds content to the credit decision column.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return void
+	 */
+	public function add_onboarding_credit_decision_content( $order_id ) {
+		$credit_decision = get_post_meta( $order_id, '_payer_onboarding_credit_decision', true );
+		if ( ! empty( $credit_decision ) && 'APPROVED' === $credit_decision ) {
+			?>
+				<div class="pb2b-icon-passed">
+					<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
+				</div>
+			<?php
+		} else {
+			?>
+				<div class="pb2b-icon-failed">
+					<span class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip=<?php echo ( ! empty( $credit_decision ) ) ? esc_html( $credit_decision ) : 'FAILED'; ?>></span>
+				</div>
+			<?php
+		}
+	}
+
+	/**
+	 * Adds content to the Onboarding status column.
+	 *
+	 * @param int $order_id The WooCommerce order id.
+	 * @return void
+	 */
+	public function add_onboarding_status_content( $order_id ) {
+		$onboarding_status = get_post_meta( $order_id, '_payer_onboarding_status', true );
+		if ( ! empty( $onboarding_status ) && 'COMPLETED' === $onboarding_status ) {
+			?>
+				<div class="pb2b-icon-passed">
+					<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
+				</div>
+			<?php
+		} else {
+			?>
+				<div class="pb2b-icon-failed">
+					<span class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip=<?php echo ( ! empty( $onboarding_status ) ) ? esc_html( $onboarding_status ) : 'FAILED'; ?>></span>
+				</div>
+			<?php
+		}
+	}
 } new PB2B_Create_Credit_Check_Column();

@@ -237,6 +237,8 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			update_post_meta( $order_id, 'pb2b_invoice_type', $invoice_type );
 		}
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
+		update_post_meta( $order_id, '_payer_onboarding_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
+		update_post_meta( $order_id, '_payer_onboarding_status', WC()->session->get( 'pb2b_onboarding_status' ) );
 		if ( $create_payer_order ) {
 
 			if ( ! empty( $signatory ) ) {

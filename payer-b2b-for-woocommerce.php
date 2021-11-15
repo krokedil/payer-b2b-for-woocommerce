@@ -173,7 +173,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-meta-box.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-api-callbacks.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-ajax.php';
-			include_once PAYER_B2B_PATH . '/classes/class-pb2b-create-credit-check-column.php';
+			include_once PAYER_B2B_PATH . '/classes/class-pb2b-order-columns.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-address-filter.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-onboarding.php';
 			include_once PAYER_B2B_PATH . '/classes/class-pb2b-user-column.php';
