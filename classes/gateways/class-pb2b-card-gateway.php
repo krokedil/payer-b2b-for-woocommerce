@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Gateway class file.
  *
@@ -14,14 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 
+
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id                 = 'payer_b2b_card';
+		 $this->id                = 'payer_b2b_card';
 		$this->method_title       = __( 'Payer B2B Card', 'payer-b2b-for-woocommerce' );
 		$this->icon               = '';
-		$this->method_description = __( 'Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce' ); // phpcs:ignore
+		$this->method_description = __('Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce'); // phpcs:ignore
 
 		// Load the form fields.
 		$this->init_form_fields();

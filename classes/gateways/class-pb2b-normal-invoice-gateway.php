@@ -79,7 +79,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 		if ( null !== WC()->session
 			&& ( ( empty( WC()->session->get( 'pb2b_credit_decision' ) ) || 'APPROVED' !== WC()->session->get( 'pb2b_credit_decision' ) )
-			|| ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || 'COMPLETED' !== WC()->session->get( 'pb2b_onboarding_status' ) ) )
+			|| ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || ! in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'COMPLETED' ) ) ) )
 		) {
 			return false;
 		}
@@ -273,10 +273,18 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( $response['isB2B'] ? 'B2B' : 'B2C' ) );
-			$order->payment_complete( $response['orderId'] );
+			if ( in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Onboarding status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_onboarding_status' ) );
+			} else {
+				$order->payment_complete( $response['orderId'] );
+			}
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
-			$order->payment_complete();
+			if ( in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Onboarding status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_onboarding_status' ) );
+			} else {
+				$order->payment_complete();
+			}
 			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
 		}
 		if ( ! $created_via_admin ) {

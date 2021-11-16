@@ -146,8 +146,14 @@ class PB2B_Create_Credit_Check_Column {
 		if ( ! empty( $onboarding_status ) && 'COMPLETED' === $onboarding_status ) {
 			?>
 				<div class="pb2b-icon-passed">
-					<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="PASSED"></span>
+					<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="COMPLETED"></span>
 				</div>
+			<?php
+		} elseif ( 'PENDING' === $onboarding_status ) {
+			?>
+			<div class="pb2b-icon-pending">
+				<span class="pb2b-credit-pending dashicons dashicons-yes woocommerce-help-tip" data-tip="PENDING"></span>
+			</div>
 			<?php
 		} else {
 			?>
