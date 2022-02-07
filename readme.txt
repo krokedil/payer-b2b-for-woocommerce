@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.8.1
+Tested up to: 5.9.0
 Requires PHP: 7.0
 Stable tag: trunk
 WC requires at least: 4.0.0
-WC tested up to: 5.7.0
+WC tested up to: 6.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,9 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.02.07        - Version 2.2.2 =
+* Fix               - Fix so we do not send negative values when doing refund requests, and changed endpoint for refund requests.
+
 = 2021.09.30        - Version 2.2.1 =
 * Fix               - Change endpoint for update calls to match the new order creation endpoint.
 
