@@ -66,7 +66,7 @@ class PB2B_Request_Update_Order extends PB2B_Request {
 			'description'                           => 'Woo Order',
 			'invoiceCustomer'                       => array(
 				'customerType' => $customer,
-				'regNumber'    => $this->args['pno_value'],
+				'regNumber'    => get_post_meta( $order_id, PAYER_PNO_DATA_NAME, true ),
 				'address'      => PB2B_Customer_Data::get_customer_billing_data( $order_id ),
 			),
 			'items'                                 => PB2B_Order_Lines::get_order_items( $order_id ),

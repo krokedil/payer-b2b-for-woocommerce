@@ -50,12 +50,11 @@ class PB2B_Credit_Data {
 
 				++$position;
 				// The item is partial refunded.
-				$tmp                      = PB2B_Order_Lines::get_order_item( $refund_order, $item );
-				$tmp['quantity']          = 1;
-				$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-				$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-				$tmp['position']          = $position;
-				$manual_refund_data[]     = $tmp;
+				$tmp                          = PB2B_Order_Lines::get_order_item( $refund_order, $item );
+				$tmp['quantity']              = 1;
+				$tmp['unitPriceExcludingVat'] = abs( $tmp['unitPriceExcludingVat'] );
+				$tmp['position']              = $position;
+				$manual_refund_data[]         = $tmp;
 			}
 		}
 
@@ -72,11 +71,10 @@ class PB2B_Credit_Data {
 
 					// The fee is partial refunded.
 					++$position;
-					$tmp                      = PB2B_Order_Lines::get_fee( $fee );
-					$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-					$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-					$tmp['position']          = $position;
-					$manual_refund_data[]     = $tmp;
+					$tmp                          = PB2B_Order_Lines::get_fee( $fee );
+					$tmp['unitPriceExcludingVat'] = abs( $tmp['unitPriceExcludingVat'] );
+					$tmp['position']              = $position;
+					$manual_refund_data[]         = $tmp;
 				}
 			}
 		}
@@ -94,11 +92,10 @@ class PB2B_Credit_Data {
 
 					++$position;
 					// The shipping is partial refunded.
-					$tmp                      = PB2B_Order_Lines::get_shipping( $refund_order );
-					$tmp['subtotalPrice']     = abs( $tmp['subtotalPrice'] );
-					$tmp['subtotalVatAmount'] = abs( $tmp['subtotalVatAmount'] );
-					$tmp['position']          = $position;
-					$manual_refund_data[]     = $tmp;
+					$tmp                          = PB2B_Order_Lines::get_shipping( $refund_order );
+					$tmp['unitPriceExcludingVat'] = abs( $tmp['unitPriceExcludingVat'] );
+					$tmp['position']              = $position;
+					$manual_refund_data[]         = $tmp;
 				}
 			}
 		}
