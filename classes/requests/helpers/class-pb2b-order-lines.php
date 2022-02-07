@@ -88,7 +88,7 @@ class PB2B_Order_Lines {
 	 */
 	public static function get_line_unit_price( $order_item ) {
 		$quantity      = 0 === abs( $order_item->get_quantity() ) ? 1 : abs( $order_item->get_quantity() );
-		$item_subtotal = round( ( $order_item->get_total() ) / $quantity * 100, 2 );
+		$item_subtotal = abs( round( ( $order_item->get_total() ) / $quantity * 100, 2 ) );
 		return intval( $item_subtotal );
 	}
 
