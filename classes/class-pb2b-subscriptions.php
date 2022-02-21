@@ -75,10 +75,11 @@ class PB2B_Subscriptions {
 		$subscriptions = wcs_get_subscriptions_for_renewal_order( $order_id );
 		$error         = false;
 		$settings      = get_option( 'woocommerce_payer_b2b_card_settings' );
+		$pno           = get_post_meta( WC_Subscriptions_Renewal_Order::get_parent_order_id( $order_id ), PAYER_PNO_DATA_NAME, true );
 		if ( 'yes' === $settings['add_order_lines'] && 0 < $renewal_order->get_total() ) {
 			$args     = array( // values is null for now.
 				'b2b'       => null,
-				'pno_value' => null,
+				'pno_value' => ( ! empty( $pno ) ) ? $pno : null,
 			);
 			$request  = new PB2B_Request_Create_Order( $order_id, $args );
 			$response = $request->request();

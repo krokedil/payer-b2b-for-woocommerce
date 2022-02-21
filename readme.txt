@@ -36,6 +36,9 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.02.21        - Version 2.2.3 =
+* Fix               - We will now send the PNO or OrgNr on renewal orders for card subscriptions.
+
 = 2022.02.07        - Version 2.2.2 =
 * Fix               - Fix so we do not send negative values when doing refund requests, and changed endpoint for refund requests.
 
