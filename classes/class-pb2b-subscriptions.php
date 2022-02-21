@@ -79,7 +79,7 @@ class PB2B_Subscriptions {
 		if ( 'yes' === $settings['add_order_lines'] && 0 < $renewal_order->get_total() ) {
 			$args     = array( // values is null for now.
 				'b2b'       => null,
-				'pno_value' => $pno ?? null,
+				'pno_value' => ( ! empty( $pno ) ) ? $pno : null,
 			);
 			$request  = new PB2B_Request_Create_Order( $order_id, $args );
 			$response = $request->request();
