@@ -51,7 +51,7 @@ class PB2B_Credit_Data {
 				++$position;
 				// The item is partial refunded.
 				$tmp                          = PB2B_Order_Lines::get_order_item( $refund_order, $item );
-				$tmp['quantity']              = 1;
+				$tmp['quantity']              = absint( $item['quantity'] );
 				$tmp['unitPriceExcludingVat'] = abs( $tmp['unitPriceExcludingVat'] );
 				$tmp['position']              = $position;
 				$manual_refund_data[]         = $tmp;
