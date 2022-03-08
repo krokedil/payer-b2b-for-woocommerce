@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.03.08        - Version 2.2.4 =
+* Fix               - Fix the item quantity on refund always being 1 even when more than one was selected.
+* Fix               - Fix the shipping amount on refund always being zero.
+
 = 2022.02.21        - Version 2.2.3 =
 * Fix               - We will now send the PNO or OrgNr on renewal orders for card subscriptions.
 
