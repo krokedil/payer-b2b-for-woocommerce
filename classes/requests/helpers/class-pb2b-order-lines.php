@@ -184,7 +184,7 @@ class PB2B_Order_Lines {
 	 * @return array
 	 */
 	public static function get_shipping( $order ) {
-		if ( $order->get_shipping_total() <= 0 ) {
+		if ( empty( absint( $order->get_shipping_total() ) ) ) {
 			return array(
 				'itemType'              => 'FREEFORM',
 				'position'              => self::$i,
