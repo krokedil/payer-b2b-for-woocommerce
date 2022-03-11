@@ -224,9 +224,10 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$create_payer_order = false;
 		}
 
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
+		if ( 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
+
 		// Check if we want to create an order.
 		if ( empty( $pno ) ) {
 			if ( $created_via_admin ) {
@@ -282,7 +283,10 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
 			$order->payment_complete();
-			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+
+			if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
+				$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+			}
 		}
 		if ( ! $created_via_admin ) {
 			return array(
