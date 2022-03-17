@@ -34,8 +34,8 @@ class PB2B_Meta_Box {
 			$order_id = get_the_ID();
 			$order    = wc_get_order( $order_id );
 			// Invoice created metabox metabox.
-			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_normal_invoice', 'payer_b2b_prepaid_invoice' ), true ) 
-				&& ( ! empty( get_post_meta( $order_id, '_payer_invoice_number', true ) ) 
+			if ( in_array( $order->get_payment_method(), array( 'payer_b2b_normal_invoice', 'payer_b2b_prepaid_invoice' ), true )
+				&& ( ! empty( get_post_meta( $order_id, '_payer_invoice_number', true ) )
 				|| empty( get_post_meta( $order_id, '_transaction_id', true ) ) ) ) {
 				add_meta_box( 'pb2b_meta_box', __( 'Payer B2B', 'payer-b2b-for-woocommerce' ), array( $this, 'pb2b_meta_box_invoice_content' ), 'shop_order', 'side', 'core' );
 				return;
@@ -145,11 +145,7 @@ class PB2B_Meta_Box {
 
 		$invoice_length = ! empty( get_post_meta( $order_id, 'pb2b_invoice_length', true ) ) ? get_post_meta( $order_id, 'pb2b_invoice_length', true ) : 30;
 		$type           = ! empty( get_post_meta( $order_id, 'pb2b_invoice_type', true ) ) ? get_post_meta( $order_id, 'pb2b_invoice_type', true ) : $settings['default_invoice_type'];
-		if ('pending' !== $order->get_status()) : ?>
-			<p class="payer-b2b-merchant-notice">
-				<?php esc_html_e( 'The order needs to be in pending payment to be able to create an invoice with Payer.', 'payer-b2b-for-woocommerce' ); ?>
-			</p>
-		<?php return; endif; ?>
+		?>
 		<p>
 			<label for="payer_b2b_invoice_length"><?php esc_html_e( 'Invoice length', 'payer-b2b-for-woocommerce' ); ?>
 				<input type="number" id="payer_b2b_invoice_length" name="payer_b2b_invoice_length" value="<?php esc_attr_e( $invoice_length ); ?>" style="max-width:90px" />
