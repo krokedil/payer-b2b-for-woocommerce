@@ -207,7 +207,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			$create_payer_order = false;
 		}
 
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
+		if ( 0 >= $order->get_total() ) {
 			$create_payer_order = false;
 		}
 
@@ -257,12 +257,14 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 			update_post_meta( $order_id, '_payer_order_id', sanitize_key( $response['orderId'] ) );
 			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
-			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( $response['isB2B'] ? 'B2B' : 'B2C' ) );
+			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( 'on' === filter_input( INPUT_POST, 'payer_b2b_set_b2b', FILTER_SANITIZE_STRING ) ? 'B2B' : 'B2C' ) );
 			$order->payment_complete( $response['orderId'] );
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
 			$order->payment_complete();
-			$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+			if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
+				$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );
+			}
 		}
 		if ( ! $created_via_admin ) {
 			return array(

@@ -36,6 +36,11 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.03.17        - Version 2.2.5 =
+* Tweak             - The invoice widget is now always showing on the order page.
+* Fix               - Fix "free subscription" order notice incorrectly appearing on subscription that do not have a free subscription.
+* Fix               - Fix order always defaulting to B2C even on B2B orders.
+
 = 2022.03.08        - Version 2.2.4 =
 * Fix               - Fix the item quantity on refund always being 1 even when more than one was selected.
 * Fix               - Fix the shipping amount on refund always being zero.
