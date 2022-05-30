@@ -77,8 +77,8 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			return false;
 		}
 
-		if ( null !== WC()->session
-			|| ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || ! in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'COMPLETED' ) ) )
+		if ( ( ! empty( WC()->session ) && property_exists( WC(), 'session' ) )
+			&& ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || ! in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'COMPLETED' ) ) )
 		) {
 			return false;
 		}
