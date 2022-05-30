@@ -171,8 +171,30 @@ class PB2B_API_Callbacks {
 		return $order_totals_match;
 	}
 
-	public function onboarding_cb(){
-		return true;
+	/**
+	 * Handles the callback for Onboarding.
+	 *
+	 * @return void
+	 */
+	public function onboarding_cb() {
+		$body = file_get_contents( 'php://input' );
+		$data = json_decode( $body, true );
+
+		PB2B_Logger::log( "Onboarding callback recieved: {$body}" );
+
+		$email = $data['customer']['email'];
+		$user  = get_user_by( 'email', $email );
+
+		if ( empty( $user ) ) {
+			PB2B_Logger::log( "Onboarding callback: No user found for the email {$email}" );
+			header( 'HTTP/1.1 200 OK' );
+			die();
+		}
+
+		$status = $data['sessionStatus'];
+		update_user_meta( $user->ID, 'pb2b_onboarding_status', $status );
+		header( 'HTTP/1.1 200 OK' );
+		die();
 	}
 }
 
