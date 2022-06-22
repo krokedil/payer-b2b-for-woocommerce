@@ -119,22 +119,27 @@ if ( 'payer_b2b_normal_invoice' === $this->id ) {
 		'default' => 'yes',
 	);
 
-	$settings['testmode']   = array(
+	$settings['testmode']       = array(
 		'title'   => __( 'Testmode', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable Payer testmode', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['debug']      = array(
+	$settings['debug']          = array(
 		'title'   => __( 'Debug', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		'label'   => __( 'Enable debug logging for the plugin', 'payer-b2b-for-woocommerce' ),
 		'default' => 'yes',
 	);
-	$settings['onboarding'] = array(
-		'title'   => __( 'Enable Payer Onboarding', 'payer-b2b-for-woocommerce' ),
+	$settings['section_signup'] = array(
+		'title' => __( 'B2B SignUp', 'payer-b2b-for-woocommerce' ),
+		'type'  => 'title',
+	);
+	$settings['onboarding']     = array(
+		'title'   => __( 'Enable B2B SignUp', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
-		'label'   => __( 'Enable Payers Onboarding iFrame', 'payer-b2b-for-woocommerce' ),
+		// Translators: URL to Payer B2B SignUp product page.
+		'label'   => sprintf( __( 'Enable Payers embedded B2B SignUp iFrame in checkout. Read more about <a href="%s" target="_blank">B2B SignUp here</a>.', 'payer-b2b-for-woocommerce' ), 'https://payer.eu/b2b-payment-platform/b2b-signup/' ),
 		'default' => 'no',
 	);
 } else {
