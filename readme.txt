@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.6.1
-Requires PHP: 5.6
+Tested up to: 5.9.0
+Requires PHP: 7.0
 Stable tag: trunk
-WC requires at least: 3.5.0
-WC tested up to: 5.0.0
+WC requires at least: 4.0.0
+WC tested up to: 6.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,27 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.03.17        - Version 2.2.5 =
+* Tweak             - The invoice widget is now always showing on the order page.
+* Fix               - Fix "free subscription" order notice incorrectly appearing on subscription that do not have a free subscription.
+* Fix               - Fix order always defaulting to B2C even on B2B orders.
+
+= 2022.03.08        - Version 2.2.4 =
+* Fix               - Fix the item quantity on refund always being 1 even when more than one was selected.
+* Fix               - Fix the shipping amount on refund always being zero.
+
+= 2022.02.21        - Version 2.2.3 =
+* Fix               - We will now send the PNO or OrgNr on renewal orders for card subscriptions.
+
+= 2022.02.07        - Version 2.2.2 =
+* Fix               - Fix so we do not send negative values when doing refund requests, and changed endpoint for refund requests.
+
+= 2021.09.30        - Version 2.2.1 =
+* Fix               - Change endpoint for update calls to match the new order creation endpoint.
+
+= 2021.09.27        - Version 2.2.0 =
+* Enhancement       - Changed API endpoint for order creation to allow us to avoid rounding issues when sending prices to Payer.
+
 = 2021.06.16        - Version 2.1.2 =
 * Fix               - Fixed an issue that would trigger an update attempt when updating an order in WooCommerce that Payer has already completed.
 * Fix               - Fixed not sending the PNO or Org number to Payer for Card payments.

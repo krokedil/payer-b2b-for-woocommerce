@@ -32,7 +32,7 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 	 * @return array
 	 */
 	public function request() {
-		$request_url  = $this->base_url . '/api/v2/orders/';
+		$request_url  = $this->base_url . '/api/v2/orders/with-amount-excluding-vat';
 		$request_args = apply_filters( 'payer_create_order_args', $this->get_request_args( $this->order_id ), $this->order_id );
 		$response     = wp_remote_request( $request_url, $request_args );
 		$code         = wp_remote_retrieve_response_code( $response );
@@ -73,17 +73,29 @@ class PB2B_Request_Create_Order extends PB2B_Request {
 		$order    = wc_get_order( $order_id );
 
 		$body = array(
-			'currencyCode'    => get_woocommerce_currency(),
-			'purchaseChannel' => 'ECOMMERCE',
-			'referenceId'     => $order->get_order_number(),
-			'description'     => 'Woo Order',
-			'invoiceCustomer' => array(
+			'currencyCode'                          => get_woocommerce_currency(),
+			'purchaseChannel'                       => 'ECOMMERCE',
+			'referenceId'                           => $order->get_order_number(),
+			'description'                           => 'Woo Order',
+			'invoiceCustomer'                       => array(
 				'customerType' => $customer,
 				'regNumber'    => $this->args['pno_value'],
 				'address'      => PB2B_Customer_Data::get_customer_billing_data( $order_id ),
 			),
-			'items'           => PB2B_Order_Lines::get_order_items( $order_id ),
+			'items'                                 => PB2B_Order_Lines::get_order_items( $order_id ),
+			'totalVatAmount'                        => intval( round( $order->get_total_tax() * 100, 2 ) ),
+			'totalVatAmountsGroupedByVatPercentage' => PB2B_Order_Lines::get_tax_array( $order ),
+			'totalAmountIncludingVat'               => intval( round( $order->get_total() * 100, 2 ) ),
 		);
+
+		// Roundoff && totalAmountExcludingVat.
+		$total_amount_excluding_vat = 0;
+		foreach ( $body['items'] as $key => $value ) {
+			$total_amount_excluding_vat += $value['unitPriceExcludingVat'] * $value['quantity'];
+		}
+		$roundoff                        = $body['totalAmountIncludingVat'] - $total_amount_excluding_vat - $body['totalVatAmount'];
+		$body['totalAmountExcludingVat'] = $total_amount_excluding_vat;
+		$body['roundOff']                = $roundoff;
 
 		if ( $order->has_shipping_address() ) {
 			$body['deliveryCustomer'] = array(

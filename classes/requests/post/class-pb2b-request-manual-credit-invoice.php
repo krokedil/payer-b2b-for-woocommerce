@@ -20,7 +20,7 @@ class PB2B_Request_Manual_Refund_Credit_Invoice extends PB2B_Request {
 	 * @return array
 	 */
 	public function request( $refund_data ) {
-		$request_url       = $this->base_url . '/api/v2/orders/invoices/credit/manual';
+		$request_url       = $this->base_url . '/api/v2/orders/invoices/credit/manual-with-amount-excluding-vat';
 		$request_args      = apply_filters( 'payer_credit_v2_invoice_args', $this->get_request_args( $this->order_id, $refund_data ), $this->order_id );
 		$response          = wp_remote_request( $request_url, $request_args );
 		$code              = wp_remote_retrieve_response_code( $response );

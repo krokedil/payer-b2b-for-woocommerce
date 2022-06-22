@@ -3,7 +3,7 @@
  * Plugin Name:     Payer onboarding B2B for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
- * Version:         9.9.9
+ * Version:         2.2.5
  * Author:          Krokedil
  * Author URI:      https://krokedil.com/
  * Developer:       Krokedil
@@ -12,9 +12,9 @@
  * Domain Path:     /languages
  *
  * WC requires at least: 3.5
- * WC tested up to: 5.0.0
+ * WC tested up to: 6.1.1
  *
- * Copyright:       © 2016-2021 Krokedil.
+ * Copyright:       © 2016-2022 Krokedil.
  * License:         GNU General Public License v3.0
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'PAYER_B2B_VERSION', '2.1.2' );
+define( 'PAYER_B2B_VERSION', '2.2.5' );
 define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
