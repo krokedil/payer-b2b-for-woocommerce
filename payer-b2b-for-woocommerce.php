@@ -1,6 +1,6 @@
 <?php // phpcs:ignore
 /**
- * Plugin Name:     Payer onboarding B2B for WooCommerce
+ * Plugin Name:     Payer B2B for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
  * Version:         2.2.5
