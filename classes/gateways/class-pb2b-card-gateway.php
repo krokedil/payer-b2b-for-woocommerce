@@ -124,8 +124,8 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return $this->payer_b2b_stored_card( $order, $order_id, true );
 		}
 
-		update_post_meta( $order_id, '_payer_onboarding_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
-		update_post_meta( $order_id, '_payer_onboarding_status', WC()->session->get( 'pb2b_onboarding_status' ) );
+		update_post_meta( $order_id, '_payer_signup_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
+		update_post_meta( $order_id, '_payer_signup_status', WC()->session->get( 'pb2b_signup_status' ) );
 
 		// Subscription payment.
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) ) ) {

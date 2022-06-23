@@ -159,14 +159,14 @@ jQuery( function($)  {
 	payer_wc.init();
 });
 
-if( payer_wc_params.onboarding_enabled ) {
+if( payer_wc_params.signup_enabled ) {
     const onSuccess = (data) => {
 		console.log(data);
 		setCreditDecision(data);
     };
 
     const onFailure = (error) => {
-        console.error('Onboarding failed', error);
+        console.error('Signup failed', error);
     };
 
 	const setCreditDecision = (data) => {
@@ -213,10 +213,10 @@ if( payer_wc_params.onboarding_enabled ) {
     window.payerAsyncCallback = function () {
         PayerOnboard.init({
             clientToken: payer_wc_params.client_token,
-            containerId: "payer-onboarding-container",
+            containerId: "payer-signup-container",
             callbacks: {
-                onOnboardingSucceeded: onSuccess,
-                onOnboardingFailed: onFailure,
+                onSignupSucceeded: onSuccess,
+                onSignupFailed: onFailure,
             }
         });
     };

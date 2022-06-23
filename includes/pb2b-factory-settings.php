@@ -135,7 +135,7 @@ if ( 'payer_b2b_normal_invoice' === $this->id ) {
 		'title' => __( 'B2B SignUp', 'payer-b2b-for-woocommerce' ),
 		'type'  => 'title',
 	);
-	$settings['onboarding']     = array(
+	$settings['signup']         = array(
 		'title'   => __( 'Enable B2B SignUp', 'payer-b2b-for-woocommerce' ),
 		'type'    => 'checkbox',
 		// Translators: URL to Payer B2B SignUp product page.

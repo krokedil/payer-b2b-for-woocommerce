@@ -1,6 +1,6 @@
 <?php
 /**
- * Create onboarding session request class
+ * Create signup session request class
  *
  * @package Payer_B2B/Classes/Post/Requests
  */
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Create onboarding session request class
+ * Create signup session request class
  */
-class PB2B_Request_Create_Onboarding extends PB2B_Request {
+class PB2B_Request_Create_Signup extends PB2B_Request {
 	/**
 	 * Makes the request.
 	 *
@@ -20,7 +20,7 @@ class PB2B_Request_Create_Onboarding extends PB2B_Request {
 	 */
 	public function request() {
 		$request_url  = $this->base_url . '/api/v1/onboard';
-		$request_args = stripslashes_deep( apply_filters( 'payer_create_onboarding_args', $this->get_request_args() ) );
+		$request_args = stripslashes_deep( apply_filters( 'payer_create_signup_args', $this->get_request_args() ) );
 		$response     = wp_remote_request( $request_url, $request_args );
 		$code         = wp_remote_retrieve_response_code( $response );
 
@@ -28,7 +28,7 @@ class PB2B_Request_Create_Onboarding extends PB2B_Request {
 		$reference         = ! is_wp_error( $formated_response ) && isset( $formated_response['referenceId'] ) ? $formated_response['referenceId'] : null;
 
 		// Log the request.
-		$log = PB2B_Logger::format_log( $reference, 'POST', 'Payer create onboarding session', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
+		$log = PB2B_Logger::format_log( $reference, 'POST', 'Payer create signup session', $request_args, json_decode( wp_remote_retrieve_body( $response ), true ), $code );
 		PB2B_Logger::log( $log );
 
 		return $formated_response;
@@ -55,7 +55,7 @@ class PB2B_Request_Create_Onboarding extends PB2B_Request {
 	 */
 	public function get_body() {
 		return array(
-			'callbackUrl'  => get_home_url() . '/wc-api/PB2B_WC_Onboarding/',
+			'callbackUrl'  => get_home_url() . '/wc-api/PB2B_WC_Signup/',
 			'countryCode'  => 'SE',
 			'currencyCode' => get_woocommerce_currency(),
 			'languageCode' => 'sv',

@@ -79,7 +79,7 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 
 		if ( ( ! empty( WC()->session ) && property_exists( WC(), 'session' ) )
 			&& ( ( empty( WC()->session->get( 'pb2b_credit_decision' ) ) || 'APPROVED' !== WC()->session->get( 'pb2b_credit_decision' ) )
-			|| ( empty( WC()->session->get( 'pb2b_onboarding_status' ) ) || ! in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'COMPLETED' ) ) ) )
+			|| ( empty( WC()->session->get( 'pb2b_signup_status' ) ) || ! in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'COMPLETED' ) ) ) )
 		) {
 			return false;
 		}
@@ -237,8 +237,8 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			update_post_meta( $order_id, 'pb2b_invoice_type', $invoice_type );
 		}
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
-		update_post_meta( $order_id, '_payer_onboarding_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
-		update_post_meta( $order_id, '_payer_onboarding_status', WC()->session->get( 'pb2b_onboarding_status' ) );
+		update_post_meta( $order_id, '_payer_signup_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
+		update_post_meta( $order_id, '_payer_signup_status', WC()->session->get( 'pb2b_signup_status' ) );
 		if ( $create_payer_order ) {
 
 			if ( ! empty( $signatory ) ) {
@@ -274,15 +274,15 @@ class PB2B_Normal_Invoice_Gateway extends PB2B_Factory_Gateway {
 			update_post_meta( $order_id, '_payer_reference_id', sanitize_key( $response['referenceId'] ) );
 			update_post_meta( $order_id, '_payer_customer_type', sanitize_key( 'on' === filter_input( INPUT_POST, 'payer_b2b_set_b2b', FILTER_SANITIZE_STRING ) ? 'B2B' : 'B2C' ) );
 
-			if ( in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
-				$order->set_status( 'on-hold', __( 'Onboarding status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_onboarding_status' ) );
+			if ( in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Signup status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_signup_status' ) );
 			} else {
 				$order->payment_complete( $response['orderId'] );
 			}
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
-			if ( in_array( WC()->session->get( 'pb2b_onboarding_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
-				$order->set_status( 'on-hold', __( 'Onboarding status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_onboarding_status' ) );
+			if ( in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Signup status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_signup_status' ) );
 			} else {
 				$order->payment_complete();
 			}

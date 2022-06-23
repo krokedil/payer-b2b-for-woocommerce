@@ -1,6 +1,6 @@
 <?php
 /**
- * Payer onboarding class.
+ * Payer signup class.
  *
  * @package Payer_B2B/Classes
  */
@@ -10,22 +10,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Handles the onboarding feature for Payer
+ * Handles the signup feature for Payer
  */
-class PB2B_Onboarding {
+class PB2B_Signup {
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
-		$this->enabled = ( isset($settings['onboarding']) && "yes" === $settings['onboarding'] ) ? true : false;
+		$settings      = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
+		$this->enabled = ( isset( $settings['signup'] ) && 'yes' === $settings['signup'] ) ? true : false;
 		add_filter( 'wc_get_template', array( $this, 'override_template' ), 999, 2 );
 		add_action( 'pb2b_wc_after_wrapper', array( $this, 'add_wc_form' ), 10 );
 		add_action( 'pb2b_wc_after_wrapper', array( $this, 'add_wc_payment_methods' ), 15 );
 	}
 
 	/**
-	 * Replaces the standard checkout template with the Payer Onboarding iframe.
+	 * Replaces the standard checkout template with the Payer Signup iframe.
 	 *
 	 * @param string $template
 	 * @param string $template_name
@@ -78,4 +78,4 @@ class PB2B_Onboarding {
 		</div>
 		<?php
 	}
-} new PB2B_Onboarding();
+} new PB2B_Signup();

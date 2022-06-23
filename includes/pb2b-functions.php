@@ -73,9 +73,9 @@ function payer_b2b_make_credit_check( $order_id ) {
 }
 
 
-function payer_b2b_show_shippet(){
+function payer_b2b_show_shippet() {
 	?>
-	<div id="payer-onboarding-container">
+	<div id="payer-signup-container">
 	</div>
 	<?php
 }

@@ -137,7 +137,7 @@ class PB2B_Ajax extends WC_AJAX {
 	}
 
 	/**
-	 * Sets the credit decision for Payer onboarding.
+	 * Sets the credit decision for Payer signup.
 	 *
 	 * @return void
 	 */
@@ -150,10 +150,10 @@ class PB2B_Ajax extends WC_AJAX {
 			wp_die();
 		}
 		WC()->session->set( 'pb2b_credit_decision', $credit_decision );
-		WC()->session->set( 'pb2b_onboarding_status', $status );
+		WC()->session->set( 'pb2b_signup_status', $status );
 		if ( is_user_logged_in() ) {
 			$user = wp_get_current_user();
-			update_user_meta( $user->ID, 'pb2b_onboarding_status', $status );
+			update_user_meta( $user->ID, 'pb2b_signup_status', $status );
 		}
 		wp_send_json_success();
 		wp_die();

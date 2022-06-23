@@ -29,9 +29,9 @@ class PB2B_Create_Credit_Check_Column {
 	 */
 	public function add_columns( $columns ) {
 		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
-		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
-			$columns['onboarding_credit_decision'] = 'Credit Decision';
-			$columns['onboarding_status']          = 'Onboarding status';
+		if ( isset( $settings['signup'] ) && 'yes' === $settings['signup'] ) {
+			$columns['signup_credit_decision'] = 'Credit Decision';
+			$columns['signup_status']          = 'Signup status';
 			return $columns;
 		}
 
@@ -54,13 +54,13 @@ class PB2B_Create_Credit_Check_Column {
 		}
 
 		$settings = get_option( 'woocommerce_payer_b2b_normal_invoice_settings' );
-		if ( isset( $settings['onboarding'] ) && 'yes' === $settings['onboarding'] ) {
-			if ( 'onboarding_credit_decision' === $column ) {
-				$this->add_onboarding_credit_decision_content( $order_id );
+		if ( isset( $settings['signup'] ) && 'yes' === $settings['signup'] ) {
+			if ( 'signup_credit_decision' === $column ) {
+				$this->add_signup_credit_decision_content( $order_id );
 			}
 
-			if ( 'onboarding_status' === $column ) {
-				$this->add_onboarding_status_content( $order_id );
+			if ( 'signup_status' === $column ) {
+				$this->add_signup_status_content( $order_id );
 			}
 			return;
 		}
@@ -118,8 +118,8 @@ class PB2B_Create_Credit_Check_Column {
 	 * @param int $order_id The WooCommerce order id.
 	 * @return void
 	 */
-	public function add_onboarding_credit_decision_content( $order_id ) {
-		$credit_decision = get_post_meta( $order_id, '_payer_onboarding_credit_decision', true );
+	public function add_signup_credit_decision_content( $order_id ) {
+		$credit_decision = get_post_meta( $order_id, '_payer_signup_credit_decision', true );
 		if ( ! empty( $credit_decision ) && 'APPROVED' === $credit_decision ) {
 			?>
 				<div class="pb2b-icon-passed">
@@ -136,20 +136,20 @@ class PB2B_Create_Credit_Check_Column {
 	}
 
 	/**
-	 * Adds content to the Onboarding status column.
+	 * Adds content to the Signup status column.
 	 *
 	 * @param int $order_id The WooCommerce order id.
 	 * @return void
 	 */
-	public function add_onboarding_status_content( $order_id ) {
-		$onboarding_status = get_post_meta( $order_id, '_payer_onboarding_status', true );
-		if ( ! empty( $onboarding_status ) && 'COMPLETED' === $onboarding_status ) {
+	public function add_signup_status_content( $order_id ) {
+		$signup_status = get_post_meta( $order_id, '_payer_signup_status', true );
+		if ( ! empty( $signup_status ) && 'COMPLETED' === $signup_status ) {
 			?>
 				<div class="pb2b-icon-passed">
 					<span class="pb2b-credit-passed dashicons dashicons-yes woocommerce-help-tip" data-tip="COMPLETED"></span>
 				</div>
 			<?php
-		} elseif ( 'PENDING' === $onboarding_status ) {
+		} elseif ( 'PENDING' === $signup_status ) {
 			?>
 			<div class="pb2b-icon-pending">
 				<span class="pb2b-credit-pending dashicons dashicons-yes woocommerce-help-tip" data-tip="PENDING"></span>
@@ -158,7 +158,7 @@ class PB2B_Create_Credit_Check_Column {
 		} else {
 			?>
 				<div class="pb2b-icon-failed">
-					<span class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip=<?php echo ( ! empty( $onboarding_status ) ) ? esc_html( $onboarding_status ) : 'FAILED'; ?>></span>
+					<span class="pb2b-credit-failed dashicons dashicons-no woocommerce-help-tip" data-tip=<?php echo ( ! empty( $signup_status ) ) ? esc_html( $signup_status ) : 'FAILED'; ?>></span>
 				</div>
 			<?php
 		}

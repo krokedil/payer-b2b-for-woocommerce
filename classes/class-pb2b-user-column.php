@@ -13,18 +13,18 @@ class PB2B_User_Column {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		add_filter( 'manage_users_columns', array( $this, 'add_onboarding_column' ) );
-		add_filter( 'manage_users_custom_column', array( $this, 'add_onboarding_column_content' ), 10, 3 );
+		add_filter( 'manage_users_columns', array( $this, 'add_signup_column' ) );
+		add_filter( 'manage_users_custom_column', array( $this, 'add_signup_column_content' ), 10, 3 );
 	}
 
 	/**
-	 * Add onboarding session status column to user table.
+	 * Add signup session status column to user table.
 	 *
 	 * @param array $columns The columns in the user table.
 	 * @return array
 	 */
-	public function add_onboarding_column( $columns ) {
-		$columns['onboarding'] = 'Payer Onboarding Status';
+	public function add_signup_column( $columns ) {
+		$columns['signup'] = 'Payer Signup Status';
 		return $columns;
 	}
 
@@ -38,10 +38,10 @@ class PB2B_User_Column {
 	 * @param int    $user_id The WordPress user id.
 	 * @return string
 	 */
-	public function add_onboarding_column_content( $val, $column_name, $user_id ) {
+	public function add_signup_column_content( $val, $column_name, $user_id ) {
 		switch ( $column_name ) {
-			case 'onboarding':
-				$status = get_user_meta( $user_id, 'pb2b_onboarding_status', true );
+			case 'signup':
+				$status = get_user_meta( $user_id, 'pb2b_signup_status', true );
 				return ! empty( $status ) ? $status : 'N/A';
 			default:
 		}
