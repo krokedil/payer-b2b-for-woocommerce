@@ -211,12 +211,12 @@ if( payer_wc_params.signup_enabled ) {
 	}
 
     window.payerAsyncCallback = function () {
-        PayerOnboard.init({
+        PayerSignup.init({
             clientToken: payer_wc_params.client_token,
             containerId: "payer-signup-container",
             callbacks: {
-                onSignupSucceeded: onSuccess,
-                onSignupFailed: onFailure,
+                onOnboardingSucceeded: onSuccess,
+                onOnboardingFailed: onFailure,
             }
         });
     };
