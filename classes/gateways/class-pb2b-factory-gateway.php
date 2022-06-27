@@ -55,6 +55,7 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 		WC()->session->__unset( 'pb2b_signup_sdk_url' );
 		WC()->session->__unset( 'pb2b_signup_client_token' );
 		WC()->session->__unset( 'pb2b_signup_session_id' );
+		WC()->session->__unset( 'pb2b_signup_expiry_time' );
 		WC()->session->__unset( 'pb2b_customer_details' );
 		WC()->session->__unset( 'pb2b_credit_decision' );
 	}

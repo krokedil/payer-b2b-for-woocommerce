@@ -247,7 +247,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 
 				if ( $signup_enabled ) {
 					$error = false;
-					if ( WC()->session->get( 'pb2b_signup_client_token' ) ) {
+					if ( WC()->session->get( 'pb2b_signup_client_token' ) && ! empty( WC()->session->get( 'pb2b_signup_expiry_time' ) ) && WC()->session->get( 'pb2b_signup_expiry_time' ) > time() ) {
 						$sdk_url      = WC()->session->get( 'pb2b_signup_sdk_url' );
 						$client_token = WC()->session->get( 'pb2b_signup_client_token' );
 						$session_id   = WC()->session->get( 'pb2b_signup_session_id' );
@@ -261,6 +261,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 							WC()->session->set( 'pb2b_signup_sdk_url', $sdk_url );
 							WC()->session->set( 'pb2b_signup_client_token', $client_token );
 							WC()->session->set( 'pb2b_signup_session_id', $session_id );
+							WC()->session->set( 'pb2b_signup_expiry_time', strtotime( '+55 minutes' ) );
 						} else {
 							$error = true;
 						}
