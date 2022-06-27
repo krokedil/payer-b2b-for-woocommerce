@@ -52,7 +52,7 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	 */
 	public function thankyou_page( $order_id ) {
 		// Unset sessions.
-		WC()->session->__unset( 'pb2b_signup_skd_url' );
+		WC()->session->__unset( 'pb2b_signup_sdk_url' );
 		WC()->session->__unset( 'pb2b_signup_client_token' );
 		WC()->session->__unset( 'pb2b_signup_session_id' );
 		WC()->session->__unset( 'pb2b_customer_details' );

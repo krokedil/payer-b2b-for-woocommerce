@@ -1,6 +1,6 @@
 <?php // phpcs:ignore
 /**
- * Plugin Name:     Payer B2B for WooCommerce
+ * Plugin Name:     Payer B2B SignUp for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
  * Version:         2.2.5
@@ -248,7 +248,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 				if ( $signup_enabled ) {
 					$error = false;
 					if ( WC()->session->get( 'pb2b_signup_client_token' ) ) {
-						$sdk_url      = WC()->session->get( 'pb2b_signup_skd_url' );
+						$sdk_url      = WC()->session->get( 'pb2b_signup_sdk_url' );
 						$client_token = WC()->session->get( 'pb2b_signup_client_token' );
 						$session_id   = WC()->session->get( 'pb2b_signup_session_id' );
 					} else {
@@ -258,7 +258,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 							$sdk_url      = $signup['sdkUrl'];
 							$client_token = $signup['clientToken'];
 							$session_id   = $signup['sessionId'];
-							WC()->session->set( 'pb2b_signup_skd_url', $sdk_url );
+							WC()->session->set( 'pb2b_signup_sdk_url', $sdk_url );
 							WC()->session->set( 'pb2b_signup_client_token', $client_token );
 							WC()->session->set( 'pb2b_signup_session_id', $session_id );
 						} else {
