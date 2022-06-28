@@ -57,6 +57,27 @@ span.pb2b-credit-passed::after {
 	content: none;
 }
 
+/* --- Pending icon --- */
+/* Pending container */
+.pb2b-icon-pending {
+	display: flex;
+	height: 28px;
+	width: 28px;
+	place-items:center;
+	margin-left:-2px;
+	font-size: 28px;
+}
+
+/* Pending icon */
+span.pb2b-credit-pending {
+	color:rgb(255, 166, 0);
+	font-size: 28px;
+}
+
+span.pb2b-credit-pending::after {
+	content: none;
+}
+
 /* --- Failed icon --- */
 /* Failed container*/
 span.pb2b-credit-failed {

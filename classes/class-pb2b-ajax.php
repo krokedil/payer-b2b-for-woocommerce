@@ -37,6 +37,7 @@ class PB2B_Ajax extends WC_AJAX {
 			'get_address'              => true,
 			'instant_product_purchase' => true,
 			'instant_cart_purchase'    => true,
+			'set_credit_decision'      => true,
 			'pb2b_credit_check'        => false,
 		);
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -55,7 +56,6 @@ class PB2B_Ajax extends WC_AJAX {
 		 * @return void
 		 */
 	public static function get_address() {
-
 		if ( isset( $_POST['get_address_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['get_address_nonce'] ), 'get_address_nonce' ) ) {
 
 			$personal_number = $_POST['personal_number'];
@@ -134,6 +134,29 @@ class PB2B_Ajax extends WC_AJAX {
 			wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php?post_type=shop_order' ) );
 			exit;
 		}
+	}
+
+	/**
+	 * Sets the credit decision for Payer signup.
+	 *
+	 * @return void
+	 */
+	public static function set_credit_decision() {
+		$credit_decision = filter_input( INPUT_POST, 'credit_decision', FILTER_SANITIZE_STRING );
+		$status          = filter_input( INPUT_POST, 'status', FILTER_SANITIZE_STRING );
+		$nonce           = filter_input( INPUT_POST, 'set_credit_decision_nonce', FILTER_SANITIZE_STRING );
+		if ( ! wp_verify_nonce( $nonce, 'set_credit_decision_nonce' ) ) {
+			wp_send_json_error( 'Bad request' );
+			wp_die();
+		}
+		WC()->session->set( 'pb2b_credit_decision', $credit_decision );
+		WC()->session->set( 'pb2b_signup_status', $status );
+		if ( is_user_logged_in() ) {
+			$user = wp_get_current_user();
+			update_user_meta( $user->ID, 'pb2b_signup_status', $status );
+		}
+		wp_send_json_success();
+		wp_die();
 	}
 
 }
