@@ -2,11 +2,11 @@
 Contributors: payertech, krokedil, NiklasHogefjord
 Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
-Tested up to: 5.9.0
+Tested up to: 6.0
 Requires PHP: 7.0
 Stable tag: trunk
 WC requires at least: 4.0.0
-WC tested up to: 6.1.1
+WC tested up to: 6.6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.06.28        - Version 2.3.0 =
+* Feature           - Adds support for Payers customer onboarding solution B2B SignUp. Read more on https://payer.eu/b2b-payment-platform/b2b-signup/.
+* Feature           - If B2B SignUp is used, Payer B2B Invoice is only offered to the customers that has a valid credit risk.
+
 = 2022.03.17        - Version 2.2.5 =
 * Tweak             - The invoice widget is now always showing on the order page.
 * Fix               - Fix "free subscription" order notice incorrectly appearing on subscription that do not have a free subscription.

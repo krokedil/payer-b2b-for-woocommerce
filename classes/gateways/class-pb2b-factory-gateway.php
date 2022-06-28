@@ -19,6 +19,7 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_personal_number_field' ) );
+		add_action( 'woocommerce_thankyou', array( $this, 'thankyou_page' ) );
 		$this->has_fields = true;
 	}
 
@@ -44,13 +45,19 @@ class PB2B_Factory_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Shows the snippet on the thankyou page.
+	 * Unset sessions on thankyou pages.
 	 *
 	 * @param string $order_id The WooCommerce order id.
 	 * @return void
 	 */
 	public function thankyou_page( $order_id ) {
 		// Unset sessions.
+		WC()->session->__unset( 'pb2b_signup_sdk_url' );
+		WC()->session->__unset( 'pb2b_signup_client_token' );
+		WC()->session->__unset( 'pb2b_signup_session_id' );
+		WC()->session->__unset( 'pb2b_signup_expiry_time' );
+		WC()->session->__unset( 'pb2b_customer_details' );
+		WC()->session->__unset( 'pb2b_credit_decision' );
 	}
 
 	/**

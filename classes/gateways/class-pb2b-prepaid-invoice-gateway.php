@@ -69,12 +69,21 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 	 * @return boolean
 	 */
 	public function is_available() {
-		if ( 'yes' === $this->enabled ) {
-			if ( in_array( get_woocommerce_currency(), array( 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ), true ) ) {
-				return true;
-			}
+		if ( 'yes' !== $this->enabled ) {
+			return false;
 		}
-		return false;
+
+		if ( ! in_array( get_woocommerce_currency(), array( 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ), true ) ) {
+			return false;
+		}
+
+		if ( ( ! empty( WC()->session ) && property_exists( WC(), 'session' ) )
+			&& ( empty( WC()->session->get( 'pb2b_signup_status' ) ) || ! in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'COMPLETED' ) ) )
+		) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -245,6 +254,8 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 		}
 
 		update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );
+		update_post_meta( $order_id, '_payer_signup_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
+		update_post_meta( $order_id, '_payer_signup_status', WC()->session->get( 'pb2b_signup_status' ) );
 		if ( $create_payer_order ) {
 
 			if ( ! empty( $signatory ) ) {
@@ -261,7 +272,10 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			if ( $created_via_admin && is_wp_error( $response ) ) {
 				$error_message = wp_json_encode( $response->errors );
 				$order->add_order_note( $error_message );
-				return;
+				wc_print_notice( $error_message, 'error' );
+				return array(
+					'result' => 'error',
+				);
 			}
 
 			if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
@@ -278,11 +292,18 @@ class PB2B_Prepaid_Invoice_Gateway extends PB2B_Factory_Gateway {
 			if ( 'yes' === $this->credit || false === $this->credit ) {
 				payer_b2b_make_credit_check( $order_id );
 			}
-
-			$order->payment_complete( $response['orderId'] );
+			if ( in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Signup status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_signup_status' ) );
+			} else {
+				$order->payment_complete( $response['orderId'] );
+			}
 			$order->add_order_note( __( 'Payment made with Payer', 'payer-b2b-for-woocommerce' ) );
 		} else {
-			$order->payment_complete();
+			if ( in_array( WC()->session->get( 'pb2b_signup_status' ), array( 'PENDING', 'MANUAL_CONTROL' ) ) ) {
+				$order->set_status( 'on-hold', __( 'Signup status was not COMPLETED, the actual status is ', 'payer-b2b-for-woocommerce' ) . WC()->session->get( 'pb2b_signup_status' ) );
+			} else {
+				$order->payment_complete();
+			}
 
 			if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order ) && 0 >= $order->get_total() ) {
 				$order->add_order_note( __( 'Free subscription order. No order created with Payer', 'payer-b2b-for-woocommerce' ) );

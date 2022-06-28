@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Gateway class file.
  *
@@ -14,14 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 
+
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id                 = 'payer_b2b_card';
+		 $this->id                = 'payer_b2b_card';
 		$this->method_title       = __( 'Payer B2B Card', 'payer-b2b-for-woocommerce' );
 		$this->icon               = '';
-		$this->method_description = __( 'Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce' ); // phpcs:ignore
+		$this->method_description = __('Allows payments through ' . $this->method_title . '.', 'payer-b2b-for-woocommerce'); // phpcs:ignore
 
 		// Load the form fields.
 		$this->init_form_fields();
@@ -122,6 +124,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 			return $this->payer_b2b_stored_card( $order, $order_id, true );
 		}
 
+		update_post_meta( $order_id, '_payer_signup_credit_decision', WC()->session->get( 'pb2b_credit_decision' ) );
+		update_post_meta( $order_id, '_payer_signup_status', WC()->session->get( 'pb2b_signup_status' ) );
+
 		// Subscription payment.
 		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order, array( 'parent', 'resubscribe', 'switch', 'renewal' ) ) ) {
 			// Check if the order has already been created.
@@ -139,7 +144,9 @@ class PB2B_Card_Gateway extends PB2B_Factory_Gateway {
 					$response = $request->request();
 
 					if ( is_wp_error( $response ) || ! isset( $response['referenceId'] ) ) {
-						return false;
+						return array(
+							'result' => 'error',
+						);
 					}
 
 					update_post_meta( $order_id, PAYER_PNO_DATA_NAME, $pno );

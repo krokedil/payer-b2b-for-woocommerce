@@ -18,6 +18,7 @@ class PB2B_API_Callbacks {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_api_pb2b_wc_notification', array( $this, 'notification_cb' ) );
+		add_action( 'woocommerce_api_pb2b_wc_signup', array( $this, 'signup_cb' ) );
 		add_action( 'payer_check_for_order', array( $this, 'pb2b_check_for_order_callback' ), 10, 2 );
 	}
 
@@ -168,6 +169,32 @@ class PB2B_API_Callbacks {
 		}
 
 		return $order_totals_match;
+	}
+
+	/**
+	 * Handles the callback for Signup.
+	 *
+	 * @return void
+	 */
+	public function signup_cb() {
+		$body = file_get_contents( 'php://input' );
+		$data = json_decode( $body, true );
+
+		PB2B_Logger::log( "Signup callback recieved: {$body}" );
+
+		$email = $data['customer']['email'];
+		$user  = get_user_by( 'email', $email );
+
+		if ( empty( $user ) ) {
+			PB2B_Logger::log( "Signup callback: No user found for the email {$email}" );
+			header( 'HTTP/1.1 200 OK' );
+			die();
+		}
+
+		$status = $data['sessionStatus'];
+		update_user_meta( $user->ID, 'pb2b_signup_status', $status );
+		header( 'HTTP/1.1 200 OK' );
+		die();
 	}
 }
 
