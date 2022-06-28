@@ -38,7 +38,7 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 == CHANGELOG ==
 = 2022.06.28        - Version 2.3.0 =
 * Feature           - Adds support for Payers customer onboarding solution B2B SignUp. Read more on https://payer.eu/b2b-payment-platform/b2b-signup/.
-* feature           - If B2B SignUp is used, Payer B2B Invoice is only offered to the customers that has a valid credit risk.
+* Feature           - If B2B SignUp is used, Payer B2B Invoice is only offered to the customers that has a valid credit risk.
 
 = 2022.03.17        - Version 2.2.5 =
 * Tweak             - The invoice widget is now always showing on the order page.
