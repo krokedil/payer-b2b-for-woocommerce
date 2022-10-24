@@ -125,6 +125,9 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 * @return void
 		 */
 		public function include_files() {
+			if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
+				return;
+			}
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-normal-invoice-gateway.php';
