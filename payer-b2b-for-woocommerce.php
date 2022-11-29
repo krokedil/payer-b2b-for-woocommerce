@@ -3,7 +3,7 @@
  * Plugin Name:     Payer B2B for WooCommerce
  * Plugin URI:      https://krokedil.com/products
  * Description:     Provides a Payer B2B gateway for WooCommerce.
- * Version:         2.3.0
+ * Version:         2.3.1
  * Author:          Krokedil
  * Author URI:      https://krokedil.com/
  * Developer:       Krokedil
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'PAYER_B2B_VERSION', '2.3.0' );
+define( 'PAYER_B2B_VERSION', '2.3.1' );
 define( 'PAYER_B2B_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 define( 'PAYER_B2B_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PAYER_B2B_LIVE_ENV', 'https://b2b.payer.se' );
@@ -82,7 +82,7 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 *
 		 * @return void
 		 */
-		private function __wakeup() {
+		public function __wakeup() {
 			wc_doing_it_wrong( __FUNCTION__, __( 'Nope' ), '1.0' );
 		}
 
@@ -125,6 +125,9 @@ if ( ! class_exists( 'Payer_B2B' ) ) {
 		 * @return void
 		 */
 		public function include_files() {
+			if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
+				return;
+			}
 			// Gateways.
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-factory-gateway.php';
 			include_once PAYER_B2B_PATH . '/classes/gateways/class-pb2b-normal-invoice-gateway.php';

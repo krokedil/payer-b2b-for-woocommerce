@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, woocommerce, payer, checkout
 Requires at least: 4.7
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: trunk
+Stable tag: 2.3.1
 WC requires at least: 4.0.0
 WC tested up to: 6.6.1
 License: GPLv3
@@ -36,6 +36,10 @@ For help setting up and configuring Payer B2B for WooCommerce please refer to ou
 
 
 == CHANGELOG ==
+= 2022.11.29        - Version 2.3.1 =
+* Fix               - Change access modifiers of the wakeup function from protected to public.
+* Fix               - Fix fatal errors when the WooCommerce plugin does not exist.
+
 = 2022.06.28        - Version 2.3.0 =
 * Feature           - Adds support for Payers customer onboarding solution B2B SignUp. Read more on https://payer.eu/b2b-payment-platform/b2b-signup/.
 * Feature           - If B2B SignUp is used, Payer B2B Invoice is only offered to the customers that has a valid credit risk.
